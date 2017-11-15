@@ -14,16 +14,14 @@
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
-
+            XDEF WAIT, CARRY
+            XREF LCD
             XREF __SEG_END_SSTACK      ; symbol defined by the linker for the end of the stack
             
-            ; LCD References
-	         
-
-            ; Potentiometer References
           
 
-
+WAIT: ds.b $2
+CARRY: ds.b $1
 
 ; variable/data section
 my_variable: SECTION
@@ -36,15 +34,24 @@ MyCode:     SECTION
 Entry:
 _Startup:
 		lds #__SEG_END_SSTACK
-		
+    JSR INITIALIZE
+    
 
 
 
 
 
-;**************************************************************
-;
-;                   Write You Code Here
-;
-;**************************************************************
 
+
+
+
+
+
+INITIALIZE:
+  JSR INITIALIZE_LCD
+  JSR
+  RTS
+  
+50_MS:
+
+ISR  
