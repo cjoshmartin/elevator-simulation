@@ -6,12 +6,14 @@ A_USER: ds.b 7
 A_PASS: ds.b 7   
 TIME: ds.b 6
 DATE: ds.b 8
+
 MY_VAR: SECTION
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 NUM: ds.b 1
 disp: ds.b 33	  ;values to display the LCD
 WEL: ds.b 1	  ;Welcome Subroutine value
+INPUT_BLOCK: ds.b 1
 
 
 LCD:
@@ -27,11 +29,11 @@ LCD:
 ;----------------------------------------------------------------------
 		
 WELCOME:
-		     	movb #40, WAIT		  ;Loads in value for interrupt
+		    movb #40, WAIT		  ;Loads in value for interrupt
 			
-		    	movb #'W',disp
+		   	movb #'W',disp
        	 	movb #'e',disp+1
-       	  movb #'l',disp+2
+       	    movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -84,7 +86,7 @@ DT-TI:
 			
 		    	movb #'>',disp
        	 	movb #'D',disp+1
-       	  movb #'A',disp+2
+       	    movb #'A',disp+2
         	movb #'T',disp+3
         	movb #'E',disp+4
         	movb #':',disp+5
@@ -117,6 +119,7 @@ DT-TI:
         	movb #0,disp+32
         	
         	ENTER_DT:
+        	  movb #$11, INPUT_BLOCK
         	  ldx #disp
         	  jsr display_string
         	  
@@ -137,8 +140,9 @@ DT-TI:
 
                
             TI:
+              movb #$22, INPUT_BLOCK
               ldx #disp
-        	    jsr display_string
+        	  jsr display_string
               JSR keypad               ;goes to keypad
               JSR INPUT                ;checks input
               cmpa #21                 ;compare to see if LCD_CUR has moved or not
@@ -153,8 +157,10 @@ DT-TI:
               movb #pressed, TIME+NUM     ;saves into time
               ldab NUM                    ;loads in array value
               addb #1
-              stab NUM     
-              movb #pressed, disp+LCD_CUR    ;changes value of LCD display 
+              stab NUM
+              ldab disp
+              addb #LCD_CUR     
+              movb #pressed, disp    ;changes value of LCD display 
               adda #1                        ;moves over one
               staa LCD_CUR
               cmpa #32                       ;see if out of LCD display
@@ -165,8 +171,9 @@ DT-TI:
               bra DT
           
             DT:
+              movb #$22, INPUT_BLOCK
               ldx #disp                 ;display LCD
-        	    jsr display_string        
+        	  jsr display_string        
               JSR keypad                ;get value for keypad
               JSR INPUT                 ;Sees if it is a moving input
               ldaa #LCD_CUR            ;loads in LCD_CUR
@@ -188,7 +195,9 @@ DT-TI:
               ldab NUM
               addb #1
               stab NUM     
-              movb #pressed, disp+LCD_CUR
+              ldab disp
+              addb #LCD_CUR     
+              movb #pressed, disp
               adda #1
               staa LCD_CUR
               cmpa #16
@@ -201,6 +210,7 @@ DT-TI:
           END_DT:
               movb #0, CARRY
               movb #1, DT
+              movb #$
               RTS
 
 ;------------------------------------------------------------------------
@@ -270,11 +280,14 @@ ADMIN:
            bra A_USERNAME 
         
           A_UC:
+           
            movb #pressed, A_USER+NUM
            ldab #NUM
            addb #1
            stab NUM
-           movb #pressed, disp+LCD_CUR
+           ldab disp
+           addb #LCD_CUR     
+           movb #pressed, disp
            
            ldaa #LCD_CUR
            adda #1
@@ -328,11 +341,61 @@ ADMIN:
            
 ;----------------------------------------------------------------           
 
+  SECRET:
+  	      	movb #10, LCD_CUR
+			
+		    movb #15, WAIT
+		    movb #0, NUM 
+		    
+		    movb #'S',disp
+       	 	movb #'E',disp+1
+       	    movb #'C',disp+2
+        	movb #'R',disp+3
+        	movb #'E',disp+4
+        	movb #'T',disp+5
+        	movb #' ',disp+6
+        	movb #'I',disp+7
+        	movb #'D',disp+8
+        	movb #':',disp+9
+        	movb #' ',disp+10
+        	movb #' ',disp+11
+        	movb #' ',disp+12
+        	movb #' ',disp+13
+        	movb #' ',disp+14
+        	movb #' ',disp+15
+        	movb #'P',disp+16
+        	movb #'A',disp+17
+        	movb #'S',disp+18
+        	movb #'S',disp+19
+        	movb #'W',disp+20
+        	movb #'O',disp+21
+        	movb #'R',disp+22
+        	movb #'D',disp+23
+        	movb #':',disp+24
+        	movb #' ',disp+25
+        	movb #' ',disp+26
+        	movb #' ',disp+27
+        	movb #' ',disp+28
+        	movb #' ',disp+29
+        	movb #' ',disp+30
+        	movb #' ',disp+31
+        	movb #0,disp+32
+		    
+		    SECRET_ID:
+		    	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
   INPUT:
         
         psha			 ;saves value of A
         ldaa #LCD_CUR	 ;loads current location on LCD SCREEN
         ldab #pressed
+        BRSET INPUT_BLOCK, #$22, LEFT
         
   UP:     cmpb #$C		 ;checks if up pressed
         BNE DOWN		 ;if not continue
@@ -349,6 +412,8 @@ ADMIN:
         suba #16		 ;else subtract 16 save and exit 
         staa LCD_CUR
         BRA INPUT_DONE
+        
+        BRSET INPUT_BLOCK, #$11
            
   LEFT:   cmpb #$A		  ;checks and see if left
         BNE	 RIGHT		  ;if not then continue
@@ -368,13 +433,16 @@ ADMIN:
         adda #1			  ;if not then add one to shift it right and save
         staa LCD_CUR
         bra INPUT_DONE
+  
+  INPUT_DONE:
+  
   ENTER:
         cmpb #$0
         BNE INPUT_DONE
         ldx #LCD_CUR
                 
-  INPUT_DONE:
-		    pula
+  
+		pula
         RTS 
         
         
@@ -390,8 +458,8 @@ ADMIN:
      bra FLASH_END
             
    LCD_ON:
-     movb #LCD_VAL,disp+LCD_CUR     ;emptys current LCD and returns
+     movb #LCD_VAL, disp+LCD_CUR     ;emptys current LCD and returns
      bra FLASH_END
-  FLASH_END:      
-   pula
-   rts
+   FLASH_END:      
+    pula
+    rts
