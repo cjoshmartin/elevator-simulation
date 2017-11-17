@@ -1,88 +1,77 @@
-		   xdef keypad, pressed
+	xdef keypad
 
-
-pressed: ds.b 1
-
-MY_EXTENDED_RAM: SECTION
-port_u: equ     $268
-port_u_ddr: equ     $26A
-port_u_psr: equ     $26D
-port_u_pde: equ     $26C
-port_s: equ     $248
-port_s_ddr: equ $24A
-SEQ:  dc.b  $70, $B0, $D0, $E0
-VAL:  dc.b  $BE, $77, $7B, $7D, $B7, $BB, $BD, $D7, $DB, $DD, $E7, $ED, $7E, $EB, $DE, $EE
-
-MY_VARIABLE: SECTION
-VAR: ds.b $1
-prev: ds.b $1
-chck: ds.b $1
-num: ds.b $1
+var_a ds.b 1
+var_b ds.b 1
+pressed ds.b 1
+MY_EXTENDED_ROM: SECTION
+port_t equ $240
+ddr_s equ $24A
+port_s equ $248
+port_u equ $268
+ddr_port_u equ $26A
+psr_port_u equ $26D
+pde_port_u equ $26C
+SEQ: dc.b $70,$B0,$D0, $E0
+var1: dc.b $EB, $77, $7B, $7D, $B7, $BB, $BD, $D7, $DB, $DD, $E7, $ED, $7E, $BE, $DE,$EE, $00
 
 keypad:
-            LDS  #__SEG_END_SSTACK     ; initialize the stack pointer
-            jsr INITIALIZE
-            
-       L0:  ldx #SEQ        ;loads values to scan matrix
-            ldy #$5         ;loads counter
-            
-     LOOP:  DBEQ y, L0      ;decrements y by 1 and if 0 branch else continue
-            ldaa 1, x+      ;loads first value of lookup sequence
-            staa port_u     ;stores into port_u       
-            JSR DELAY       ;bounce delay
-            
-            ldab port_u     ;loads value from keypad
-            stab VAR        ;stores into VAR   
-            brset VAR, #$0F, LOOP    ;checks if any value is pressed or not
-          
-     held:  ldab port_u     ;loads in input from keypad
-            andb #$0F       ;next few lines wait's until held
-            cmpb #$0F
-            BNE held
-            jsr LKUP        ;looks up value if it is pressed or not
-            bra L0          ;repeats for next value
-            
-                             
-LKUP:               
-   pshx
-   psha
-   pshy
-   ldx #VAL           ;loads predefined array
-   ldaa #$0           ;loads value counter
-   ldy #$11           ;loads no value counter
-   deca               ;decrements value counter by 1 to ensure 0 is included
-   chk:
-       inca           ;increments back to 0
-       dbeq y, done   ;decrements no value counter and branches to done if 0
-       
-       ldab 1, x+     ;loads first value of array
-       cmpb VAR       ;compares it to input
-       BNE chk        ;if no match the branch
+ bset ddr_s, #$FF ; used to intiliaze the LED display
+ bset ddr_port_u, #$F0; used to intiliaze the hex keys
+ bset psr_port_u, #$F0
+ bset pde_port_u, #$0F
+ bclr var_a, #$FF ; intiliaze the variables
+ bclr var_b, #$FF
+ bclr pressed, #$FF
+ bclr port_s, #$00
+ clr pressed
+looop2: jsr looop1 ; subroutine for my loop.
+ brclr var_a, #$FF, move;
+ bclr var_b, #$F0
+ rts
+ ;stab pressed
+ ;rts ; END OF PROGRAM
 
+move: bclr var_b,#$0F
+ orab var_b
+ stab var_b
+ bset var_a,#$FF
+ bra looop2;
 
-       done:       
-   puly
-   pula
-   pulx
-   rts        
-end
+Delay: PSHX
+ LDX #1000
+DLoop: DEX
+ BNE DLoop
+ PULX
+ RTS
 
-INITIALIZE:
-            BSET port_u, #$F0          ;turns necessary bits on so it reads up
-            BSET port_u_ddr, #$F0      ;turns necessary bits on for ddr
-            BSET port_u_psr, #$F0      ;turns necessary bits on for pull up
-            BSET port_u_pde, #$0F      ;turns necessary bits on for 
-            BSET port_s_ddr, #$FF      ;turns necessary bits on
-            bset prev, #$0             ;gives value to previous
-            ldaa #$1                   ;next two lines give alternation value
-            staa num
-            RTS
-                        
-DELAY:
-    pshy
-    ldy #$FA0   ;loads 4000 for 4 millisecond delay
-    L2:         ;loop
-    dey         ;decrements y untill 0
-    BNE L2
-    puly
-    RTS
+looop1: ldx #SEQ ; load the sequence in to x
+
+next: ldaa 1,x+ ; load one, and incrament it by x
+ beq looop1 ; if equal then branch
+ 
+ staa port_u ; display the value
+ 
+ jsr Delay ; my delay counter
+ ldaa port_u ; load value from port_u in to a
+ staa pressed ; store that value in pressed
+ anda #$0F ; checks if the button is pressed or not; uses logical anda to make check if
+
+ cmpa #$0F ; compares whats in a to this memory value
+ beq next ; if they are not eq
+ 
+;up:
+; ldaa port_u ;load port_u
+; anda #$0F ; use logical and operator to check if it is pushed or not
+; cmpa #$0F ; compare to the same value.
+; bne up ; branch up if equal
+ 
+ ; look up table
+ ldy #var1; ; load the look up table with the table
+ ldab #0 ; set up incrament
+redo: ldaa 1, y+ ; incrament after each time through
+ beq looop1; ; if equal it loops up
+ incb ; if not equal incrament b.
+ cmpa pressed; ; compare if it is or isnt
+ bne redo ; if not equal you redo
+ decb ; decrement to set b back to orginial value
+ rts

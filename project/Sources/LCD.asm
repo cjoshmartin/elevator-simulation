@@ -1,6 +1,6 @@
 		XDEF LCD, TIME, DATE
 		XREF WAIT, CARRY, keypad, pressed
-    XREF init_LCD, display screen
+    XREF init_LCD, displayscreen
     
 A_USER: ds.b 7
 A_PASS: ds.b 7   
