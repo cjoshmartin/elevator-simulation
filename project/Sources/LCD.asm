@@ -1,39 +1,27 @@
-		XDEF LCD, TIME, DATE
-		XREF WAIT, CARRY, keypad, pressed
-    XREF init_LCD, displayscreen
+		XDEF LCD, WELCOME, DT-TI, ADMIN, SECRET, LCD_FLOOR, LCD_MAIN
+		XDEF disp, LCD_CUR, LCD_VAL
+		XREF WAIT, keypad, pressed 
+    XREF displayscreen, disp_loc
     
-A_USER: ds.b 7
-A_PASS: ds.b 7   
-TIME: ds.b 6
-DATE: ds.b 8
 
-MY_VAR: SECTION
+disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
+
+MY_VAR: SECTION
 NUM: ds.b 1
-disp: ds.b 33	  ;values to display the LCD
-WEL: ds.b 1	  ;Welcome Subroutine value
 INPUT_BLOCK: ds.b 1
 
-
-LCD:
- 
-		jsr init_LCD
-		JSR WELCOME
-		
-		BEG_LCD:
-		
-		JSR DT-TI
 
 
 ;----------------------------------------------------------------------
 		
 WELCOME:
-		    movb #40, WAIT		  ;Loads in value for interrupt
+		      movb #40, WAIT		  ;Loads in value for interrupt
 			
-		   	movb #'W',disp
+		   	  movb #'W',disp
        	 	movb #'e',disp+1
-       	    movb #'l',disp+2
+       	  movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -68,25 +56,20 @@ WELCOME:
         	ldx #disp
         	jsr display_string
         	
-            ldaa #CARRY				;checks and sees if wait is done
-            cmpa #1
-            BNE WELCOME
-            movb #0, CARRY
-            movb #1, WEL			;turns off welcome loop
+          WAI TIME_INT
 		RTS
 		
 ;------------------------------------------------------------------------
 
 DT-TI:
 			    movb #0, LCD_CUR
-			
 			    movb #15, WAIT
 			    movb #'>', LCD_VAL
 			    movb #0, NUM
 			
 		    	movb #'>',disp
        	 	movb #'D',disp+1
-       	    movb #'A',disp+2
+       	  movb #'A',disp+2
         	movb #'T',disp+3
         	movb #'E',disp+4
         	movb #':',disp+5
@@ -118,95 +101,64 @@ DT-TI:
         	movb #'M',disp+31
         	movb #0,disp+32
         	
+        	
+          movb #$11, INPUT_BLOCK
+        	
         	ENTER_DT:
-        	  movb #$11, INPUT_BLOCK
-        	  ldx #disp
-        	  jsr display_string
-        	  
-        	  JSR keypad                   ;jumps to keypad
-        	  ldaa #pressed                ;loads value of keypad into A
-        	  JSR input                    ;checks move value
-        	  cmpa #0                      
-        	  BNE ENTER_DT_C               ;branch 
-        	  JSR FLASH                    ;sees if nothing is pressed if not then go to flash
-        	  bra ENTER_DT
-        	  
-        	ENTER_DT_C:
-        	  cpx #0                     ;sees if date was selected
-        	  BEQ DT
-        	  cpx #16                    ;sees if time was selected
-            BEQ TI
-            BRA ENTER_DT  
-
-               
-            TI:
-              movb #$22, INPUT_BLOCK
-              ldx #disp
-        	  jsr display_string
-              JSR keypad               ;goes to keypad
-              JSR INPUT                ;checks input
-              cmpa #21                 ;compare to see if LCD_CUR has moved or not
-              BLE  TI_1                ;if not then branch else move LCD_CUR and continue
-              movb #22, LCD_CUR        ;moves LCD back to LCD_CUR
-              bra TI_C
-          TI_1:                         ;checks and sees if it is on value of :
-              cmpa #24
-              BNE  TI_C                 ;if so then change val of LCD_CUR else branch
+        	  ldaa #LCD_CUR
+        	  LDX #disp        
+            JSR display_string
+            JSR KEYPAD
+            JSR INPUT
+            CMPA #LCD_CUR
+            BEQ ENTER_DT_CONT
+            
+            ldab #LCD_CUR
+            staa LCD_CUR
+            MOVB #' ', LCD_VAL
+            jsr disp_loc
+            stab LCD_CUR
+            
+          ENTER_DT_CONT
+            JSR disp_loc
+            cpx #0
+            BEQ ENTER_DT
+            movb #$22, INPUT_BLOCK
+            BRSET LCD_CUR, #0, DATE
+            
+          TIME:
+            LDAA #22
+            STAA LCD_CUR
+              
+              
+          TIME_IN:
+            JSR keypad
+            ldaa #pressed
+            staa LCD_VAL
+            cmpa #0
+            BEQ TIME_IN
+            
+          TIME_CON:
+              LDAA #LCD_CUR
+              CMPA #21
+              BGT TC_2
+              movb #22, LCD_CUR
+              
+            TC_2:
+              CMPA #24
+              BNE TIME_IN
               movb #25, LCD_CUR
-          TI_C:
-              movb #pressed, TIME+NUM     ;saves into time
-              ldab NUM                    ;loads in array value
-              addb #1
-              stab NUM
-              ldab disp
-              addb #LCD_CUR     
-              movb #pressed, disp    ;changes value of LCD display 
-              adda #1                        ;moves over one
-              staa LCD_CUR
-              cmpa #32                       ;see if out of LCD display
-              BNE TI                         ;if not branch to TI 
-              cpy #1                         ;see if date is changed yet or not
-              BEQ END_DT                     ;if so then exit
-              ldy #1                         ;else load in 1 to say TIME has changed
-              bra DT
           
-            DT:
-              movb #$22, INPUT_BLOCK
-              ldx #disp                 ;display LCD
-        	  jsr display_string        
-              JSR keypad                ;get value for keypad
-              JSR INPUT                 ;Sees if it is a moving input
-              ldaa #LCD_CUR            ;loads in LCD_CUR
-              cmpa #5                  ;compare to see if LCD_CUR has moved or not
-              BLE  DT_1                 ;if not then branch else move LCD_CUR and continue
-              movb #6, LCD_CUR
-              bra DT_C
-          DT_1:                         ;checks and sees if it is on value of /
-              cmpa #8
-              BNE  DT_2                 ;if so then change val of LCD_CUR else branch
-              movb #9, LCD_CUR
-              bra DT_C
-          DT_2:                         ;checks and sees if it is on value of /
-              cmpa #11
-              BNE DT_C                  ;if so then change val of LCD_CUR else branch
-              movb #12, LCD_CUR   
-          DT_C:
-              movb #pressed, TIME+NUM   ;moves value into TIME
-              ldab NUM
-              addb #1
-              stab NUM     
-              ldab disp
-              addb #LCD_CUR     
-              movb #pressed, disp
-              adda #1
-              staa LCD_CUR
-              cmpa #16
-              BNE DT
-              cpy #1
-              BEQ END_DT
-              ldy #1
-              bra TI
-        
+               
+          JSR disp_loc
+          ldx #disp
+          JSR display_string      
+          ldab #LCD_CUR
+          incb
+          stab LCD_CUR
+          
+          cmpb #32          
+          
           END_DT:
               movb #0, CARRY
               movb #1, DT
@@ -402,7 +354,7 @@ ADMIN:
         cmpa #16		 ;check if LCD SCREEN is on upper 16 
         BLE INPUT_DONE	 ;if so then exit
         adda #16		 ;else add 16  store and exit
-        staa LCD_CUR	 
+        staa LCD_CUR
         BRA INPUT_DONE
          
   DOWN:   cmpb #$E		 ;checks if down is pressed
@@ -413,7 +365,7 @@ ADMIN:
         staa LCD_CUR
         BRA INPUT_DONE
         
-        BRSET INPUT_BLOCK, #$11
+        BRSET INPUT_BLOCK, #$11, INPUT_DONE
            
   LEFT:   cmpb #$A		  ;checks and see if left
         BNE	 RIGHT		  ;if not then continue
@@ -430,6 +382,7 @@ ADMIN:
         cmpa #15		  ;compare it to 15 and 31 to see if it is already all the way to the right if so then branch
         BEQ INPUT_DONE	  
         cmpa #31
+        BEQ INPUT_DONE
         adda #1			  ;if not then add one to shift it right and save
         staa LCD_CUR
         bra INPUT_DONE
@@ -438,28 +391,9 @@ ADMIN:
   
   ENTER:
         cmpb #$0
-        BNE INPUT_DONE
-        ldx #LCD_CUR
-                
-  
-		pula
+        BNE INPUT_OVER
+        ldx #1
+  INPUT_OVER:      
+	     	pula
         RTS 
         
-        
-        
-    FLASH:
-     pusha                      
-    ldaa CARRY                 ;sees what value it is on
-    cmpa #1
-    BEQ LCD_ON                 ;if it is 1 then branch else continue
-             
-   LCD_OFF: 
-     movb #178,disp+LCD_CUR     ;fills current LCD and returns 
-     bra FLASH_END
-            
-   LCD_ON:
-     movb #LCD_VAL, disp+LCD_CUR     ;emptys current LCD and returns
-     bra FLASH_END
-   FLASH_END:      
-    pula
-    rts

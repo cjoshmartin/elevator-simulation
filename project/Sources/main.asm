@@ -1,21 +1,12 @@
-;**************************************************************
-;* This stationery serves as the framework for a              *
-;* user application. For a more comprehensive program that    *
-;* demonstrates the more advanced functionality of this       *
-;* processor, please see the demonstration applications       *
-;* located in the examples subdirectory of the                *
-;* Freescale CodeWarrior for the HC12 Program directory       *
-;**************************************************************
-; Include derivative-specific definitions
             INCLUDE 'derivative.inc'
-
-; export symbols
-            XDEF Entry, _Startup,port_s, ddr_s, port_t,stateofelevator
+            
+            XDEF _Startup, MAIN, port_s, ddr_s, port_t,stateofelevator
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY
-            XREF LCD
+            XREF LCD, WELCOME, DT-TI, ADMIN, SECRET, LCD_FLOOR, LCD_MAIN 
+            XREF keypad, pressed
             XREF __SEG_END_SSTACKblink      ; symbol defined by the linker for the end of the stack
 
 
@@ -44,11 +35,17 @@ stateofelevator ds.b    1
 
 ; code section
 MyCode:     SECTION
-Entry:
-_Startup:
-		lds #__SEG_END_SSTACK
+_Startup
+    lds #__SEG_END_SSTACK
     JSR INITIALIZE
-    
+    JSR WELCOME
+    JSR DT_TI
+    JSR ADMIN
+    JSR SECRET
+    JSR LCD_FLOOR
+    JSR LCD_MAIN
+MAIN:
+ 
 
 
 
@@ -65,6 +62,5 @@ INITIALIZE:
   ;JSR
   RTS
   
-50_MS:
 
-ISR  
+
