@@ -27,9 +27,8 @@ keypad:
 looop2: jsr looop1 ; subroutine for my loop.
  brclr var_a, #$FF, move;
  bclr var_b, #$F0
- rts
- ;stab pressed
- ;rts ; END OF PROGRAM
+ stab pressed
+ rts ; END OF PROGRAM
 
 move: bclr var_b,#$0F
  orab var_b
@@ -58,12 +57,7 @@ next: ldaa 1,x+ ; load one, and incrament it by x
 
  cmpa #$0F ; compares whats in a to this memory value
  beq next ; if they are not eq
- 
-;up:
-; ldaa port_u ;load port_u
-; anda #$0F ; use logical and operator to check if it is pushed or not
-; cmpa #$0F ; compare to the same value.
-; bne up ; branch up if equal
+
  
  ; look up table
  ldy #var1; ; load the look up table with the table

@@ -5,11 +5,10 @@
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY
-            XREF LCD, WELCOME, DT-TI, ADMIN, SECRET, LCD_FLOOR, LCD_MAIN 
+            XREF WELCOME, DT_TI, ADMIN, SECRET
+            XREF init_LCD
             XREF keypad, pressed
-            XREF __SEG_END_SSTACKblink      ; symbol defined by the linker for the end of the stack
-
-
+            XREF __SEG_END_SSTACK,blink      ; symbol defined by the linker for the end of the stack
 
 
 My_Constant: 		section
@@ -19,7 +18,6 @@ port_t			equ		$240
 going_up_sequence       dc.b    $01, $02, $04, $08, $10, $20, $40, $80
 going_down_sequence		dc.b	$80, $40, $20, $10, $08, $04, $02, $01
 blink_sequence 			dc.b 	$FF, $00
-
 lenghtofdelay	equ		50000
 	
 
@@ -35,15 +33,13 @@ stateofelevator ds.b    1
 
 ; code section
 MyCode:     SECTION
-_Startup
+_Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE
     JSR WELCOME
     JSR DT_TI
     JSR ADMIN
     JSR SECRET
-    JSR LCD_FLOOR
-    JSR LCD_MAIN
 MAIN:
  
 
@@ -58,9 +54,14 @@ MAIN:
 
 
 INITIALIZE:
-  JSR INITIALIZE_LCD
-  ;JSR
+  JSR init_LCD
+  JSR keypad
+   
   RTS
   
+  
+  
+TIME_INT:
+    
 
 

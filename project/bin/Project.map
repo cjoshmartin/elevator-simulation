@@ -1,5 +1,5 @@
-
-PROGRAM "C:\Users\ahagyous\Desktop\New folder\lab6_3\bin\Project.abs"
+*** EVALUATION ***
+PROGRAM "C:\Users\hwwright\Downloads\elevator-simulation-master\elevator-simulation-master\project\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -7,13 +7,21 @@ TARGET SECTION
 Processor   : Freescale HC12
 Memory Model: SMALL
 File Format : ELF\DWARF 2.0
-Linker      : SmartLinker V-5.0.36 Build 9056, Feb 26 2009
+Linker      : SmartLinker V-5.0.40 Build 10203, Jul 23 2010
 
 *********************************************************************************************
 FILE SECTION
 ---------------------------------------------------------------------------------------------
-main.asm.o                              Model: SMALL,         Lang: Assembler
+lcddisp.c.o                             Model: SMALL,         Lang: ANSI-C
 mc9s12e128.c.o                          Model: SMALL,         Lang: ANSI-C
+main.asm.o                              Model: SMALL,         Lang: Assembler
+LCD.asm.o                               Model: SMALL,         Lang: Assembler
+keypad.asm.o                            Model: SMALL,         Lang: Assembler
+keypad_output.asm.o                     Model: SMALL,         Lang: Assembler
+LCD_LOC.asm.o                           Model: SMALL,         Lang: Assembler
+DATE_TIME.asm.o                         Model: SMALL,         Lang: Assembler
+ADMIN.asm.o                             Model: SMALL,         Lang: Assembler
+SECRET.asm.o                            Model: SMALL,         Lang: Assembler
 
 *********************************************************************************************
 STARTUP SECTION
@@ -24,7 +32,8 @@ Entry point: 0xC000 (_Startup)
 SECTION-ALLOCATION SECTION
 Section Name                    Size  Type     From       To       Segment
 ---------------------------------------------------------------------------------------------
-.init                            165     R     0xC000     0xC0A4   ROM_C000
+.init                             25     R     0xC000     0xC018   ROM_C000
+.text                            212     R     0xC019     0xC0EC   ROM_C000
 .stack                           256   R/W      0x400      0x4FF   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
 .abs_section_9                     1   N/I        0x9        0x9   .absSeg1
@@ -299,12 +308,22 @@ Section Name                    Size  Type     From       To       Segment
 .abs_section_27a                   2   N/I      0x27A      0x27B   .absSeg270
 .abs_section_27c                   2   N/I      0x27C      0x27D   .absSeg271
 .abs_section_27e                   2   N/I      0x27E      0x27F   .absSeg272
-my_variable                       33   R/W      0x500      0x520   RAM
+.bss                               2   R/W      0x500      0x501   RAM
+My_Variable                        3   R/W      0x502      0x504   RAM
+MY_VAR                           927     R     0xC0ED     0xC48B   ROM_C000
+LCD.asm._SEC000000                35   R/W      0x505      0x527   RAM
+MY_EXTENDED_ROM                  139     R     0xC48C     0xC516   ROM_C000
+keypad.asm._SEC000000              3   R/W      0x528      0x52A   RAM
+keypad_output.asm._SEC000000         45     R     0xC517     0xC543   ROM_C000
+LCD_LOC.asm._SEC000000           393     R     0xC544     0xC6CC   ROM_C000
+DATE_TIME.asm._SEC000000         162     R     0xC6CD     0xC76E   ROM_C000
+ADMIN.asm._SEC000000             146     R     0xC76F     0xC800   ROM_C000
+SECRET.asm._SEC000000            129     R     0xC801     0xC881   ROM_C000
 .vectSeg273_vect                   2     R     0xFFFE     0xFFFF   .vectSeg273
 
 Summary of section sizes per section type:
-READ_ONLY (R):          A7 (dec:      167)
-READ_WRITE (R/W):      121 (dec:      289)
+READ_ONLY (R):         884 (dec:     2180)
+READ_WRITE (R/W):      12B (dec:      299)
 NO_INIT (N/I):         160 (dec:      352)
 
 *********************************************************************************************
@@ -317,12 +336,15 @@ VECTOR-ALLOCATION SECTION
 OBJECT-ALLOCATION SECTION
      Name               Module                 Addr   hSize   dSize     Ref    Section   RLIB
 ---------------------------------------------------------------------------------------------
-MODULE:                 -- main.asm.o --
+MODULE:                 -- lcddisp.c.o --
 - PROCEDURES:
-     Entry                                     C000      A5     165       0   .init       
-     _Startup                                  C000       0       0       0   .init       
+     delay_ms                                  C019      17      23       5   .text       
+     init_LCD                                  C030      52      82       1   .text       
+     display_string                            C082      38      56       5   .text       
+     epulse                                    C0BA      24      36       3   .text       
+     sendCommand                               C0DE       F      15       7   .text       
 - VARIABLES:
-     disp                                       500      21      33      33   my_variable 
+     data                                       500       2       2       4   .bss        
 MODULE:                 -- mc9s12e128.c.o --
 - PROCEDURES:
 - VARIABLES:
@@ -494,9 +516,9 @@ MODULE:                 -- mc9s12e128.c.o --
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       0   .abs_section_250
+     _PTM                                       250       1       1       5   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
-     _DDRM                                      252       1       1       0   .abs_section_252
+     _DDRM                                      252       1       1       1   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
      _PERM                                      254       1       1       0   .abs_section_254
      _PPSM                                      255       1       1       0   .abs_section_255
@@ -591,30 +613,179 @@ MODULE:                 -- mc9s12e128.c.o --
      _PMFCNTC                                   232       2       2       0   .abs_section_232
      _PMFMODC                                   234       2       2       0   .abs_section_234
      _PMFDTMC                                   236       2       2       0   .abs_section_236
-     _PTAD                                      270       2       2       0   .abs_section_270
+     _PTAD                                      270       2       2       4   .abs_section_270
      _PTIAD                                     272       2       2       0   .abs_section_272
-     _DDRAD                                     274       2       2       0   .abs_section_274
+     _DDRAD                                     274       2       2       1   .abs_section_274
      _RDRAD                                     276       2       2       0   .abs_section_276
      _PERAD                                     278       2       2       0   .abs_section_278
      _PPSAD                                     27A       2       2       0   .abs_section_27a
      _PIEAD                                     27C       2       2       0   .abs_section_27c
      _PIFAD                                     27E       2       2       0   .abs_section_27e
+MODULE:                 -- main.asm.o --
+- PROCEDURES:
+     _Startup                                  C000      12      18       0   .init       
+     INITIALIZE                                C012       0       0       1   .init       
+     MAIN                                      C012       7       7       0   .init       
+- VARIABLES:
+     WAIT                                       502       2       2       4   My_Variable 
+     CARRY                                      504       1       1       0   My_Variable 
+- LABELS:
+     __SEG_END_SSTACK                           500       0       0       1               
+     port_t                                     240       0       0       0   .text       
+     port_s                                     248       0       0       3   .text       
+     ddr_s                                      24A       0       0       0   .text       
+MODULE:                 -- LCD.asm.o --
+- PROCEDURES:
+     WELCOME                                   C0EF      B1     177       1   MY_VAR      
+     DT_TI                                     C1A0      C7     199       1   MY_VAR      
+     ENTER_DT                                  C267      32      50       0   MY_VAR      
+     DT_CONT                                   C299      11      17       0   MY_VAR      
+     TIME                                      C2AA       B      11       0   MY_VAR      
+     END_DT                                    C2B5       1       1       0   MY_VAR      
+     ADMIN                                     C2B6      BE     190       1   MY_VAR      
+     SECRET                                    C374      BD     189       1   MY_VAR      
+     INPUT                                     C431      19      25       7   MY_VAR      
+     DOWN                                      C44A      14      20       0   MY_VAR      
+     LEFT                                      C45E      12      18       0   MY_VAR      
+     RIGHT                                     C470      13      19       0   MY_VAR      
+     INPUT_DONE                                C483       7       7       0   MY_VAR      
+     INPUT_OVER                                C48A       2       2       0   MY_VAR      
+- VARIABLES:
+     disp                                       505      21      33     169   LCD.asm._SEC000000
+     LCD_CUR                                    526       1       1      62   LCD.asm._SEC000000
+     LCD_VAL                                    527       1       1      42   LCD.asm._SEC000000
+     NUM                                       C0ED       1       1       2   MY_VAR      
+     INPUT_BLOCK                               C0EE       1       1       3   MY_VAR      
+MODULE:                 -- keypad.asm.o --
+- PROCEDURES:
+     SEQ                                       C48C       4       4       1   MY_EXTENDED_ROM
+     var1                                      C490      11      17       1   MY_EXTENDED_ROM
+     keypad                                    C4A1      23      35       9   MY_EXTENDED_ROM
+     looop2                                    C4C4      10      16       0   MY_EXTENDED_ROM
+     move                                      C4D4      10      16       0   MY_EXTENDED_ROM
+     Delay                                     C4E4       4       4       1   MY_EXTENDED_ROM
+     DLoop                                     C4E8       5       5       0   MY_EXTENDED_ROM
+     looop1                                    C4ED       3       3       1   MY_EXTENDED_ROM
+     next                                      C4F0      1B      27       0   MY_EXTENDED_ROM
+     redo                                      C50B       C      12       0   MY_EXTENDED_ROM
+- VARIABLES:
+     var_a                                      528       1       1       3   keypad.asm._SEC000000
+     var_b                                      529       1       1       5   keypad.asm._SEC000000
+     pressed                                    52A       1       1       5   keypad.asm._SEC000000
+MODULE:                 -- keypad_output.asm.o --
+- PROCEDURES:
+     keypadoutput                              C51B      14      20       0   keypad_output.asm._SEC000000
+     pressedf                                  C52F       7       7       0   keypad_output.asm._SEC000000
+     presseda                                  C536       7       7       0   keypad_output.asm._SEC000000
+     pressedb                                  C53D       7       7       0   keypad_output.asm._SEC000000
+- VARIABLES:
+     pressed                                   C517       1       1      15   keypad_output.asm._SEC000000
+MODULE:                 -- LCD_LOC.asm.o --
+- PROCEDURES:
+     disp_loc                                  C544      10      16       8   LCD_LOC.asm._SEC000000
+     disp_1                                    C554       C      12       0   LCD_LOC.asm._SEC000000
+     disp_2                                    C560       C      12       0   LCD_LOC.asm._SEC000000
+     disp_3                                    C56C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_4                                    C578       C      12       0   LCD_LOC.asm._SEC000000
+     disp_5                                    C584       C      12       0   LCD_LOC.asm._SEC000000
+     disp_6                                    C590       C      12       0   LCD_LOC.asm._SEC000000
+     disp_7                                    C59C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_8                                    C5A8       C      12       0   LCD_LOC.asm._SEC000000
+     disp_9                                    C5B4       C      12       0   LCD_LOC.asm._SEC000000
+     disp_10                                   C5C0       C      12       0   LCD_LOC.asm._SEC000000
+     disp_11                                   C5CC       C      12       0   LCD_LOC.asm._SEC000000
+     disp_12                                   C5D8       C      12       0   LCD_LOC.asm._SEC000000
+     disp_13                                   C5E4       C      12       0   LCD_LOC.asm._SEC000000
+     disp_14                                   C5F0       C      12       0   LCD_LOC.asm._SEC000000
+     disp_15                                   C5FC       C      12       0   LCD_LOC.asm._SEC000000
+     disp_16                                   C608       C      12       0   LCD_LOC.asm._SEC000000
+     disp_17                                   C614       C      12       0   LCD_LOC.asm._SEC000000
+     disp_18                                   C620       C      12       0   LCD_LOC.asm._SEC000000
+     disp_19                                   C62C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_20                                   C638       C      12       0   LCD_LOC.asm._SEC000000
+     disp_21                                   C644       C      12       0   LCD_LOC.asm._SEC000000
+     disp_22                                   C650       C      12       0   LCD_LOC.asm._SEC000000
+     disp_23                                   C65C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_24                                   C668       C      12       0   LCD_LOC.asm._SEC000000
+     disp_25                                   C674       C      12       0   LCD_LOC.asm._SEC000000
+     disp_26                                   C680       C      12       0   LCD_LOC.asm._SEC000000
+     disp_27                                   C68C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_28                                   C698       B      11       0   LCD_LOC.asm._SEC000000
+     disp_29                                   C6A3       B      11       0   LCD_LOC.asm._SEC000000
+     disp_30                                   C6AE       B      11       0   LCD_LOC.asm._SEC000000
+     disp_31                                   C6B9       B      11       0   LCD_LOC.asm._SEC000000
+     disp_loc_end                              C6C4       9       9      28   LCD_LOC.asm._SEC000000
+- VARIABLES:
+MODULE:                 -- DATE_TIME.asm.o --
+- PROCEDURES:
+     TIME_SET                                  C6DB       9       9       1   DATE_TIME.asm._SEC000000
+     TIME_IN                                   C6E4      20      32       0   DATE_TIME.asm._SEC000000
+     TC_2                                      C704       9       9       0   DATE_TIME.asm._SEC000000
+     TC_3                                      C70D       6       6       0   DATE_TIME.asm._SEC000000
+     TIME_IN_CONF                              C713       D      13       0   DATE_TIME.asm._SEC000000
+     DATE_SET                                  C720       9       9       1   DATE_TIME.asm._SEC000000
+     DATE_IN                                   C729      20      32       0   DATE_TIME.asm._SEC000000
+     DATE_CON_2                                C749       9       9       0   DATE_TIME.asm._SEC000000
+     DATE_CON_3                                C752       9       9       0   DATE_TIME.asm._SEC000000
+     DATE_CON_4                                C75B       6       6       0   DATE_TIME.asm._SEC000000
+     DATE_IN_CONF                              C761       E      14       0   DATE_TIME.asm._SEC000000
+- VARIABLES:
+     TIME_VAL                                  C6CD       6       6       1   DATE_TIME.asm._SEC000000
+     DATE_VAL                                  C6D3       8       8       2   DATE_TIME.asm._SEC000000
+MODULE:                 -- ADMIN.asm.o --
+- PROCEDURES:
+     ADMIN_SET                                 C77D       8       8       1   ADMIN.asm._SEC000000
+     ADMIN_USER_SET                            C785      20      32       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CON_2                          C7A5       9       9       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CON_3                          C7AE       B      11       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CONF                           C7B9       D      13       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_SET                            C7C6      20      32       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CON_2                          C7E6       9       9       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CON_3                          C7EF       5       5       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CONF                           C7F4       D      13       0   ADMIN.asm._SEC000000
+- VARIABLES:
+     ADMIN_USER                                C76F       7       7       1   ADMIN.asm._SEC000000
+     ADMIN_PASS                                C776       7       7       0   ADMIN.asm._SEC000000
+MODULE:                 -- SECRET.asm.o --
+- PROCEDURES:
+     SECRET_ID_SET                             C80B       0       0       0   SECRET.asm._SEC000000
+     SECRET_SET                                C80B      20      32       1   SECRET.asm._SEC000000
+     SECRET_ID_CON_2                           C82B       9       9       0   SECRET.asm._SEC000000
+     SECRET_ID_CON_3                           C834       6       6       0   SECRET.asm._SEC000000
+     SECRET_ID_CONF                            C83A       D      13       0   SECRET.asm._SEC000000
+     SECRET_PASS_SET                           C847      20      32       0   SECRET.asm._SEC000000
+     SECRET_PASS_CON_2                         C867       9       9       0   SECRET.asm._SEC000000
+     SECRET_PASS_CON_3                         C870       5       5       0   SECRET.asm._SEC000000
+     SECRET_PASS_CONF                          C875       D      13       0   SECRET.asm._SEC000000
+- VARIABLES:
+     SECRET_ID                                 C801       2       2       0   SECRET.asm._SEC000000
+     SECRET_PASS                               C803       8       8       0   SECRET.asm._SEC000000
 
 *********************************************************************************************
 MODULE STATISTIC
   Name                                      Data   Code  Const
 ---------------------------------------------------------------------------------------------
-  main.asm.o                                  33    165      0
+  lcddisp.c.o                                  2    212      0
   mc9s12e128.c.o                             352      0      0
+  main.asm.o                                   3     25      0
+  LCD.asm.o                                   35    927      0
+  keypad.asm.o                                 3    139      0
+  keypad_output.asm.o                          0     45      0
+  LCD_LOC.asm.o                                0    393      0
+  DATE_TIME.asm.o                              0    162      0
+  ADMIN.asm.o                                  0    146      0
+  SECRET.asm.o                                 0    129      0
   other                                      256      2      0
 
 *********************************************************************************************
 SECTION USE IN OBJECT-ALLOCATION SECTION
 ---------------------------------------------------------------------------------------------
+SECTION: ".text"
+  port_t port_s ddr_s delay_ms init_LCD display_string epulse sendCommand 
+SECTION: ".bss"
+  data 
 SECTION: ".init"
-  _Startup Entry 
-SECTION: "my_variable"
-  disp 
+  _Startup MAIN INITIALIZE 
 SECTION: ".abs_section_8"
   _PORTE 
 SECTION: ".abs_section_9"
@@ -1161,6 +1332,35 @@ SECTION: ".abs_section_27c"
   _PIEAD 
 SECTION: ".abs_section_27e"
   _PIFAD 
+SECTION: "My_Variable"
+  WAIT CARRY 
+SECTION: "MY_VAR"
+  NUM INPUT_BLOCK WELCOME DT_TI ENTER_DT DT_CONT TIME END_DT ADMIN SECRET 
+  INPUT DOWN LEFT RIGHT INPUT_DONE INPUT_OVER 
+SECTION: "LCD.asm._SEC000000"
+  disp LCD_CUR LCD_VAL 
+SECTION: "MY_EXTENDED_ROM"
+  SEQ var1 keypad looop2 move Delay DLoop looop1 next redo 
+SECTION: "keypad.asm._SEC000000"
+  var_a var_b pressed 
+SECTION: "keypad_output.asm._SEC000000"
+  pressed keypadoutput pressedf presseda pressedb 
+SECTION: "LCD_LOC.asm._SEC000000"
+  disp_loc disp_1 disp_2 disp_3 disp_4 disp_5 disp_6 disp_7 disp_8 disp_9 
+  disp_10 disp_11 disp_12 disp_13 disp_14 disp_15 disp_16 disp_17 disp_18 
+  disp_19 disp_20 disp_21 disp_22 disp_23 disp_24 disp_25 disp_26 disp_27 
+  disp_28 disp_29 disp_30 disp_31 disp_loc_end 
+SECTION: "DATE_TIME.asm._SEC000000"
+  TIME_VAL DATE_VAL TIME_SET TIME_IN TC_2 TC_3 TIME_IN_CONF DATE_SET DATE_IN 
+  DATE_CON_2 DATE_CON_3 DATE_CON_4 DATE_IN_CONF 
+SECTION: "ADMIN.asm._SEC000000"
+  ADMIN_USER ADMIN_PASS ADMIN_SET ADMIN_USER_SET ADMIN_USER_CON_2 
+  ADMIN_USER_CON_3 ADMIN_USER_CONF ADMIN_PASS_SET ADMIN_PASS_CON_2 
+  ADMIN_PASS_CON_3 ADMIN_PASS_CONF 
+SECTION: "SECRET.asm._SEC000000"
+  SECRET_ID SECRET_PASS SECRET_SET SECRET_ID_SET SECRET_ID_CON_2 
+  SECRET_ID_CON_3 SECRET_ID_CONF SECRET_PASS_SET SECRET_PASS_CON_2 
+  SECRET_PASS_CON_3 SECRET_PASS_CONF 
 
 *********************************************************************************************
 OBJECT LIST SORTED BY ADDRESS
@@ -1393,21 +1593,24 @@ OBJECT LIST SORTED BY ADDRESS
      _PMFMODC                                   234       2       2       0   .abs_section_234
      _PMFDTMC                                   236       2       2       0   .abs_section_236
      _PTT                                       240       1       1       0   .abs_section_240
+     port_t                                     240       0       0       0   .text       
      _PTIT                                      241       1       1       0   .abs_section_241
      _DDRT                                      242       1       1       0   .abs_section_242
      _RDRT                                      243       1       1       0   .abs_section_243
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
      _PTS                                       248       1       1       0   .abs_section_248
+     port_s                                     248       0       0       3   .text       
      _PTIS                                      249       1       1       0   .abs_section_249
      _DDRS                                      24A       1       1       0   .abs_section_24a
+     ddr_s                                      24A       0       0       0   .text       
      _RDRS                                      24B       1       1       0   .abs_section_24b
      _PERS                                      24C       1       1       0   .abs_section_24c
      _PPSS                                      24D       1       1       0   .abs_section_24d
      _WOMS                                      24E       1       1       0   .abs_section_24e
-     _PTM                                       250       1       1       0   .abs_section_250
+     _PTM                                       250       1       1       5   .abs_section_250
      _PTIM                                      251       1       1       0   .abs_section_251
-     _DDRM                                      252       1       1       0   .abs_section_252
+     _DDRM                                      252       1       1       1   .abs_section_252
      _RDRM                                      253       1       1       0   .abs_section_253
      _PERM                                      254       1       1       0   .abs_section_254
      _PPSM                                      255       1       1       0   .abs_section_255
@@ -1431,21 +1634,140 @@ OBJECT LIST SORTED BY ADDRESS
      _PERU                                      26C       1       1       0   .abs_section_26c
      _PPSU                                      26D       1       1       0   .abs_section_26d
      _MODRR                                     26E       1       1       0   .abs_section_26e
-     _PTAD                                      270       2       2       0   .abs_section_270
+     _PTAD                                      270       2       2       4   .abs_section_270
      _PTIAD                                     272       2       2       0   .abs_section_272
-     _DDRAD                                     274       2       2       0   .abs_section_274
+     _DDRAD                                     274       2       2       1   .abs_section_274
      _RDRAD                                     276       2       2       0   .abs_section_276
      _PERAD                                     278       2       2       0   .abs_section_278
      _PPSAD                                     27A       2       2       0   .abs_section_27a
      _PIEAD                                     27C       2       2       0   .abs_section_27c
      _PIFAD                                     27E       2       2       0   .abs_section_27e
-     disp                                       500      21      33      33   my_variable 
-     _Startup                                  C000       0       0       0   .init       
-     Entry                                     C000      A5     165       0   .init       
+     data                                       500       2       2       4   .bss        
+     WAIT                                       502       2       2       4   My_Variable 
+     CARRY                                      504       1       1       0   My_Variable 
+     disp                                       505      21      33     169   LCD.asm._SEC000000
+     LCD_CUR                                    526       1       1      62   LCD.asm._SEC000000
+     LCD_VAL                                    527       1       1      42   LCD.asm._SEC000000
+     var_a                                      528       1       1       3   keypad.asm._SEC000000
+     var_b                                      529       1       1       5   keypad.asm._SEC000000
+     pressed                                    52A       1       1       5   keypad.asm._SEC000000
+     _Startup                                  C000      12      18       0   .init       
+     MAIN                                      C012       7       7       0   .init       
+     INITIALIZE                                C012       0       0       1   .init       
+     delay_ms                                  C019      17      23       5   .text       
+     init_LCD                                  C030      52      82       1   .text       
+     display_string                            C082      38      56       5   .text       
+     epulse                                    C0BA      24      36       3   .text       
+     sendCommand                               C0DE       F      15       7   .text       
+     NUM                                       C0ED       1       1       2   MY_VAR      
+     INPUT_BLOCK                               C0EE       1       1       3   MY_VAR      
+     WELCOME                                   C0EF      B1     177       1   MY_VAR      
+     DT_TI                                     C1A0      C7     199       1   MY_VAR      
+     ENTER_DT                                  C267      32      50       0   MY_VAR      
+     DT_CONT                                   C299      11      17       0   MY_VAR      
+     TIME                                      C2AA       B      11       0   MY_VAR      
+     END_DT                                    C2B5       1       1       0   MY_VAR      
+     ADMIN                                     C2B6      BE     190       1   MY_VAR      
+     SECRET                                    C374      BD     189       1   MY_VAR      
+     INPUT                                     C431      19      25       7   MY_VAR      
+     DOWN                                      C44A      14      20       0   MY_VAR      
+     LEFT                                      C45E      12      18       0   MY_VAR      
+     RIGHT                                     C470      13      19       0   MY_VAR      
+     INPUT_DONE                                C483       7       7       0   MY_VAR      
+     INPUT_OVER                                C48A       2       2       0   MY_VAR      
+     SEQ                                       C48C       4       4       1   MY_EXTENDED_ROM
+     var1                                      C490      11      17       1   MY_EXTENDED_ROM
+     keypad                                    C4A1      23      35       9   MY_EXTENDED_ROM
+     looop2                                    C4C4      10      16       0   MY_EXTENDED_ROM
+     move                                      C4D4      10      16       0   MY_EXTENDED_ROM
+     Delay                                     C4E4       4       4       1   MY_EXTENDED_ROM
+     DLoop                                     C4E8       5       5       0   MY_EXTENDED_ROM
+     looop1                                    C4ED       3       3       1   MY_EXTENDED_ROM
+     next                                      C4F0      1B      27       0   MY_EXTENDED_ROM
+     redo                                      C50B       C      12       0   MY_EXTENDED_ROM
+     pressed                                   C517       1       1      15   keypad_output.asm._SEC000000
+     keypadoutput                              C51B      14      20       0   keypad_output.asm._SEC000000
+     pressedf                                  C52F       7       7       0   keypad_output.asm._SEC000000
+     presseda                                  C536       7       7       0   keypad_output.asm._SEC000000
+     pressedb                                  C53D       7       7       0   keypad_output.asm._SEC000000
+     disp_loc                                  C544      10      16       8   LCD_LOC.asm._SEC000000
+     disp_1                                    C554       C      12       0   LCD_LOC.asm._SEC000000
+     disp_2                                    C560       C      12       0   LCD_LOC.asm._SEC000000
+     disp_3                                    C56C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_4                                    C578       C      12       0   LCD_LOC.asm._SEC000000
+     disp_5                                    C584       C      12       0   LCD_LOC.asm._SEC000000
+     disp_6                                    C590       C      12       0   LCD_LOC.asm._SEC000000
+     disp_7                                    C59C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_8                                    C5A8       C      12       0   LCD_LOC.asm._SEC000000
+     disp_9                                    C5B4       C      12       0   LCD_LOC.asm._SEC000000
+     disp_10                                   C5C0       C      12       0   LCD_LOC.asm._SEC000000
+     disp_11                                   C5CC       C      12       0   LCD_LOC.asm._SEC000000
+     disp_12                                   C5D8       C      12       0   LCD_LOC.asm._SEC000000
+     disp_13                                   C5E4       C      12       0   LCD_LOC.asm._SEC000000
+     disp_14                                   C5F0       C      12       0   LCD_LOC.asm._SEC000000
+     disp_15                                   C5FC       C      12       0   LCD_LOC.asm._SEC000000
+     disp_16                                   C608       C      12       0   LCD_LOC.asm._SEC000000
+     disp_17                                   C614       C      12       0   LCD_LOC.asm._SEC000000
+     disp_18                                   C620       C      12       0   LCD_LOC.asm._SEC000000
+     disp_19                                   C62C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_20                                   C638       C      12       0   LCD_LOC.asm._SEC000000
+     disp_21                                   C644       C      12       0   LCD_LOC.asm._SEC000000
+     disp_22                                   C650       C      12       0   LCD_LOC.asm._SEC000000
+     disp_23                                   C65C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_24                                   C668       C      12       0   LCD_LOC.asm._SEC000000
+     disp_25                                   C674       C      12       0   LCD_LOC.asm._SEC000000
+     disp_26                                   C680       C      12       0   LCD_LOC.asm._SEC000000
+     disp_27                                   C68C       C      12       0   LCD_LOC.asm._SEC000000
+     disp_28                                   C698       B      11       0   LCD_LOC.asm._SEC000000
+     disp_29                                   C6A3       B      11       0   LCD_LOC.asm._SEC000000
+     disp_30                                   C6AE       B      11       0   LCD_LOC.asm._SEC000000
+     disp_31                                   C6B9       B      11       0   LCD_LOC.asm._SEC000000
+     disp_loc_end                              C6C4       9       9      28   LCD_LOC.asm._SEC000000
+     TIME_VAL                                  C6CD       6       6       1   DATE_TIME.asm._SEC000000
+     DATE_VAL                                  C6D3       8       8       2   DATE_TIME.asm._SEC000000
+     TIME_SET                                  C6DB       9       9       1   DATE_TIME.asm._SEC000000
+     TIME_IN                                   C6E4      20      32       0   DATE_TIME.asm._SEC000000
+     TC_2                                      C704       9       9       0   DATE_TIME.asm._SEC000000
+     TC_3                                      C70D       6       6       0   DATE_TIME.asm._SEC000000
+     TIME_IN_CONF                              C713       D      13       0   DATE_TIME.asm._SEC000000
+     DATE_SET                                  C720       9       9       1   DATE_TIME.asm._SEC000000
+     DATE_IN                                   C729      20      32       0   DATE_TIME.asm._SEC000000
+     DATE_CON_2                                C749       9       9       0   DATE_TIME.asm._SEC000000
+     DATE_CON_3                                C752       9       9       0   DATE_TIME.asm._SEC000000
+     DATE_CON_4                                C75B       6       6       0   DATE_TIME.asm._SEC000000
+     DATE_IN_CONF                              C761       E      14       0   DATE_TIME.asm._SEC000000
+     ADMIN_USER                                C76F       7       7       1   ADMIN.asm._SEC000000
+     ADMIN_PASS                                C776       7       7       0   ADMIN.asm._SEC000000
+     ADMIN_SET                                 C77D       8       8       1   ADMIN.asm._SEC000000
+     ADMIN_USER_SET                            C785      20      32       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CON_2                          C7A5       9       9       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CON_3                          C7AE       B      11       0   ADMIN.asm._SEC000000
+     ADMIN_USER_CONF                           C7B9       D      13       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_SET                            C7C6      20      32       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CON_2                          C7E6       9       9       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CON_3                          C7EF       5       5       0   ADMIN.asm._SEC000000
+     ADMIN_PASS_CONF                           C7F4       D      13       0   ADMIN.asm._SEC000000
+     SECRET_ID                                 C801       2       2       0   SECRET.asm._SEC000000
+     SECRET_PASS                               C803       8       8       0   SECRET.asm._SEC000000
+     SECRET_SET                                C80B      20      32       1   SECRET.asm._SEC000000
+     SECRET_ID_SET                             C80B       0       0       0   SECRET.asm._SEC000000
+     SECRET_ID_CON_2                           C82B       9       9       0   SECRET.asm._SEC000000
+     SECRET_ID_CON_3                           C834       6       6       0   SECRET.asm._SEC000000
+     SECRET_ID_CONF                            C83A       D      13       0   SECRET.asm._SEC000000
+     SECRET_PASS_SET                           C847      20      32       0   SECRET.asm._SEC000000
+     SECRET_PASS_CON_2                         C867       9       9       0   SECRET.asm._SEC000000
+     SECRET_PASS_CON_3                         C870       5       5       0   SECRET.asm._SEC000000
+     SECRET_PASS_CONF                          C875       D      13       0   SECRET.asm._SEC000000
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
 ---------------------------------------------------------------------------------------------
+NOT USED PROCEDURES
+lcddisp.c.o:
+  Delay 
+NOT USED VARIABLES
+main.asm.o:
+  going_up_sequence going_down_sequence blink_sequence disp stateofelevator 
 
 *********************************************************************************************
 COPYDOWN SECTION
@@ -1454,17 +1776,139 @@ COPYDOWN SECTION
 *********************************************************************************************
 OBJECT-DEPENDENCIES SECTION
 ---------------------------------------------------------------------------------------------
-Entry                     USES disp 
+_Startup                  USES __SEG_END_SSTACK INITIALIZE WELCOME DT_TI ADMIN 
+                                SECRET 
+MAIN                      USES init_LCD keypad 
+init_LCD                  USES _DDRAD _PTAD _DDRM delay_ms _PTM data 
+                                sendCommand epulse 
+display_string            USES sendCommand data _PTAD epulse 
+epulse                    USES data _PTM delay_ms 
+sendCommand               USES data _PTAD epulse 
+WELCOME                   USES WAIT disp display_string 
+DT_TI                     USES LCD_CUR WAIT LCD_VAL NUM disp INPUT_BLOCK 
+                                display_string 
+ENTER_DT                  USES keypad pressed LCD_CUR INPUT disp_loc LCD_VAL 
+DT_CONT                   USES LCD_CUR DATE_SET 
+TIME                      USES TIME_SET 
+ADMIN                     USES LCD_CUR WAIT LCD_VAL disp display_string 
+                                ADMIN_SET 
+SECRET                    USES LCD_CUR WAIT NUM disp display_string SECRET_SET 
+INPUT                     USES LCD_CUR pressed INPUT_BLOCK 
+DOWN                      USES LCD_CUR INPUT_BLOCK 
+LEFT                      USES LCD_CUR 
+RIGHT                     USES LCD_CUR 
+keypad                    USES var_a var_b pressed 
+looop2                    USES looop1 var_a var_b pressed 
+move                      USES var_b var_a 
+looop1                    USES SEQ 
+next                      USES Delay pressed var1 
+redo                      USES pressed 
+keypadoutput              USES keypad pressed 
+pressedf                  USES port_s 
+presseda                  USES port_s 
+pressedb                  USES port_s 
+disp_loc                  USES LCD_CUR LCD_VAL disp disp_loc_end 
+disp_1                    USES LCD_VAL disp disp_loc_end 
+disp_2                    USES LCD_VAL disp disp_loc_end 
+disp_3                    USES LCD_VAL disp disp_loc_end 
+disp_4                    USES LCD_VAL disp disp_loc_end 
+disp_5                    USES LCD_VAL disp disp_loc_end 
+disp_6                    USES LCD_VAL disp disp_loc_end 
+disp_7                    USES LCD_VAL disp disp_loc_end 
+disp_8                    USES LCD_VAL disp disp_loc_end 
+disp_9                    USES LCD_VAL disp disp_loc_end 
+disp_10                   USES LCD_VAL disp disp_loc_end 
+disp_11                   USES LCD_VAL disp disp_loc_end 
+disp_12                   USES LCD_VAL disp disp_loc_end 
+disp_13                   USES LCD_VAL disp disp_loc_end 
+disp_14                   USES LCD_VAL disp disp_loc_end 
+disp_15                   USES LCD_VAL disp disp_loc_end 
+disp_16                   USES LCD_VAL disp disp_loc_end 
+disp_17                   USES LCD_VAL disp disp_loc_end 
+disp_18                   USES LCD_VAL disp disp_loc_end 
+disp_19                   USES LCD_VAL disp disp_loc_end 
+disp_20                   USES LCD_VAL disp disp_loc_end 
+disp_21                   USES LCD_VAL disp disp_loc_end 
+disp_22                   USES LCD_VAL disp disp_loc_end 
+disp_23                   USES LCD_VAL disp disp_loc_end 
+disp_24                   USES LCD_VAL disp disp_loc_end 
+disp_25                   USES LCD_VAL disp disp_loc_end 
+disp_26                   USES LCD_VAL disp disp_loc_end 
+disp_27                   USES LCD_VAL disp disp_loc_end 
+disp_28                   USES LCD_VAL disp 
+disp_29                   USES LCD_VAL disp 
+disp_30                   USES LCD_VAL disp 
+disp_31                   USES LCD_VAL disp 
+disp_loc_end              USES disp display_string 
+TIME_SET                  USES LCD_CUR TIME_VAL 
+TIME_IN                   USES keypad pressed LCD_VAL LCD_CUR INPUT 
+TC_2                      USES LCD_CUR 
+TIME_IN_CONF              USES disp_loc LCD_CUR pressed 
+DATE_SET                  USES LCD_CUR DATE_VAL 
+DATE_IN                   USES keypad pressed LCD_VAL LCD_CUR INPUT 
+DATE_CON_2                USES LCD_CUR 
+DATE_CON_3                USES LCD_CUR 
+DATE_IN_CONF              USES disp_loc LCD_CUR DATE_VAL 
+ADMIN_SET                 USES LCD_CUR ADMIN_USER 
+ADMIN_USER_SET            USES keypad pressed LCD_VAL LCD_CUR INPUT 
+ADMIN_USER_CON_2          USES LCD_CUR 
+ADMIN_USER_CON_3          USES LCD_CUR 
+ADMIN_USER_CONF           USES disp_loc LCD_CUR pressed 
+ADMIN_PASS_SET            USES keypad pressed LCD_VAL LCD_CUR INPUT 
+ADMIN_PASS_CON_2          USES LCD_CUR 
+ADMIN_PASS_CONF           USES disp_loc LCD_CUR pressed 
+SECRET_SET                USES keypad pressed LCD_VAL LCD_CUR INPUT 
+SECRET_ID_CON_2           USES LCD_CUR 
+SECRET_ID_CONF            USES disp_loc LCD_CUR pressed 
+SECRET_PASS_SET           USES keypad pressed LCD_VAL LCD_CUR INPUT 
+SECRET_PASS_CON_2         USES LCD_CUR 
+SECRET_PASS_CONF          USES disp_loc LCD_CUR pressed 
 
 *********************************************************************************************
 DEPENDENCY TREE
 *********************************************************************************************
+ _Startup            
+ | 
+ +- INITIALIZE          
+ |    
+ +- WELCOME             
+ |  | 
+ |  +- display_string      
+ |     | 
+ |     +- sendCommand         
+ |     |  | 
+ |     |  +- epulse              
+ |     |     | 
+ |     |     +- delay_ms            
+ |     |          
+ |     +- epulse               (see above)
+ |        
+ +- DT_TI               
+ |  | 
+ |  +- display_string       (see above)
+ |     
+ +- ADMIN               
+ |  | 
+ |  +- display_string       (see above)
+ |  |  
+ |  +- ADMIN_SET           
+ |       
+ +- SECRET              
+    | 
+    +- display_string       (see above)
+    |  
+    +- SECRET_SET          
+       | 
+       +- keypad              
+       |    
+       +- INPUT               
+            
 *********************************************************************************************
 STATISTIC SECTION
 ---------------------------------------------------------------------------------------------
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 2
-Total size of all blocks to be downloaded: 167
+Number of blocks to be downloaded: 9
+Total size of all blocks to be downloaded: 2180
 

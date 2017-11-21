@@ -1,7 +1,7 @@
-		XDEF LCD, WELCOME, DT-TI, ADMIN, SECRET, LCD_FLOOR, LCD_MAIN
+		XDEF WELCOME, DT_TI, ADMIN, SECRET, INPUT
 		XDEF disp, LCD_CUR, LCD_VAL
-		XREF WAIT, keypad, pressed 
-    XREF displayscreen, disp_loc
+		XREF WAIT, keypad, pressed, TIME_VAL, DATE_VAL  
+        XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
     
 
 disp: ds.b 33	  ;values to display the LCD
@@ -17,11 +17,11 @@ INPUT_BLOCK: ds.b 1
 ;----------------------------------------------------------------------
 		
 WELCOME:
-		      movb #40, WAIT		  ;Loads in value for interrupt
+            movb #40, WAIT		  ;Loads in value for interrupt
 			
-		   	  movb #'W',disp
+		    movb #'W',disp
        	 	movb #'e',disp+1
-       	  movb #'l',disp+2
+       	    movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -53,23 +53,23 @@ WELCOME:
         	movb #' ',disp+31
         	movb #0,disp+32
         	
-        	ldx #disp
+        	ldd #disp
         	jsr display_string
         	
-          WAI TIME_INT
-		RTS
+          ;WAI TIME_INT
+		  RTS
 		
 ;------------------------------------------------------------------------
 
-DT-TI:
-			    movb #0, LCD_CUR
-			    movb #15, WAIT
-			    movb #'>', LCD_VAL
-			    movb #0, NUM
+DT_TI:
+		    movb #0, LCD_CUR
+		    movb #15, WAIT
+		    movb #'>', LCD_VAL
+		    movb #0, NUM
 			
-		    	movb #'>',disp
+		    movb #'>',disp
        	 	movb #'D',disp+1
-       	  movb #'A',disp+2
+       	    movb #'A',disp+2
         	movb #'T',disp+3
         	movb #'E',disp+4
         	movb #':',disp+5
@@ -102,81 +102,67 @@ DT-TI:
         	movb #0,disp+32
         	
         	
-          movb #$11, INPUT_BLOCK
+            movb #$11, INPUT_BLOCK
+        	ldd #disp
+        	jsr display_string
+            ldy #0
         	
         	ENTER_DT:
-        	  ldaa #LCD_CUR
-        	  LDX #disp        
-            JSR display_string
-            JSR KEYPAD
-            JSR INPUT
-            CMPA #LCD_CUR
-            BEQ ENTER_DT_CONT
-            
-            ldab #LCD_CUR
-            staa LCD_CUR
-            MOVB #' ', LCD_VAL
-            jsr disp_loc
-            stab LCD_CUR
-            
-          ENTER_DT_CONT
-            JSR disp_loc
-            cpx #0
-            BEQ ENTER_DT
-            movb #$22, INPUT_BLOCK
-            BRSET LCD_CUR, #0, DATE
-            
-          TIME:
-            LDAA #22
-            STAA LCD_CUR
-              
-              
-          TIME_IN:
-            JSR keypad
-            ldaa #pressed
-            staa LCD_VAL
+             jsr keypad
+             ldaa #pressed
+             cmpa #0
+             BEQ ENTER_DT
+             
+             ldaa LCD_CUR
+             jsr INPUT
+             cpx #1
+             BEQ DT_CONT
+             
+             cmpa #LCD_CUR
+             BEQ ENTER_DT
+             jsr disp_loc
+             ldab #LCD_CUR
+             staa LCD_CUR
+             movb #' ', LCD_VAL
+             jsr disp_loc
+             stab LCD_CUR
+             movb #'>', LCD_VAL
+             bra ENTER_DT
+             
+          DT_CONT:
+            ldaa #LCD_CUR
             cmpa #0
-            BEQ TIME_IN
+            BNE TIME
             
-          TIME_CON:
-              LDAA #LCD_CUR
-              CMPA #21
-              BGT TC_2
-              movb #22, LCD_CUR
-              
-            TC_2:
-              CMPA #24
-              BNE TIME_IN
-              movb #25, LCD_CUR
+          DATE:  
+            JSR DATE_SET
+            iny
+            cpy #2
+            BNE ENTER_DT
+            bra END_DT
           
-               
-          JSR disp_loc
-          ldx #disp
-          JSR display_string      
-          ldab #LCD_CUR
-          incb
-          stab LCD_CUR
+          TIME: 
+            JSR TIME_SET
+            iny
+            cpy #2
+            BNE ENTER_DT
+            BRA END_DT
           
-          cmpb #32          
           
           END_DT:
-              movb #0, CARRY
-              movb #1, DT
-              movb #$
               RTS
 
 ;------------------------------------------------------------------------
         
 ADMIN:
-    			movb #8, LCD_CUR
+    		movb #8, LCD_CUR
+    		
+    	    movb #15, WAIT
+		    movb #0, LCD_VAL
 			
-			    movb #15, WAIT
-			    movb #0, LCD_VAL
-			    movb #0, NUM
-			
-		    	movb #'U',disp
+		   	movb #'U',disp
        	 	movb #'S',disp+1
-       	  movb #'E',disp+2
+       	    movb #'E',disp+2
         	movb #'R',disp+3
         	movb #'N',disp+4
         	movb #'A',disp+5
@@ -208,88 +194,10 @@ ADMIN:
         	movb #' ',disp+31
         	movb #0,disp+32      
         
-          A_USERNAME:
-           ldab #LCD_CUR
-           addb #1
-           
-          A_MOVE1: 
-           JSR keypad
-           JSR INPUT
-           cpx #LCD_CUR
-           BEQ A_PASSWORD
-           cmpb #LCD_CUR
-           BEQ A_MOVE1
-           ldaa #pressed  
-           cmpb #16
-           BLE A_U1
-           movb #8, LCD_CUR
-           bra A_USERNAME
-           
-          A_U1:
-           cmpb #8
-           BGT A_UC
-           movb #8, LCD_CUR
-           bra A_USERNAME 
-        
-          A_UC:
-           
-           movb #pressed, A_USER+NUM
-           ldab #NUM
-           addb #1
-           stab NUM
-           ldab disp
-           addb #LCD_CUR     
-           movb #pressed, disp
-           
-           ldaa #LCD_CUR
-           adda #1
-           cmpa #16
-           BEQ A_PASSWORD
-           bra A_USERNAME
-           
-          A_PASSWORD: 
-           clrx
-           ldab #0
-           stab NUM
-          A_PASSWORD_1: 
-           ldab #LCD_CUR
-           addb #1
-           
-          A_MOVE2: 
-           JSR keypad
-           JSR INPUT
-           cpx #LCD_CUR
-           BEQ A_EXIT
-           cmpb #LCD_CUR
-           BEQ A_MOVE2
-           ldaa #pressed  
-           cmpb #15
-           BGT A_P1
-           movb #25, LCD_CUR
-           bra A_PASSWORD1
-           
-          A_P1:
-           cmpb #24
-           BGT A_UC
-           movb #25, LCD_CUR
-           bra A_PASSWORD1 
-        
-          A_UC:
-           movb #pressed, A_PASS+NUM
-           ldab #NUM
-           addb #1
-           stab NUM
-           movb #pressed, disp+LCD_CUR
-           
-           ldaa #LCD_CUR
-           adda #1
-           cmpa #32
-           BEQ A_END
-           bra A_PASSWORD1
-        
-          A_END:
-           movb #0, CARRY
-           movb #1, ADM
+        ldd #disp
+        jsr display_string
+        jsr ADMIN_SET
+        RTS
            
 ;----------------------------------------------------------------           
 
@@ -333,7 +241,10 @@ ADMIN:
         	movb #' ',disp+31
         	movb #0,disp+32
 		    
-		    SECRET_ID:
+		    LDD #disp
+		    jsr display_string
+		    
+		    jsr SECRET_SET
 		    	
  
  
@@ -357,7 +268,7 @@ ADMIN:
         staa LCD_CUR
         BRA INPUT_DONE
          
-  DOWN:   cmpb #$E		 ;checks if down is pressed
+  DOWN:   cmpb #$19		 ;checks if down is pressed
         BNE LEFT		 ;if not then continue
         cmpa #16		 ;check if LCD SCREEN is on lower 16
         BGE INPUT_DONE	 ;if greater than then exit
