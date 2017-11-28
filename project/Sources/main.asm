@@ -5,7 +5,7 @@
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY
-            XREF WELCOME, DT_TI, ADMIN, SECRET
+            XREF WELCOME, DT_TI, ADMIN, SECRET, MAIN_MENU
             XREF init_LCD
             XREF keypad, pressed
             XREF __SEG_END_SSTACK,blink      ; symbol defined by the linker for the end of the stack
@@ -40,9 +40,14 @@ _Startup:
     JSR DT_TI
     JSR ADMIN
     JSR SECRET
-MAIN:
- 
 
+MAIN: 
+   JSR MAIN_MENU
+   JSR keypad
+   LDAA #pressed
+   CMPA #0
+   BEQ MAIN
+   
 
 
 
@@ -55,7 +60,6 @@ MAIN:
 
 INITIALIZE:
   JSR init_LCD
-  JSR keypad
    
   RTS
   

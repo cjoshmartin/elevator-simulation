@@ -1,21 +1,19 @@
-		XDEF WELCOME, DT_TI, ADMIN, SECRET, INPUT
+		XDEF WELCOME, DT_TI, ADMIN, SECRET, INPUT, MAIN_MENU
 		XDEF disp, LCD_CUR, LCD_VAL
-		XREF WAIT, keypad, pressed, TIME_VAL, DATE_VAL  
+		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL  
         XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
     
-
+LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
-
-MY_VAR: SECTION
 NUM: ds.b 1
 INPUT_BLOCK: ds.b 1
 
 
 
 ;----------------------------------------------------------------------
-		
+CODE_LCD: SECTION		
 WELCOME:
             movb #40, WAIT		  ;Loads in value for interrupt
 			
@@ -108,29 +106,31 @@ DT_TI:
             ldy #0
         	
         	ENTER_DT:
-             jsr keypad
-             ldaa #pressed
-             cmpa #0
-             BEQ ENTER_DT
+             jsr keypadoutput
+             ldaa pressed
+             
              
              ldaa LCD_CUR
              jsr INPUT
              cpx #1
              BEQ DT_CONT
              
-             cmpa #LCD_CUR
+             cmpa LCD_CUR
              BEQ ENTER_DT
+            
+        KERNAL:     
              jsr disp_loc
-             ldab #LCD_CUR
+             ldab LCD_CUR
              staa LCD_CUR
              movb #' ', LCD_VAL
              jsr disp_loc
              stab LCD_CUR
              movb #'>', LCD_VAL
+             ldx #0
              bra ENTER_DT
              
           DT_CONT:
-            ldaa #LCD_CUR
+            ldaa LCD_CUR
             cmpa #0
             BNE TIME
             
@@ -243,37 +243,46 @@ ADMIN:
 		    
 		    LDD #disp
 		    jsr display_string
-		    
 		    jsr SECRET_SET
-		    	
+		    RTS
+
+;------------------------------------------------------------------
+MAIN_MENU:
+        
+        ;JSR TIME_disp
+        ;JSR DATE_disp
+        ;JSR FLOOR_LOC
+        ;JSR FLOOR_DEST
+        RTS	    	
  
- 
- 
- 
+;------------------------------------------------------------------- 
  
  
  
   INPUT:
         
         psha			 ;saves value of A
-        ldaa #LCD_CUR	 ;loads current location on LCD SCREEN
-        ldab #pressed
+        pshb
+        ldaa LCD_CUR	 ;loads current location on LCD SCREEN
+        ldab pressed
         BRSET INPUT_BLOCK, #$22, LEFT
         
   UP:     cmpb #$C		 ;checks if up pressed
         BNE DOWN		 ;if not continue
         cmpa #16		 ;check if LCD SCREEN is on upper 16 
-        BLE INPUT_DONE	 ;if so then exit
-        adda #16		 ;else add 16  store and exit
+        BLT INPUT_DONE	 ;if so then exit
+        suba #16		 ;else add 16  store and exit
         staa LCD_CUR
+
         BRA INPUT_DONE
          
-  DOWN:   cmpb #$19		 ;checks if down is pressed
+  DOWN:   cmpb #$E		 ;checks if down is pressed
         BNE LEFT		 ;if not then continue
         cmpa #16		 ;check if LCD SCREEN is on lower 16
         BGE INPUT_DONE	 ;if greater than then exit
-        suba #16		 ;else subtract 16 save and exit 
+        adda #16		 ;else subtract 16 save and exit 
         staa LCD_CUR
+
         BRA INPUT_DONE
         
         BRSET INPUT_BLOCK, #$11, INPUT_DONE
@@ -286,6 +295,7 @@ ADMIN:
         BEQ	 INPUT_DONE
         deca			  ;if not then decrement and store
         staa LCD_CUR
+
         bra INPUT_DONE
       
   RIGHT:  cmpb #$B		  ;check and see if right is pressed and if not continue
@@ -296,6 +306,7 @@ ADMIN:
         BEQ INPUT_DONE
         adda #1			  ;if not then add one to shift it right and save
         staa LCD_CUR
+
         bra INPUT_DONE
   
   INPUT_DONE:
@@ -304,7 +315,8 @@ ADMIN:
         cmpb #$0
         BNE INPUT_OVER
         ldx #1
-  INPUT_OVER:      
-	     	pula
+  INPUT_OVER:
+        pulb      
+	    pula 	
         RTS 
         

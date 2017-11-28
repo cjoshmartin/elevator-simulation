@@ -1,15 +1,15 @@
           XDEF SECRET_SET, SECRET_ID, SECRET_PASS
           XREF pressed, LCD_VAL, LCD_CUR
-          XREF disp_loc, keypad, INPUT
-          
+          XREF disp_loc, keypadoutput, INPUT
+SECRET_RAM: section          
 SECRET_ID: ds.b $2
 SECRET_PASS: ds.b $8
 
-
+SECRET_CODE: section
 SECRET_SET:
     
     SECRET_ID_SET:
-      jsr keypad
+      jsr keypadoutput
       ldaa #pressed
       staa LCD_VAL
       cmpa #0
@@ -48,7 +48,7 @@ SECRET_SET:
 ;-------------------------------------------------------------        
           
     SECRET_PASS_SET:
-      jsr keypad
+      jsr keypadoutput
       ldaa #pressed
       staa LCD_VAL
       cmpa #0

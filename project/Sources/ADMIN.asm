@@ -1,15 +1,18 @@
            XDEF ADMIN_SET, ADMIN_USER, ADMIN_PASS
            XREF pressed, LCD_VAL, LCD_CUR
-           XREF disp_loc, keypad, INPUT
-           
+           XREF disp_loc, keypadoutput, INPUT
+
+
+ADMIN_RAM: section          
 ADMIN_USER: ds.b 7
 ADMIN_PASS: ds.b 7
 
+ADMIN_CODE: section
 ADMIN_SET:
     movb #9, LCD_CUR
     ldy #ADMIN_USER
     ADMIN_USER_SET:
-      jsr keypad
+      jsr keypadoutput
       ldaa #pressed
       staa LCD_VAL
       cmpa #0
@@ -49,7 +52,7 @@ ADMIN_SET:
 ;-----------------------------------------------------------------------------      
       
     ADMIN_PASS_SET:  
-      jsr keypad
+      jsr keypadoutput
       ldaa #pressed
       staa LCD_VAL
       cmpa #0

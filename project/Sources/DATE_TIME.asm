@@ -1,10 +1,11 @@
     XDEF TIME_VAL, DATE_VAL, TIME_SET, DATE_SET
     XREF LCD_VAL, LCD_CUR, pressed
-    XREF disp_loc, keypad, INPUT
-
+    XREF disp_loc, keypadoutput, INPUT
+TD_RAM: section
 TIME_VAL: ds.b $6
 DATE_VAL: ds.b $8    
-    
+
+TD_CODE: section    
 TIME_SET:
      pshy
      LDAA #22
@@ -12,18 +13,20 @@ TIME_SET:
      ldy #TIME_VAL
                   
      TIME_IN:
-       JSR keypad
-       ldaa #pressed
+       JSR keypadoutput
+       ldaa pressed
+       adda #48
        staa LCD_VAL
        cmpa #0
        BEQ TIME_IN
-       ldaa #LCD_CUR
+       ;ldaa LCD_CUR
        JSR INPUT
-       cmpa #LCD_CUR
-       BNE TIME_IN
+       cmpa #0
+       BEQ TIME_IN
+       ldx #TIME_VAL
             
        TC_1:
-         LDAA #LCD_CUR
+         LDAA LCD_CUR
          CMPA #21
          BGT TC_2
          movb #22, LCD_CUR
@@ -40,11 +43,11 @@ TIME_SET:
          
        TIME_IN_CONF:      
          JSR disp_loc     
-         ldab #LCD_CUR
+         ldab LCD_CUR
          incb   
          stab LCD_CUR
-         ldaa #pressed       ;*********************
-         ;         staa                      ;********************
+         ldaa pressed       
+         staa 1,x+
          BRA TIME_IN   
 
 ;-----------------------------------------------------------------
@@ -56,8 +59,9 @@ DATE_SET:
     ldy #DATE_VAL
     
     DATE_IN:
-       JSR keypad
-       ldaa #pressed
+       JSR keypadoutput
+       ldaa pressed
+       adda #48
        staa LCD_VAL
        cmpa #0
        BEQ TIME_IN
