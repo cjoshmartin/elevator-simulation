@@ -59,7 +59,7 @@ WELCOME:
 		
 ;------------------------------------------------------------------------
 
-DT_TI:
+DT_TI:	 ; Date and Time
 		    movb #0, LCD_CUR
 		    movb #15, WAIT
 		    movb #'>', LCD_VAL
@@ -196,7 +196,8 @@ ADMIN:
         
         ldd #disp
         jsr display_string
-        jsr ADMIN_SET
+       ; jsr ADMIN_SET ; the set should be called diffently 
+       ; TODO: not sure how to delay for 20 secs then return to main program
         RTS
            
 ;----------------------------------------------------------------           
