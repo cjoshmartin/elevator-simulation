@@ -8,19 +8,19 @@ LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
-NUM: ds.b 1
-INPUT_BLOCK: ds.b 1
+
 
 
 
 ;----------------------------------------------------------------------
-CODE_LCD: SECTION		
+CODE_LCD: SECTION
+;This segment of the code only occurs upon the start up of the elevator		
 WELCOME:
             movb #40, WAIT		  ;Loads in value for interrupt
 			
-		      movb #'W',disp
+		    movb #'W',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
-          movb #'l',disp+2
+            movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -55,61 +55,65 @@ WELCOME:
         	ldd #disp
         	jsr display_string
         	
-          ;WAI TIME_INT
+          ;WAI TIME_INT              ;waits for interrupt to occur
 		  RTS
 		
 ;------------------------------------------------------------------------
+;This section of code intializes the Date and Time for the elevator to
+;reference and display. You can enter C and E from the keypad which will
+;go into a subroutine to move the kernal up and down until the push button
+;is pressed. It then jumps to either date or time and then you set it from 
+;there
 
-DT_TI:
-		    movb #0, LCD_CUR
-		    movb #15, WAIT
-		    movb #'>', LCD_VAL
-		    movb #0, NUM
+DATE_TIME:
+		movb #0, LCD_CUR
+		movb #'>', LCD_VAL
 			
-		    movb #'>',disp
+		movb #'>',disp
        	movb #'D',disp+1
        	movb #'A',disp+2
       	movb #'T',disp+3
        	movb #'E',disp+4
        	movb #':',disp+5
-       	movb #' ',disp+6
-       	movb #' ',disp+7
+       	movb #'-',disp+6
+       	movb #'-',disp+7
        	movb #'/',disp+8
-       	movb #' ',disp+9
-       	movb #' ',disp+10
+       	movb #'-',disp+9
+       	movb #'-',disp+10
        	movb #'/',disp+11
-       	movb #' ',disp+12
-       	movb #' ',disp+13
-       	movb #' ',disp+14
-       	movb #' ',disp+15
+       	movb #'-',disp+12
+       	movb #'-',disp+13
+       	movb #'-',disp+14
+       	movb #'-',disp+15
        	movb #' ',disp+16
        	movb #'T',disp+17
        	movb #'I',disp+18
        	movb #'M',disp+19
        	movb #'E',disp+20
        	movb #':',disp+21
-       	movb #' ',disp+22
-       	movb #' ',disp+23
+       	movb #'-',disp+22
+       	movb #'-',disp+23
        	movb #':',disp+24
-       	movb #' ',disp+25
-       	movb #' ',disp+26
+       	movb #'-',disp+25
+       	movb #'-',disp+26
        	movb #' ',disp+27
-       	movb #'A',disp+28
-       	movb #'M',disp+29
-      	movb #'P',disp+30
-       	movb #'M',disp+31
+       	movb #' ',disp+28
+       	movb #' ',disp+29
+      	movb #' ',disp+30
+       	movb #' ',disp+31
        	movb #0,disp+32
        	
        	
-          movb #$11, INPUT_BLOCK
-        	ldd #disp
-        	jsr display_string
+        ldd #disp
+        jsr display_string
+        ldaa DATE_VAL
+        cmpa #0
+            
             ldy #0
         	
         	ENTER_DT:
              jsr keypadoutput
              ldaa pressed
-             
              
              ldaa LCD_CUR
              jsr INPUT
@@ -154,7 +158,51 @@ DT_TI:
               RTS
 
 ;------------------------------------------------------------------------
-        
+
+display_DATE_TIME_SET:
+        movb #0, LCD_CUR
+		movb #'>', LCD_VAL
+			
+		movb #'>',disp
+       	movb #'D',disp+1
+       	movb #'A',disp+2
+      	movb #'T',disp+3
+       	movb #'E',disp+4
+       	movb #':',disp+5
+       	movb #'-',disp+6
+       	movb #'-',disp+7
+       	movb #'/',disp+8
+       	movb #'-',disp+9
+       	movb #'-',disp+10
+       	movb #'/',disp+11
+       	movb #'-',disp+12
+       	movb #'-',disp+13
+       	movb #'-',disp+14
+       	movb #'-',disp+15
+       	movb #' ',disp+16
+       	movb #'T',disp+17
+       	movb #'I',disp+18
+       	movb #'M',disp+19
+       	movb #'E',disp+20
+       	movb #':',disp+21
+       	movb #'-',disp+22
+       	movb #'-',disp+23
+       	movb #':',disp+24
+       	movb #'-',disp+25
+       	movb #'-',disp+26
+       	movb #' ',disp+27
+       	movb #' ',disp+28
+       	movb #' ',disp+29
+      	movb #' ',disp+30
+       	movb #' ',disp+31
+       	movb #0,disp+32
+       	
+       	
+        	ldd #disp
+        	jsr display_string
+        	
+        RTS
+;-----------------------------------------------------------------------        	        
 ADMIN:
     	movb #8, LCD_CUR	
     	movb #15, WAIT
@@ -182,26 +230,27 @@ ADMIN:
        	movb #'A',disp+13
        	movb #'S',disp+14
        	movb #'S',disp+15
-       	movb #'_',disp+16
-       	movb #'_',disp+17
-       	movb #'_',disp+18
-       	movb #'_',disp+19
-       	movb #'_',disp+20
-       	movb #'_',disp+21
-       	movb #'_',disp+22
-       	movb #'_',disp+23
-       	movb #'_',disp+24
-       	movb #'_',disp+25
-       	movb #'_',disp+26
-       	movb #'_',disp+27
-       	movb #'_',disp+28
-       	movb #'_',disp+29
-      	movb #'_',disp+30
-       	movb #'_',disp+31
+       	movb #'-',disp+16
+       	movb #'-',disp+17
+       	movb #'-',disp+18
+       	movb #'-',disp+19
+       	movb #'-',disp+20
+       	movb #'-',disp+21
+       	movb #'-',disp+22
+       	movb #'-',disp+23
+       	movb #'-',disp+24
+       	movb #'-',disp+25
+       	movb #'-',disp+26
+       	movb #'-',disp+27
+       	movb #'-',disp+28
+       	movb #'-',disp+29
+      	movb #'-',disp+30
+       	movb #'-',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
        	JSR display_string
+        
        	rts
            
 ;----------------------------------------------------------------           
@@ -212,9 +261,9 @@ ADMIN:
 		    movb #15, WAIT
 		    movb #0, NUM 
 		    
-		      movb #'S',disp
+		    movb #'S',disp
        	 	movb #'E',disp+1
-       	  movb #'C',disp+2
+       	    movb #'C',disp+2
         	movb #'R',disp+3
         	movb #'E',disp+4
         	movb #'T',disp+5
@@ -258,8 +307,8 @@ MAIN_MENU:
         JSR TIME_disp
         JSR DATE_disp
         
-      ;  movb #FLOOR_CUR, disp+15
-       ; movb #FLOOR_DEST, disp+31
+       ;movb #FLOOR_CUR, disp+15
+       ;movb #FLOOR_DEST, disp+31
         ldd #disp
         jsr display_string
         

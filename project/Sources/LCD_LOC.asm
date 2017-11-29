@@ -2,6 +2,16 @@
     XREF LCD_VAL, LCD_CUR, disp
     XREF display_string
     
+;-------------------------------------------------------------------------------
+;This section of the code is to display a specific character or input value from
+;anywhere in the code by setting the location into LCD_CUR, and loading the
+;desired value into LCD_VAL. Upon entering this segment of code it pushes any
+;altered registers onto the stack loads the location of the desired output, goes
+;each one finds the location and loads the value into that disp. Lastly it 
+;loads it in, pulls and returns
+;-------------------------------------------------------------------------------
+
+
 LOC: section        
 disp_loc:
   pshb

@@ -39,7 +39,7 @@ _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE
     JSR WELCOME
-    ;JSR DT_TI
+    JSR DT_TI
     JSR ADMIN
     JSR SECRET
 
@@ -69,8 +69,7 @@ INITIALIZE:
   bset ddr_port_u, #$F0; used to intiliaze the hex keys
   bset psr_port_u, #$F0
   bset pde_port_u, #$0F
-  
-  ;JSR  
+    
   RTS
   
   

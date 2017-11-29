@@ -9,8 +9,7 @@ DATE_VAL: ds.b $8
 TD_CODE: section    
 TIME_SET:
      pshy
-     LDAA #22
-     STAA LCD_CUR
+     movb
      ldy #TIME_VAL
                   
      TIME_IN:
@@ -26,8 +25,6 @@ TIME_SET:
        cmpa #48
        BEQ TIME_IN
        JSR INPUT
-       cmpa #0
-       BEQ TIME_IN
        ldx #TIME_VAL
             
        TC_1:

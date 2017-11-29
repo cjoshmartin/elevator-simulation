@@ -11,7 +11,7 @@ MAIN_MENU_SETUP:
         psha
         pshb
         
-  		  movb #' ',disp
+  		movb #' ',disp
        	movb #' ',disp+1
        	movb #':',disp+2
       	movb #' ',disp+3
@@ -57,7 +57,7 @@ ADMIN_MENU_SETUP:
     psha
     pshb
     
-     jsr display_admin
+    jsr display_admin
        	
       pulb
       pula
@@ -69,7 +69,7 @@ SECRET_MENU_SETUP:
     psha
     pshb
     
-    		movb #'S',disp
+        movb #'S',disp
        	movb #'E',disp+1
        	movb #'C',disp+2
       	movb #'R',disp+3
@@ -159,7 +159,7 @@ Floor_SEL_MENU:
       RTS
       
 ;------------------------------------------------------------------          
-
+;
 NEXT_FLOOR_MENU:
 
     psha
@@ -182,21 +182,21 @@ NEXT_FLOOR_MENU:
        	movb #'O',disp+14
        	movb #'N',disp+15
        	movb #'-',disp+16
-       	movb #'-',disp+17
+       	movb #' ',disp+17
        	movb #'-',disp+18
-       	movb #'-',disp+19
+       	movb #' ',disp+19
        	movb #'-',disp+20
-       	movb #'-',disp+21
+       	movb #' ',disp+21
        	movb #'-',disp+22
        	movb #' ',disp+23
-       	movb #' ',disp+24
-       	movb #'-',disp+25
+       	movb #'-',disp+24
+       	movb #' ',disp+25
        	movb #'-',disp+26
-       	movb #'-',disp+27
+       	movb #' ',disp+27
        	movb #'-',disp+28
-       	movb #'-',disp+29
+       	movb #' ',disp+29
       	movb #'-',disp+30
-       	movb #'-',disp+31
+       	movb #' ',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
