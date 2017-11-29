@@ -1,4 +1,4 @@
-		XDEF WELCOME, DT_TI, ADMIN, SECRET, INPUT, MAIN_MENU
+		XDEF WELCOME, DT_TI, ADMIN,display_admin,SECRET, INPUT, MAIN_MENU
 		XDEF disp, LCD_CUR, LCD_VAL
 		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL  
     XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
@@ -120,15 +120,15 @@ DT_TI:
              BEQ ENTER_DT
             
         KERNAL:     
-             jsr disp_loc
+             jsr disp_loc ; will change where the  '>' is
              ldab LCD_CUR
              staa LCD_CUR
-             movb #' ', LCD_VAL
+             movb #' ', LCD_VAL ; changes to the current location of '>' to  ' '
              jsr disp_loc
              stab LCD_CUR
-             movb #'>', LCD_VAL
+             movb #'>', LCD_VAL ; after '>' moves will set it to that position
              ldx #0
-             bra ENTER_DT
+             bra ENTER_DT  ; return to the top of DT_TI
              
           DT_CONT:
             ldaa LCD_CUR
@@ -156,49 +156,53 @@ DT_TI:
 ;------------------------------------------------------------------------
         
 ADMIN:
-    	   	movb #8, LCD_CUR
-    		
-    	    movb #15, WAIT
-		      movb #0, LCD_VAL
+    	movb #8, LCD_CUR	
+    	movb #15, WAIT
+		movb #0, LCD_VAL
 			  
-		     	movb #'E',disp
-        	movb #'N',disp+1
-          movb #'T',disp+2
-        	movb #'E',disp+3
-        	movb #'R',disp+4
-        	movb #' ',disp+5
-        	movb #'A',disp+6
-        	movb #'D',disp+7
-        	movb #'M',disp+8
-        	movb #'I',disp+9
-        	movb #'N',disp+10
-        	movb #' ',disp+11
-        	movb #'P',disp+12
-        	movb #'A',disp+13
-        	movb #'S',disp+14
-        	movb #'S',disp+15
-        	movb #'-',disp+16
-        	movb #' ',disp+17
-        	movb #' ',disp+18
-        	movb #' ',disp+19
-        	movb #' ',disp+20
-        	movb #' ',disp+21
-        	movb #' ',disp+22
-        	movb #' ',disp+23
-        	movb #' ',disp+24
-        	movb #' ',disp+25
-        	movb #' ',disp+26
-        	movb #' ',disp+27
-        	movb #' ',disp+28
-        	movb #' ',disp+29
-        	movb #' ',disp+30
-        	movb #'-',disp+31
-        	movb #0,disp+32      
+		jsr display_admin  ; will write to the LCD screen
         
-        ldd #disp
-        jsr display_string
         jsr ADMIN_SET
         RTS
+;----------------------------------------------------------------
+  display_admin:
+  		movb #'E',disp
+       	movb #'N',disp+1
+       	movb #'T',disp+2
+      	movb #'E',disp+3
+       	movb #'R',disp+4
+       	movb #' ',disp+5
+       	movb #'A',disp+6
+       	movb #'D',disp+7
+       	movb #'M',disp+8
+       	movb #'I',disp+9
+       	movb #'N',disp+10
+       	movb #' ',disp+11
+       	movb #'P',disp+12
+       	movb #'A',disp+13
+       	movb #'S',disp+14
+       	movb #'S',disp+15
+       	movb #'_',disp+16
+       	movb #'_',disp+17
+       	movb #'_',disp+18
+       	movb #'_',disp+19
+       	movb #'_',disp+20
+       	movb #'_',disp+21
+       	movb #'_',disp+22
+       	movb #'_',disp+23
+       	movb #'_',disp+24
+       	movb #'_',disp+25
+       	movb #'_',disp+26
+       	movb #'_',disp+27
+       	movb #'_',disp+28
+       	movb #'_',disp+29
+      	movb #'_',disp+30
+       	movb #'_',disp+31
+       	movb #0,disp+32
+       	
+       	LDD #disp
+       	JSR display_string
+       	rts
            
 ;----------------------------------------------------------------           
 

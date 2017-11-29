@@ -39,7 +39,7 @@ _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE
     JSR WELCOME
-    JSR DT_TI
+    ;JSR DT_TI
     JSR ADMIN
     JSR SECRET
 

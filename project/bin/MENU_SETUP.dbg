@@ -1,6 +1,6 @@
     XDEF MAIN_MENU_SETUP,ADMIN_MENU_SETUP
     XREF disp
-    XREF display_string
+    XREF display_string, display_admin
 
 
 
@@ -57,42 +57,7 @@ ADMIN_MENU_SETUP:
     psha
     pshb
     
-        movb #'E',disp
-       	movb #'N',disp+1
-       	movb #'T',disp+2
-      	movb #'E',disp+3
-       	movb #'R',disp+4
-       	movb #' ',disp+5
-       	movb #'A',disp+6
-       	movb #'D',disp+7
-       	movb #'M',disp+8
-       	movb #'I',disp+9
-       	movb #'N',disp+10
-       	movb #' ',disp+11
-       	movb #'P',disp+12
-       	movb #'A',disp+13
-       	movb #'S',disp+14
-       	movb #'S',disp+15
-       	movb #'_',disp+16
-       	movb #'_',disp+17
-       	movb #'_',disp+18
-       	movb #'_',disp+19
-       	movb #'_',disp+20
-       	movb #'_',disp+21
-       	movb #'_',disp+22
-       	movb #'_',disp+23
-       	movb #'_',disp+24
-       	movb #'_',disp+25
-       	movb #'_',disp+26
-       	movb #'_',disp+27
-       	movb #'_',disp+28
-       	movb #'_',disp+29
-      	movb #'_',disp+30
-       	movb #'_',disp+31
-       	movb #0,disp+32
-       	
-       	LDD #disp
-       	JSR display_string
+     jsr display_admin
        	
       pulb
       pula

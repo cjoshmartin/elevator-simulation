@@ -1,6 +1,6 @@
            XDEF ADMIN_SET, ADMIN_PASS
            XREF pressed, LCD_VAL, LCD_CUR
-           XREF disp_loc, keypadoutput, INPUT
+           XREF disp_loc, keypadoutput, INPUT, disp, display_string
 
 
 ADMIN_RAM: section          
@@ -11,16 +11,21 @@ ADMIN_CODE: section
 ADMIN_SET:
            
     ADMIN_PASS_SET:  
-      jsr keypadoutput
-      ldaa pressed
-      staa LCD_VAL
-      cmpa #0
+      jsr keypadoutput  ; call the keypad
+      ldaa pressed	   	; store the value from the keypad to Registor 'A'
+      staa LCD_VAL		; 'A' -> 'LCD_VAL'
+      cmpa #0			; if the keypress is '0'(enter key) then set the password
       BEQ ADMIN_PASS_SET
-      
       ldaa LCD_CUR
+      
+      movb #'*',disp+16
+      LDD #disp
+      JSR display_string
+      
       JSR INPUT
       cmpa #LCD_CUR
       BNE ADMIN_PASS_SET
+      
       
       ldaa LCD_CUR
       ADMIN_PASS_CON_1:
