@@ -2,7 +2,7 @@
 		XDEF disp, LCD_CUR, LCD_VAL
 		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL  
     XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
-    XREF TIME_disp, DATE_disp
+    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP,
     
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
@@ -156,43 +156,43 @@ DT_TI:
 ;------------------------------------------------------------------------
         
 ADMIN:
-    		movb #8, LCD_CUR
+    	   	movb #8, LCD_CUR
     		
     	    movb #15, WAIT
-		    movb #0, LCD_VAL
-			
-		   	movb #'U',disp
-       	 	movb #'S',disp+1
-       	    movb #'E',disp+2
-        	movb #'R',disp+3
-        	movb #'N',disp+4
-        	movb #'A',disp+5
-        	movb #'M',disp+6
-        	movb #'E',disp+7
-        	movb #':',disp+8
-        	movb #' ',disp+9
-        	movb #' ',disp+10
+		      movb #0, LCD_VAL
+			  
+		     	movb #'E',disp
+        	movb #'N',disp+1
+          movb #'T',disp+2
+        	movb #'E',disp+3
+        	movb #'R',disp+4
+        	movb #' ',disp+5
+        	movb #'A',disp+6
+        	movb #'D',disp+7
+        	movb #'M',disp+8
+        	movb #'I',disp+9
+        	movb #'N',disp+10
         	movb #' ',disp+11
-        	movb #' ',disp+12
-        	movb #' ',disp+13
-        	movb #' ',disp+14
-        	movb #' ',disp+15
-        	movb #'P',disp+16
-        	movb #'A',disp+17
-        	movb #'S',disp+18
-        	movb #'S',disp+19
-        	movb #'W',disp+20
-        	movb #'O',disp+21
-        	movb #'R',disp+22
-        	movb #'D',disp+23
-        	movb #':',disp+24
+        	movb #'P',disp+12
+        	movb #'A',disp+13
+        	movb #'S',disp+14
+        	movb #'S',disp+15
+        	movb #'-',disp+16
+        	movb #' ',disp+17
+        	movb #' ',disp+18
+        	movb #' ',disp+19
+        	movb #' ',disp+20
+        	movb #' ',disp+21
+        	movb #' ',disp+22
+        	movb #' ',disp+23
+        	movb #' ',disp+24
         	movb #' ',disp+25
         	movb #' ',disp+26
         	movb #' ',disp+27
         	movb #' ',disp+28
         	movb #' ',disp+29
         	movb #' ',disp+30
-        	movb #' ',disp+31
+        	movb #'-',disp+31
         	movb #0,disp+32      
         
         ldd #disp
@@ -208,9 +208,9 @@ ADMIN:
 		    movb #15, WAIT
 		    movb #0, NUM 
 		    
-		    movb #'S',disp
+		      movb #'S',disp
        	 	movb #'E',disp+1
-       	    movb #'C',disp+2
+       	  movb #'C',disp+2
         	movb #'R',disp+3
         	movb #'E',disp+4
         	movb #'T',disp+5
@@ -218,8 +218,8 @@ ADMIN:
         	movb #'I',disp+7
         	movb #'D',disp+8
         	movb #':',disp+9
-        	movb #' ',disp+10
-        	movb #' ',disp+11
+        	movb #'-',disp+10
+        	movb #'-',disp+11
         	movb #' ',disp+12
         	movb #' ',disp+13
         	movb #' ',disp+14
@@ -250,10 +250,16 @@ ADMIN:
 ;------------------------------------------------------------------
 MAIN_MENU:
         
+        JSR MAIN_MENU_SETUP
         JSR TIME_disp
         JSR DATE_disp
-        ;JSR FLOOR_LOC
-        ;JSR FLOOR_DEST
+        
+      ;  movb #FLOOR_CUR, disp+15
+       ; movb #FLOOR_DEST, disp+31
+        ldd #disp
+        jsr display_string
+        
+         
         RTS	    	
  
 ;------------------------------------------------------------------- 

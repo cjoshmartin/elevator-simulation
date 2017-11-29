@@ -218,8 +218,8 @@ ADMIN:
         	movb #'I',disp+7
         	movb #'D',disp+8
         	movb #':',disp+9
-        	movb #' ',disp+10
-        	movb #' ',disp+11
+        	movb #'-',disp+10
+        	movb #'-',disp+11
         	movb #' ',disp+12
         	movb #' ',disp+13
         	movb #' ',disp+14
@@ -254,8 +254,8 @@ MAIN_MENU:
         JSR TIME_disp
         JSR DATE_disp
         
-        movb #FLOOR_CUR, disp+15
-        movb #FLOOR_DEST, disp+31
+      ;  movb #FLOOR_CUR, disp+15
+       ; movb #FLOOR_DEST, disp+31
         ldd #disp
         jsr display_string
         

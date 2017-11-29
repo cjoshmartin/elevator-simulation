@@ -1,4 +1,4 @@
-    XDEF MAIN_MENU_SETUP
+    XDEF MAIN_MENU_SETUP,ADMIN_MENU_SETUP
     XREF disp
     XREF display_string
 
@@ -114,8 +114,8 @@ SECRET_MENU_SETUP:
        	movb #'I',disp+7
        	movb #'D',disp+8
        	movb #':',disp+9
-       	movb #'-',disp+10
-       	movb #'-,disp+11
+       	movb #' ',disp+10
+       	movb #' ',disp+11
        	movb #' ',disp+12
        	movb #' ',disp+13
        	movb #'-',disp+14

@@ -20,7 +20,9 @@ going_down_sequence		dc.b	$80, $40, $20, $10, $08, $04, $02, $01
 blink_sequence 			dc.b 	$FF, $00
 lenghtofdelay	equ		50000
 MONTH_DAYS: dc.b 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-	
+ddr_port_u equ $26A
+psr_port_u equ $26D
+pde_port_u equ $26C	
 
 My_Variable: 	section 
 WAIT: ds.b $2
@@ -45,8 +47,8 @@ MAIN:
  
    JSR MAIN_MENU
    JSR keypad
-   LDAA #pressed
-   CMPA #0
+  ; LDAA #pressed
+   ;CMPA #0
    BEQ MAIN
    
 
@@ -61,7 +63,14 @@ MAIN:
 
 INITIALIZE:
   JSR init_LCD
-  JSR  
+  
+  bset $24A, #$FF ; used to intiliaze the LED display
+  
+  bset ddr_port_u, #$F0; used to intiliaze the hex keys
+  bset psr_port_u, #$F0
+  bset pde_port_u, #$0F
+  
+  ;JSR  
   RTS
   
   
@@ -81,66 +90,66 @@ TIME_INT:
     
 
 
-CLOCK_INT:
-  LDAA #Count_1
-  inca
-  staa Count_1
-  CMPA #20
-  BNE CLOCK_DONE
-  movb #0, Count_1
+;CLOCK_INT:
+  ;LDAA #Count_1
+  ;inca
+ ; staa Count_1
+ ; CMPA #20
+ ; BNE CLOCK_DONE
+ ; movb #0, Count_1
   
-  LDAA #Count_2
-  inca
-  staa Count_2
-  cmpa #60
-  BNE CLOCK_DONE
-  movb #0, Count_2
+ ; LDAA #Count_2
+ ; inca
+ ; staa Count_2
+ ; cmpa #60
+  ;BNE CLOCK_DONE
+  ;movb #0, Count_2
   
-  CLOCK_MINUTES_ONES:
-  LDAA TIME_VAL+4
-  inca
-  staa TIME_VAL+4
-  cmpa #10
-  BNE CLOCK_DONE
-  movb #0, TIME_VAL+4
-  BRA CLOCK_MINUTES_TENS
+ ; CLOCK_MINUTES_ONES:
+ ; LDAA TIME_VAL+4
+ ; inca
+ ; staa TIME_VAL+4
+ ; cmpa #10
+ ; BNE CLOCK_DONE
+ ; movb #0, TIME_VAL+4
+  ;BRA CLOCK_MINUTES_TENS
   
-  CLOCK_MINUTES_TENS:
-  ldaa TIME_VAL+3
-  inca
-  staa TIME_VAL+3
-  cmpa #6
-  BNE CLOCK_DONE
-  movb #0, TIME_VAL+3
-  bra CLOCK_HOURS_ONES
+  ;CLOCK_MINUTES_TENS:
+  ;ldaa TIME_VAL+3
+  ;inca
+  ;staa TIME_VAL+3
+  ;cmpa #6
+  ;BNE CLOCK_DONE
+  ;movb #0, TIME_VAL+3
+  ;bra CLOCK_HOURS_ONES
   
-  CLOCK_HOURS_ONES:
-  ldaa TIME_VAL+2
-  inca
-  staa TIME_VAL+2
-  cmpa #3
-  BNE CLOCK_HOURS_ONES_CHECK
+  ;CLOCK_HOURS_ONES:
+  ;ldaa TIME_VAL+2
+  ;inca
+  ;staa TIME_VAL+2
+  ;cmpa #3
+  ;BNE CLOCK_HOURS_ONES_CHECK
   
-  CLOCK_HOURS_ONES_CONT
-  cmpa #10
-  BNE CLOCK_DONE 
-  movb #0, TIME_VAL+2
-  bra CLOCK_MINUTE_TENS
+  ;CLOCK_HOURS_ONES_CONT:
+  ;cmpa #10
+  ;BNE CLOCK_DONE 
+  ;movb #0, TIME_VAL+2
+  ;bra CLOCK_MINUTE_TENS
+  ;
+  ;CLOCK_MINUTE_ONES_CHECK:
+  ;psha
+  ;LDAA TIME_VAL+1
+  ;cmpa #1
+  ;BNE CLOCK_HOURS_ONES_CONT
+  ;movb #1, TIME_VAL+2
+  ;movb #0, TIME_VAL+1
+  ;bra CLOCK_DATE_DAYS
+  ;CLOCK_MINUTE_TENS:
   
-  CLOCK_MINUTE_ONES_CHECK:
-  psha
-  LDAA TIME_VAL+1
-  cmpa #1
-  BNE CLOCK_HOURS_ONES_CONT
-  movb #1, TIME_VAL+2
-  movb #0, TIME_VAL+1
-  bra CLOCK_DATE_DAYS
-  CLOCK_MINUTE_TENS:
-  
-  ldaa TIME_VAL+1
-  inca
-  staa TIME_VAL+1
-  cmpa #6
+  ;ldaa TIME_VAL+1
+  ;inca
+  ;staa TIME_VAL+1
+  ;cmpa #6
   
   
 

@@ -1,5 +1,5 @@
      xdef pressed, keypadoutput
-     XREF keypad, port_s
+     XREF keypad, port_s,ADMIN_MENU_SETUP
 
 RAM: section     
      pressed: ds.b 1
@@ -10,7 +10,7 @@ CODE: section
      pshx
      pshy 
      clr pressed
-     jsr keypad
+  redoo:   jsr keypad
      cmpb #$0F
      beq pressedf
      cmpb #$0A
@@ -21,16 +21,16 @@ CODE: section
      stab pressed ; stores the output from the keypad into pressed
      puly
      pulx
-     RTS
+    RTS
 
-     pressedf: ldab #$FF
-               stab port_s
-               bra keypadoutput
+     pressedf: clr pressed
+               jsr ADMIN_MENU_SETUP
+               bra redoo
                
      presseda: ldab #$FA
                stab port_s
-               bra keypadoutput
+               bra redoo
                
      pressedb: ldab #$FB
                stab port_s
-               bra keypadoutput
+               bra redoo

@@ -45,7 +45,7 @@ ADMIN_SET:
          stab LCD_CUR
          ldaa pressed       
          staa 1,x+
-      JMP ADMIN_USER_SET
+      ;JMP ADMIN_USER_SET
       
           
                 

@@ -9,23 +9,17 @@ port_t equ $240
 ddr_s equ $24A
 port_s equ $248
 port_u equ $268
-ddr_port_u equ $26A
-psr_port_u equ $26D
-pde_port_u equ $26C
 SEQ: dc.b $70,$B0,$D0, $E0
 var1: dc.b $EB, $77, $7B, $7D, $B7, $BB, $BD, $D7, $DB, $DD, $E7, $ED, $7E, $BE, $DE,$EE, $00
 
 KEYPAD_CODE: section
 keypad:
- bset ddr_s, #$FF ; used to intiliaze the LED display
- bset ddr_port_u, #$F0; used to intiliaze the hex keys
- bset psr_port_u, #$F0
- bset pde_port_u, #$0F
  bclr var_a, #$FF ; intiliaze the variables
  bclr var_b, #$FF
  bclr comparepressedvalue, #$FF
  bclr port_s, #$00
- clr comparepressedvalue
+ 
+ 
 looop2: 
  jsr looop1 ; subroutine for my loop.
  brclr var_a, #$FF, move;
