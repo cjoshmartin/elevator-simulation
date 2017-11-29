@@ -1,5 +1,5 @@
      xdef pressed, keypadoutput
-     XREF keypad, port_s, ADMIN
+     XREF keypad, port_s
 
 RAM: section     
      pressed: ds.b 1
@@ -24,15 +24,13 @@ CODE: section
      RTS
 
      pressedf: ldab #$FF
-               ;stab port_s
-               jsr ADMIN
-               RTS
-
-; A or B ->should be used to navigate through the system settings menu.               
+               stab port_s
+               bra keypadoutput
+               
      presseda: ldab #$FA
                stab port_s
-               RTS
+               bra keypadoutput
                
      pressedb: ldab #$FB
                stab port_s
-               RTS
+               bra keypadoutput

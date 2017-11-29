@@ -7,20 +7,21 @@ SECRET_PASS: ds.b $8
 
 SECRET_CODE: section
 SECRET_SET:
+    ldx #SECRET_ID
     
     SECRET_ID_SET:
       jsr keypadoutput
-      ldaa #pressed
+      ldaa pressed
       staa LCD_VAL
       cmpa #0
       BEQ SECRET_ID_SET  
       
-      ldaa #LCD_CUR
+      ldaa LCD_CUR
       JSR INPUT
       cmpa #LCD_CUR
       BNE SECRET_ID_SET
       
-        ldaa #LCD_CUR
+        ldaa LCD_CUR
         SECRET_ID_CON_1:
           cmpa #10
           BGT SECRET_ID_CON_2
@@ -34,32 +35,33 @@ SECRET_SET:
         SECRET_ID_CON_3:
           cmpa #14
           BNE SECRET_ID_CONF
+          ldx #SECRET_PASS
           BRA SECRET_PASS_SET
              
       SECRET_ID_CONF:
-        JSR disp_loc
-        ldab #LCD_CUR
-        incb
-        stab LCD_CUR
-        ldaa #pressed                
-        ;staa                          ;***************
+        JSR disp_loc     
+         ldab LCD_CUR
+         incb   
+         stab LCD_CUR
+         ldaa pressed       
+         staa 1,x+
         BRA SECRET_ID_SET
         
 ;-------------------------------------------------------------        
           
     SECRET_PASS_SET:
       jsr keypadoutput
-      ldaa #pressed
+      ldaa pressed
       staa LCD_VAL
       cmpa #0
       BEQ SECRET_PASS_SET  
       
-      ldaa #LCD_CUR
+      ldaa LCD_CUR
       JSR INPUT
-      cmpa #LCD_CUR
+      cmpa LCD_CUR
       BNE SECRET_PASS_SET
       
-        ldaa #LCD_CUR
+        ldaa LCD_CUR
         SECRET_PASS_CON_1:
           cmpa #10
           BGT SECRET_PASS_CON_2
@@ -76,11 +78,11 @@ SECRET_SET:
           RTS
              
       SECRET_PASS_CONF:
-        JSR disp_loc
-        ldab #LCD_CUR
-        incb
-        stab LCD_CUR
-        ldaa #pressed                
-        ;staa                          ;***************
+        JSR disp_loc     
+         ldab LCD_CUR
+         incb   
+         stab LCD_CUR
+         ldaa pressed       
+         staa 1,x+
         BRA SECRET_PASS_SET    
           
