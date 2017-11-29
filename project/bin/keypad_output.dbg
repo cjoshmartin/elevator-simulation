@@ -23,9 +23,7 @@ CODE: section
      pulx
     RTS
 
-     pressedf: ldab #$FF
-               stab port_s
-               clr pressed
+     pressedf: clr pressed
                jsr ADMIN_MENU_SETUP
                bra redoo
                

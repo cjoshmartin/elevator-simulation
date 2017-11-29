@@ -1,5 +1,5 @@
 *** EVALUATION ***
-PROGRAM "C:\Users\chajmart.ADS\Desktop\elevator-simulation-master\project\bin\Project.abs"
+PROGRAM "C:\Users\chajmart.ADS\Downloads\elevator\project\bin\Project.abs"
 
 *********************************************************************************************
 TARGET SECTION
@@ -316,19 +316,19 @@ LCD_RAM                           37   R/W      0x529      0x54D   RAM
 MY_EXTENDED_ROM                   21     R     0xC4B7     0xC4CB   ROM_C000
 KEYPAD_CODE                       99     R     0xC4CC     0xC52E   ROM_C000
 KEYPAD_RAM                         3   R/W      0x54E      0x550   RAM
-CODE                              53     R     0xC52F     0xC563   ROM_C000
+CODE                              48     R     0xC52F     0xC55E   ROM_C000
 RAM                                1   R/W      0x551      0x551   RAM
-LOC                              428     R     0xC564     0xC70F   ROM_C000
-TD_CODE                          255     R     0xC710     0xC80E   ROM_C000
+LOC                              428     R     0xC55F     0xC70A   ROM_C000
+TD_CODE                          255     R     0xC70B     0xC809   ROM_C000
 TD_RAM                            14   R/W      0x552      0x55F   RAM
-ADMIN_CODE                        64     R     0xC80F     0xC84E   ROM_C000
-SECRET_CODE                      140     R     0xC84F     0xC8DA   ROM_C000
+ADMIN_CODE                        64     R     0xC80A     0xC849   ROM_C000
+SECRET_CODE                      140     R     0xC84A     0xC8D5   ROM_C000
 SECRET_RAM                        10   R/W      0x560      0x569   RAM
-MENU_SETUP_CODE                 1232     R     0xC8DB     0xCDAA   ROM_C000
+MENU_SETUP_CODE                 1232     R     0xC8D6     0xCDA5   ROM_C000
 .vectSeg273_vect                   2     R     0xFFFE     0xFFFF   .vectSeg273
 
 Summary of section sizes per section type:
-READ_ONLY (R):         DAD (dec:     3501)
+READ_ONLY (R):         DA8 (dec:     3496)
 READ_WRITE (R/W):      16A (dec:      362)
 NO_INIT (N/I):         160 (dec:      352)
 
@@ -642,7 +642,7 @@ MODULE:                 -- main.asm.o --
 - LABELS:
      __SEG_END_SSTACK                           500       0       0       1               
      port_t                                     240       0       0       0   .text       
-     port_s                                     248       0       0       3   .text       
+     port_s                                     248       0       0       2   .text       
      ddr_s                                      24A       0       0       0   .text       
 MODULE:                 -- LCD.asm.o --
 - PROCEDURES:
@@ -687,100 +687,100 @@ MODULE:                 -- keypad_output.asm.o --
 - PROCEDURES:
      keypadoutput                              C52F       5       5       6   CODE        
      redoo                                     C534      15      21       0   CODE        
-     pressedf                                  C549       D      13       0   CODE        
-     presseda                                  C556       7       7       0   CODE        
-     pressedb                                  C55D       7       7       0   CODE        
+     pressedf                                  C549       8       8       0   CODE        
+     presseda                                  C551       7       7       0   CODE        
+     pressedb                                  C558       7       7       0   CODE        
 - VARIABLES:
      pressed                                    551       1       1      15   RAM         
 MODULE:                 -- LCD_LOC.asm.o --
 - PROCEDURES:
-     disp_loc                                  C564      13      19       9   LOC         
-     disp_1                                    C577       D      13       0   LOC         
-     disp_2                                    C584       D      13       0   LOC         
-     disp_3                                    C591       D      13       0   LOC         
-     disp_4                                    C59E       D      13       0   LOC         
-     disp_5                                    C5AB       D      13       0   LOC         
-     disp_6                                    C5B8       D      13       0   LOC         
-     disp_7                                    C5C5       D      13       0   LOC         
-     disp_8                                    C5D2       D      13       0   LOC         
-     disp_9                                    C5DF       D      13       0   LOC         
-     disp_10                                   C5EC       D      13       0   LOC         
-     disp_11                                   C5F9       D      13       0   LOC         
-     disp_12                                   C606       D      13       0   LOC         
-     disp_13                                   C613       D      13       0   LOC         
-     disp_14                                   C620       D      13       0   LOC         
-     disp_15                                   C62D       D      13       0   LOC         
-     disp_16                                   C63A       D      13       0   LOC         
-     disp_17                                   C647       D      13       0   LOC         
-     disp_18                                   C654       D      13       0   LOC         
-     disp_19                                   C661       D      13       0   LOC         
-     disp_20                                   C66E       D      13       0   LOC         
-     disp_21                                   C67B       D      13       0   LOC         
-     disp_22                                   C688       D      13       0   LOC         
-     disp_23                                   C695       D      13       0   LOC         
-     disp_24                                   C6A2       D      13       0   LOC         
-     disp_25                                   C6AF       D      13       0   LOC         
-     disp_26                                   C6BC       D      13       0   LOC         
-     disp_27                                   C6C9       D      13       0   LOC         
-     disp_28                                   C6D6       C      12       0   LOC         
-     disp_29                                   C6E2       C      12       0   LOC         
-     disp_30                                   C6EE       C      12       0   LOC         
-     disp_31                                   C6FA       C      12       0   LOC         
-     disp_loc_end                              C706       A      10      28   LOC         
+     disp_loc                                  C55F      13      19       9   LOC         
+     disp_1                                    C572       D      13       0   LOC         
+     disp_2                                    C57F       D      13       0   LOC         
+     disp_3                                    C58C       D      13       0   LOC         
+     disp_4                                    C599       D      13       0   LOC         
+     disp_5                                    C5A6       D      13       0   LOC         
+     disp_6                                    C5B3       D      13       0   LOC         
+     disp_7                                    C5C0       D      13       0   LOC         
+     disp_8                                    C5CD       D      13       0   LOC         
+     disp_9                                    C5DA       D      13       0   LOC         
+     disp_10                                   C5E7       D      13       0   LOC         
+     disp_11                                   C5F4       D      13       0   LOC         
+     disp_12                                   C601       D      13       0   LOC         
+     disp_13                                   C60E       D      13       0   LOC         
+     disp_14                                   C61B       D      13       0   LOC         
+     disp_15                                   C628       D      13       0   LOC         
+     disp_16                                   C635       D      13       0   LOC         
+     disp_17                                   C642       D      13       0   LOC         
+     disp_18                                   C64F       D      13       0   LOC         
+     disp_19                                   C65C       D      13       0   LOC         
+     disp_20                                   C669       D      13       0   LOC         
+     disp_21                                   C676       D      13       0   LOC         
+     disp_22                                   C683       D      13       0   LOC         
+     disp_23                                   C690       D      13       0   LOC         
+     disp_24                                   C69D       D      13       0   LOC         
+     disp_25                                   C6AA       D      13       0   LOC         
+     disp_26                                   C6B7       D      13       0   LOC         
+     disp_27                                   C6C4       D      13       0   LOC         
+     disp_28                                   C6D1       C      12       0   LOC         
+     disp_29                                   C6DD       C      12       0   LOC         
+     disp_30                                   C6E9       C      12       0   LOC         
+     disp_31                                   C6F5       C      12       0   LOC         
+     disp_loc_end                              C701       A      10      28   LOC         
 - VARIABLES:
 MODULE:                 -- DATE_TIME.asm.o --
 - PROCEDURES:
-     TIME_SET                                  C710       9       9       1   TD_CODE     
-     TIME_IN                                   C719       B      11       0   TD_CODE     
-     TIME_IN_CON                               C724      1F      31       0   TD_CODE     
-     TC_2                                      C743       9       9       0   TD_CODE     
-     TC_3                                      C74C       6       6       0   TD_CODE     
-     TIME_IN_CONF                              C752      11      17       0   TD_CODE     
-     DATE_SET                                  C763       9       9       1   TD_CODE     
-     DATE_IN                                   C76C       B      11       0   TD_CODE     
-     DATE_IN_CON                               C777      1E      30       0   TD_CODE     
-     DATE_CON_2                                C795       9       9       0   TD_CODE     
-     DATE_CON_3                                C79E       9       9       0   TD_CODE     
-     DATE_CON_4                                C7A7       6       6       0   TD_CODE     
-     DATE_IN_CONF                              C7AD      11      17       0   TD_CODE     
-     TIME_disp                                 C7BE       B      11       1   TD_CODE     
-     TIME_disp_L                               C7C9      12      18       0   TD_CODE     
-     TIME_disp_CON_1                           C7DB       5       5       0   TD_CODE     
-     TIME_disp_CON_2                           C7E0       2       2       0   TD_CODE     
-     DATE_disp                                 C7E2       B      11       1   TD_CODE     
-     DATE_disp_L                               C7ED      12      18       0   TD_CODE     
-     DATE_disp_CON_1                           C7FF       9       9       0   TD_CODE     
-     DATE_disp_CON_2                           C808       5       5       0   TD_CODE     
-     DATE_disp_CON_3                           C80D       2       2       0   TD_CODE     
+     TIME_SET                                  C70B       9       9       1   TD_CODE     
+     TIME_IN                                   C714       B      11       0   TD_CODE     
+     TIME_IN_CON                               C71F      1F      31       0   TD_CODE     
+     TC_2                                      C73E       9       9       0   TD_CODE     
+     TC_3                                      C747       6       6       0   TD_CODE     
+     TIME_IN_CONF                              C74D      11      17       0   TD_CODE     
+     DATE_SET                                  C75E       9       9       1   TD_CODE     
+     DATE_IN                                   C767       B      11       0   TD_CODE     
+     DATE_IN_CON                               C772      1E      30       0   TD_CODE     
+     DATE_CON_2                                C790       9       9       0   TD_CODE     
+     DATE_CON_3                                C799       9       9       0   TD_CODE     
+     DATE_CON_4                                C7A2       6       6       0   TD_CODE     
+     DATE_IN_CONF                              C7A8      11      17       0   TD_CODE     
+     TIME_disp                                 C7B9       B      11       1   TD_CODE     
+     TIME_disp_L                               C7C4      12      18       0   TD_CODE     
+     TIME_disp_CON_1                           C7D6       5       5       0   TD_CODE     
+     TIME_disp_CON_2                           C7DB       2       2       0   TD_CODE     
+     DATE_disp                                 C7DD       B      11       1   TD_CODE     
+     DATE_disp_L                               C7E8      12      18       0   TD_CODE     
+     DATE_disp_CON_1                           C7FA       9       9       0   TD_CODE     
+     DATE_disp_CON_2                           C803       5       5       0   TD_CODE     
+     DATE_disp_CON_3                           C808       2       2       0   TD_CODE     
 - VARIABLES:
      TIME_VAL                                   552       6       6       3   TD_RAM      
      DATE_VAL                                   558       8       8       2   TD_RAM      
 MODULE:                 -- ADMIN.asm.o --
 - PROCEDURES:
-     ADMIN_PASS_SET                            C80F       0       0       0   ADMIN_CODE  
-     ADMIN_SET                                 C80F      23      35       1   ADMIN_CODE  
-     ADMIN_PASS_CON_2                          C832       9       9       0   ADMIN_CODE  
-     ADMIN_PASS_CON_3                          C83B       5       5       0   ADMIN_CODE  
-     ADMIN_PASS_CONF                           C840       F      15       0   ADMIN_CODE  
+     ADMIN_PASS_SET                            C80A       0       0       0   ADMIN_CODE  
+     ADMIN_SET                                 C80A      23      35       1   ADMIN_CODE  
+     ADMIN_PASS_CON_2                          C82D       9       9       0   ADMIN_CODE  
+     ADMIN_PASS_CON_3                          C836       5       5       0   ADMIN_CODE  
+     ADMIN_PASS_CONF                           C83B       F      15       0   ADMIN_CODE  
 - VARIABLES:
 MODULE:                 -- SECRET.asm.o --
 - PROCEDURES:
-     SECRET_SET                                C84F       3       3       1   SECRET_CODE 
-     SECRET_ID_SET                             C852      23      35       0   SECRET_CODE 
-     SECRET_ID_CON_2                           C875       9       9       0   SECRET_CODE 
-     SECRET_ID_CON_3                           C87E       9       9       0   SECRET_CODE 
-     SECRET_ID_CONF                            C887      11      17       0   SECRET_CODE 
-     SECRET_PASS_SET                           C898      24      36       0   SECRET_CODE 
-     SECRET_PASS_CON_2                         C8BC       9       9       0   SECRET_CODE 
-     SECRET_PASS_CON_3                         C8C5       5       5       0   SECRET_CODE 
-     SECRET_PASS_CONF                          C8CA      11      17       0   SECRET_CODE 
+     SECRET_SET                                C84A       3       3       1   SECRET_CODE 
+     SECRET_ID_SET                             C84D      23      35       0   SECRET_CODE 
+     SECRET_ID_CON_2                           C870       9       9       0   SECRET_CODE 
+     SECRET_ID_CON_3                           C879       9       9       0   SECRET_CODE 
+     SECRET_ID_CONF                            C882      11      17       0   SECRET_CODE 
+     SECRET_PASS_SET                           C893      24      36       0   SECRET_CODE 
+     SECRET_PASS_CON_2                         C8B7       9       9       0   SECRET_CODE 
+     SECRET_PASS_CON_3                         C8C0       5       5       0   SECRET_CODE 
+     SECRET_PASS_CONF                          C8C5      11      17       0   SECRET_CODE 
 - VARIABLES:
      SECRET_ID                                  560       2       2       1   SECRET_RAM  
      SECRET_PASS                                562       8       8       1   SECRET_RAM  
 MODULE:                 -- MENU_SETUP.asm.o --
 - PROCEDURES:
-     MAIN_MENU_SETUP                           C8DB      B0     176       1   MENU_SETUP_CODE
-     ADMIN_MENU_SETUP                          C98B     420    1056       1   MENU_SETUP_CODE
+     MAIN_MENU_SETUP                           C8D6      B0     176       1   MENU_SETUP_CODE
+     ADMIN_MENU_SETUP                          C986     420    1056       1   MENU_SETUP_CODE
 - VARIABLES:
 
 *********************************************************************************************
@@ -792,7 +792,7 @@ MODULE STATISTIC
   main.asm.o                                  39     46      0
   LCD.asm.o                                   37    949      0
   keypad.asm.o                                 3     99     21
-  keypad_output.asm.o                          1     53      0
+  keypad_output.asm.o                          1     48      0
   LCD_LOC.asm.o                                0    428      0
   DATE_TIME.asm.o                             14    255      0
   ADMIN.asm.o                                  0     64      0
@@ -1632,7 +1632,7 @@ OBJECT LIST SORTED BY ADDRESS
      _PERT                                      244       1       1       0   .abs_section_244
      _PPST                                      245       1       1       0   .abs_section_245
      _PTS                                       248       1       1       0   .abs_section_248
-     port_s                                     248       0       0       3   .text       
+     port_s                                     248       0       0       2   .text       
      _PTIS                                      249       1       1       0   .abs_section_249
      _DDRS                                      24A       1       1       0   .abs_section_24a
      ddr_s                                      24A       0       0       0   .text       
@@ -1729,80 +1729,80 @@ OBJECT LIST SORTED BY ADDRESS
      redo                                      C523       C      12       0   KEYPAD_CODE 
      keypadoutput                              C52F       5       5       6   CODE        
      redoo                                     C534      15      21       0   CODE        
-     pressedf                                  C549       D      13       0   CODE        
-     presseda                                  C556       7       7       0   CODE        
-     pressedb                                  C55D       7       7       0   CODE        
-     disp_loc                                  C564      13      19       9   LOC         
-     disp_1                                    C577       D      13       0   LOC         
-     disp_2                                    C584       D      13       0   LOC         
-     disp_3                                    C591       D      13       0   LOC         
-     disp_4                                    C59E       D      13       0   LOC         
-     disp_5                                    C5AB       D      13       0   LOC         
-     disp_6                                    C5B8       D      13       0   LOC         
-     disp_7                                    C5C5       D      13       0   LOC         
-     disp_8                                    C5D2       D      13       0   LOC         
-     disp_9                                    C5DF       D      13       0   LOC         
-     disp_10                                   C5EC       D      13       0   LOC         
-     disp_11                                   C5F9       D      13       0   LOC         
-     disp_12                                   C606       D      13       0   LOC         
-     disp_13                                   C613       D      13       0   LOC         
-     disp_14                                   C620       D      13       0   LOC         
-     disp_15                                   C62D       D      13       0   LOC         
-     disp_16                                   C63A       D      13       0   LOC         
-     disp_17                                   C647       D      13       0   LOC         
-     disp_18                                   C654       D      13       0   LOC         
-     disp_19                                   C661       D      13       0   LOC         
-     disp_20                                   C66E       D      13       0   LOC         
-     disp_21                                   C67B       D      13       0   LOC         
-     disp_22                                   C688       D      13       0   LOC         
-     disp_23                                   C695       D      13       0   LOC         
-     disp_24                                   C6A2       D      13       0   LOC         
-     disp_25                                   C6AF       D      13       0   LOC         
-     disp_26                                   C6BC       D      13       0   LOC         
-     disp_27                                   C6C9       D      13       0   LOC         
-     disp_28                                   C6D6       C      12       0   LOC         
-     disp_29                                   C6E2       C      12       0   LOC         
-     disp_30                                   C6EE       C      12       0   LOC         
-     disp_31                                   C6FA       C      12       0   LOC         
-     disp_loc_end                              C706       A      10      28   LOC         
-     TIME_SET                                  C710       9       9       1   TD_CODE     
-     TIME_IN                                   C719       B      11       0   TD_CODE     
-     TIME_IN_CON                               C724      1F      31       0   TD_CODE     
-     TC_2                                      C743       9       9       0   TD_CODE     
-     TC_3                                      C74C       6       6       0   TD_CODE     
-     TIME_IN_CONF                              C752      11      17       0   TD_CODE     
-     DATE_SET                                  C763       9       9       1   TD_CODE     
-     DATE_IN                                   C76C       B      11       0   TD_CODE     
-     DATE_IN_CON                               C777      1E      30       0   TD_CODE     
-     DATE_CON_2                                C795       9       9       0   TD_CODE     
-     DATE_CON_3                                C79E       9       9       0   TD_CODE     
-     DATE_CON_4                                C7A7       6       6       0   TD_CODE     
-     DATE_IN_CONF                              C7AD      11      17       0   TD_CODE     
-     TIME_disp                                 C7BE       B      11       1   TD_CODE     
-     TIME_disp_L                               C7C9      12      18       0   TD_CODE     
-     TIME_disp_CON_1                           C7DB       5       5       0   TD_CODE     
-     TIME_disp_CON_2                           C7E0       2       2       0   TD_CODE     
-     DATE_disp                                 C7E2       B      11       1   TD_CODE     
-     DATE_disp_L                               C7ED      12      18       0   TD_CODE     
-     DATE_disp_CON_1                           C7FF       9       9       0   TD_CODE     
-     DATE_disp_CON_2                           C808       5       5       0   TD_CODE     
-     DATE_disp_CON_3                           C80D       2       2       0   TD_CODE     
-     ADMIN_SET                                 C80F      23      35       1   ADMIN_CODE  
-     ADMIN_PASS_SET                            C80F       0       0       0   ADMIN_CODE  
-     ADMIN_PASS_CON_2                          C832       9       9       0   ADMIN_CODE  
-     ADMIN_PASS_CON_3                          C83B       5       5       0   ADMIN_CODE  
-     ADMIN_PASS_CONF                           C840       F      15       0   ADMIN_CODE  
-     SECRET_SET                                C84F       3       3       1   SECRET_CODE 
-     SECRET_ID_SET                             C852      23      35       0   SECRET_CODE 
-     SECRET_ID_CON_2                           C875       9       9       0   SECRET_CODE 
-     SECRET_ID_CON_3                           C87E       9       9       0   SECRET_CODE 
-     SECRET_ID_CONF                            C887      11      17       0   SECRET_CODE 
-     SECRET_PASS_SET                           C898      24      36       0   SECRET_CODE 
-     SECRET_PASS_CON_2                         C8BC       9       9       0   SECRET_CODE 
-     SECRET_PASS_CON_3                         C8C5       5       5       0   SECRET_CODE 
-     SECRET_PASS_CONF                          C8CA      11      17       0   SECRET_CODE 
-     MAIN_MENU_SETUP                           C8DB      B0     176       1   MENU_SETUP_CODE
-     ADMIN_MENU_SETUP                          C98B     420    1056       1   MENU_SETUP_CODE
+     pressedf                                  C549       8       8       0   CODE        
+     presseda                                  C551       7       7       0   CODE        
+     pressedb                                  C558       7       7       0   CODE        
+     disp_loc                                  C55F      13      19       9   LOC         
+     disp_1                                    C572       D      13       0   LOC         
+     disp_2                                    C57F       D      13       0   LOC         
+     disp_3                                    C58C       D      13       0   LOC         
+     disp_4                                    C599       D      13       0   LOC         
+     disp_5                                    C5A6       D      13       0   LOC         
+     disp_6                                    C5B3       D      13       0   LOC         
+     disp_7                                    C5C0       D      13       0   LOC         
+     disp_8                                    C5CD       D      13       0   LOC         
+     disp_9                                    C5DA       D      13       0   LOC         
+     disp_10                                   C5E7       D      13       0   LOC         
+     disp_11                                   C5F4       D      13       0   LOC         
+     disp_12                                   C601       D      13       0   LOC         
+     disp_13                                   C60E       D      13       0   LOC         
+     disp_14                                   C61B       D      13       0   LOC         
+     disp_15                                   C628       D      13       0   LOC         
+     disp_16                                   C635       D      13       0   LOC         
+     disp_17                                   C642       D      13       0   LOC         
+     disp_18                                   C64F       D      13       0   LOC         
+     disp_19                                   C65C       D      13       0   LOC         
+     disp_20                                   C669       D      13       0   LOC         
+     disp_21                                   C676       D      13       0   LOC         
+     disp_22                                   C683       D      13       0   LOC         
+     disp_23                                   C690       D      13       0   LOC         
+     disp_24                                   C69D       D      13       0   LOC         
+     disp_25                                   C6AA       D      13       0   LOC         
+     disp_26                                   C6B7       D      13       0   LOC         
+     disp_27                                   C6C4       D      13       0   LOC         
+     disp_28                                   C6D1       C      12       0   LOC         
+     disp_29                                   C6DD       C      12       0   LOC         
+     disp_30                                   C6E9       C      12       0   LOC         
+     disp_31                                   C6F5       C      12       0   LOC         
+     disp_loc_end                              C701       A      10      28   LOC         
+     TIME_SET                                  C70B       9       9       1   TD_CODE     
+     TIME_IN                                   C714       B      11       0   TD_CODE     
+     TIME_IN_CON                               C71F      1F      31       0   TD_CODE     
+     TC_2                                      C73E       9       9       0   TD_CODE     
+     TC_3                                      C747       6       6       0   TD_CODE     
+     TIME_IN_CONF                              C74D      11      17       0   TD_CODE     
+     DATE_SET                                  C75E       9       9       1   TD_CODE     
+     DATE_IN                                   C767       B      11       0   TD_CODE     
+     DATE_IN_CON                               C772      1E      30       0   TD_CODE     
+     DATE_CON_2                                C790       9       9       0   TD_CODE     
+     DATE_CON_3                                C799       9       9       0   TD_CODE     
+     DATE_CON_4                                C7A2       6       6       0   TD_CODE     
+     DATE_IN_CONF                              C7A8      11      17       0   TD_CODE     
+     TIME_disp                                 C7B9       B      11       1   TD_CODE     
+     TIME_disp_L                               C7C4      12      18       0   TD_CODE     
+     TIME_disp_CON_1                           C7D6       5       5       0   TD_CODE     
+     TIME_disp_CON_2                           C7DB       2       2       0   TD_CODE     
+     DATE_disp                                 C7DD       B      11       1   TD_CODE     
+     DATE_disp_L                               C7E8      12      18       0   TD_CODE     
+     DATE_disp_CON_1                           C7FA       9       9       0   TD_CODE     
+     DATE_disp_CON_2                           C803       5       5       0   TD_CODE     
+     DATE_disp_CON_3                           C808       2       2       0   TD_CODE     
+     ADMIN_SET                                 C80A      23      35       1   ADMIN_CODE  
+     ADMIN_PASS_SET                            C80A       0       0       0   ADMIN_CODE  
+     ADMIN_PASS_CON_2                          C82D       9       9       0   ADMIN_CODE  
+     ADMIN_PASS_CON_3                          C836       5       5       0   ADMIN_CODE  
+     ADMIN_PASS_CONF                           C83B       F      15       0   ADMIN_CODE  
+     SECRET_SET                                C84A       3       3       1   SECRET_CODE 
+     SECRET_ID_SET                             C84D      23      35       0   SECRET_CODE 
+     SECRET_ID_CON_2                           C870       9       9       0   SECRET_CODE 
+     SECRET_ID_CON_3                           C879       9       9       0   SECRET_CODE 
+     SECRET_ID_CONF                            C882      11      17       0   SECRET_CODE 
+     SECRET_PASS_SET                           C893      24      36       0   SECRET_CODE 
+     SECRET_PASS_CON_2                         C8B7       9       9       0   SECRET_CODE 
+     SECRET_PASS_CON_3                         C8C0       5       5       0   SECRET_CODE 
+     SECRET_PASS_CONF                          C8C5      11      17       0   SECRET_CODE 
+     MAIN_MENU_SETUP                           C8D6      B0     176       1   MENU_SETUP_CODE
+     ADMIN_MENU_SETUP                          C986     420    1056       1   MENU_SETUP_CODE
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
@@ -1856,7 +1856,7 @@ next                      USES Delay comparepressedvalue var1
 redo                      USES comparepressedvalue 
 keypadoutput              USES pressed 
 redoo                     USES keypad pressed 
-pressedf                  USES port_s pressed ADMIN_MENU_SETUP 
+pressedf                  USES pressed ADMIN_MENU_SETUP 
 presseda                  USES port_s 
 pressedb                  USES port_s 
 disp_loc                  USES LCD_CUR LCD_VAL disp disp_loc_end 
@@ -1975,6 +1975,6 @@ STATISTIC SECTION
 
 ExeFile:
 --------
-Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 3501
+Number of blocks to be downloaded: 7
+Total size of all blocks to be downloaded: 3496
 

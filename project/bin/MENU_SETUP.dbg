@@ -73,22 +73,22 @@ ADMIN_MENU_SETUP:
        	movb #'A',disp+13
        	movb #'S',disp+14
        	movb #'S',disp+15
-       	movb #'-',disp+16
-       	movb #' ',disp+17
-       	movb #' ',disp+18
-       	movb #' ',disp+19
-       	movb #' ',disp+20
-       	movb #' ',disp+21
-       	movb #' ',disp+22
-       	movb #' ',disp+23
-       	movb #' ',disp+24
-       	movb #' ',disp+25
-       	movb #' ',disp+26
-       	movb #' ',disp+27
-       	movb #' ',disp+28
-       	movb #' ',disp+29
-      	movb #' ',disp+30
-       	movb #'-',disp+31
+       	movb #'_',disp+16
+       	movb #'_',disp+17
+       	movb #'_',disp+18
+       	movb #'_',disp+19
+       	movb #'_',disp+20
+       	movb #'_',disp+21
+       	movb #'_',disp+22
+       	movb #'_',disp+23
+       	movb #'_',disp+24
+       	movb #'_',disp+25
+       	movb #'_',disp+26
+       	movb #'_',disp+27
+       	movb #'_',disp+28
+       	movb #'_',disp+29
+      	movb #'_',disp+30
+       	movb #'_',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
