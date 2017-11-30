@@ -1,6 +1,6 @@
     XDEF TIME_VAL, DATE_VAL, TIME_SET, DATE_SET, TIME_disp, DATE_disp
     XREF LCD_VAL, LCD_CUR, pressed
-    XREF disp_loc, keypadoutput, INPUT
+    XREF disp_loc, keypadoutput, INPUT, TIME_SUBMENU, DATE_SUBMENU, display_DATE_TIME_SET
     
 TD_RAM: section
 TIME_VAL: ds.b $6
@@ -8,9 +8,8 @@ DATE_VAL: ds.b $8
 
 TD_CODE: section    
 TIME_SET:
-     pshy
-     LDAA #22
-     STAA LCD_CUR
+     pshx
+     JSR TIME_SUBMENU
      ldy #TIME_VAL
                   
      TIME_IN:
@@ -26,8 +25,6 @@ TIME_SET:
        cmpa #48
        BEQ TIME_IN
        JSR INPUT
-       cmpa #0
-       BEQ TIME_IN
        ldx #TIME_VAL
             
        TC_1:
@@ -43,7 +40,8 @@ TIME_SET:
        TC_3:
          cmpa #30
          BNE TIME_IN_CONF
-         puly
+         pulx
+         JSR display_DATE_TIME_SET 
          RTS
          
        TIME_IN_CONF:      
@@ -58,9 +56,8 @@ TIME_SET:
 ;-----------------------------------------------------------------
 
 DATE_SET:
-    pshy
-    LDAA #6
-    STAA LCD_CUR
+    pshx
+    JSR DATE_SUBMENU
     ldx #DATE_VAL
                      
     DATE_IN:
@@ -99,7 +96,8 @@ DATE_SET:
        DATE_CON_4:
        CMPA #16
        BLT DATE_IN_CONF
-       puly
+       pulx
+       JSR display_DATE_TIME_SET
        RTS
        
     DATE_IN_CONF:

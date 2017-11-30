@@ -1,8 +1,9 @@
-		XDEF WELCOME, DT_TI, ADMIN,display_admin,SECRET, INPUT, MAIN_MENU
+		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU
 		XDEF disp, LCD_CUR, LCD_VAL
+		
 		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL  
-    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
-    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP,
+        XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
+        XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET
     
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
@@ -69,47 +70,9 @@ DATE_TIME:
 		movb #0, LCD_CUR
 		movb #'>', LCD_VAL
 			
-		movb #'>',disp
-       	movb #'D',disp+1
-       	movb #'A',disp+2
-      	movb #'T',disp+3
-       	movb #'E',disp+4
-       	movb #':',disp+5
-       	movb #'-',disp+6
-       	movb #'-',disp+7
-       	movb #'/',disp+8
-       	movb #'-',disp+9
-       	movb #'-',disp+10
-       	movb #'/',disp+11
-       	movb #'-',disp+12
-       	movb #'-',disp+13
-       	movb #'-',disp+14
-       	movb #'-',disp+15
-       	movb #' ',disp+16
-       	movb #'T',disp+17
-       	movb #'I',disp+18
-       	movb #'M',disp+19
-       	movb #'E',disp+20
-       	movb #':',disp+21
-       	movb #'-',disp+22
-       	movb #'-',disp+23
-       	movb #':',disp+24
-       	movb #'-',disp+25
-       	movb #'-',disp+26
-       	movb #' ',disp+27
-       	movb #' ',disp+28
-       	movb #' ',disp+29
-      	movb #' ',disp+30
-       	movb #' ',disp+31
-       	movb #0,disp+32
-       	
-       	
-        ldd #disp
-        jsr display_string
-        ldaa DATE_VAL
-        cmpa #0
+       	JSR display_DATE_TIME_SET
+        ldy #0
             
-            ldy #0
         	
         	ENTER_DT:
              jsr keypadoutput
@@ -139,18 +102,19 @@ DATE_TIME:
             cmpa #0
             BNE TIME
             
-          DATE:  
+          DATE:
+              
             JSR DATE_SET
-            iny
-            cpy #2
-            BNE ENTER_DT
+            ldaa TIME_VAL
+            cmpa #0
+            BEQ ENTER_DT
             bra END_DT
           
           TIME: 
             JSR TIME_SET
-            iny
-            cpy #2
-            BNE ENTER_DT
+            ldaa DATE_VAL
+            cmpa #0
+            BEQ ENTER_DT
             BRA END_DT
           
           
@@ -158,149 +122,20 @@ DATE_TIME:
               RTS
 
 ;------------------------------------------------------------------------
-
-display_DATE_TIME_SET:
-        movb #0, LCD_CUR
-		movb #'>', LCD_VAL
-			
-		movb #'>',disp
-       	movb #'D',disp+1
-       	movb #'A',disp+2
-      	movb #'T',disp+3
-       	movb #'E',disp+4
-       	movb #':',disp+5
-       	movb #'-',disp+6
-       	movb #'-',disp+7
-       	movb #'/',disp+8
-       	movb #'-',disp+9
-       	movb #'-',disp+10
-       	movb #'/',disp+11
-       	movb #'-',disp+12
-       	movb #'-',disp+13
-       	movb #'-',disp+14
-       	movb #'-',disp+15
-       	movb #' ',disp+16
-       	movb #'T',disp+17
-       	movb #'I',disp+18
-       	movb #'M',disp+19
-       	movb #'E',disp+20
-       	movb #':',disp+21
-       	movb #'-',disp+22
-       	movb #'-',disp+23
-       	movb #':',disp+24
-       	movb #'-',disp+25
-       	movb #'-',disp+26
-       	movb #' ',disp+27
-       	movb #' ',disp+28
-       	movb #' ',disp+29
-      	movb #' ',disp+30
-       	movb #' ',disp+31
-       	movb #0,disp+32
-       	
-       	
-        	ldd #disp
-        	jsr display_string
-        	
-        RTS
-;-----------------------------------------------------------------------        	        
-ADMIN:
-    	movb #8, LCD_CUR	
-    	movb #15, WAIT
-		movb #0, LCD_VAL
-			  
-		jsr display_admin  ; will write to the LCD screen
-        
+;This is the top of the set admin password        	        
+ADMIN:	  
         jsr ADMIN_SET
         RTS
-;----------------------------------------------------------------
-  display_admin:
-  		movb #'E',disp
-       	movb #'N',disp+1
-       	movb #'T',disp+2
-      	movb #'E',disp+3
-       	movb #'R',disp+4
-       	movb #' ',disp+5
-       	movb #'A',disp+6
-       	movb #'D',disp+7
-       	movb #'M',disp+8
-       	movb #'I',disp+9
-       	movb #'N',disp+10
-       	movb #' ',disp+11
-       	movb #'P',disp+12
-       	movb #'A',disp+13
-       	movb #'S',disp+14
-       	movb #'S',disp+15
-       	movb #'-',disp+16
-       	movb #'-',disp+17
-       	movb #'-',disp+18
-       	movb #'-',disp+19
-       	movb #'-',disp+20
-       	movb #'-',disp+21
-       	movb #'-',disp+22
-       	movb #'-',disp+23
-       	movb #'-',disp+24
-       	movb #'-',disp+25
-       	movb #'-',disp+26
-       	movb #'-',disp+27
-       	movb #'-',disp+28
-       	movb #'-',disp+29
-      	movb #'-',disp+30
-       	movb #'-',disp+31
-       	movb #0,disp+32
-       	
-       	LDD #disp
-       	JSR display_string
         
-       	rts
-           
-;----------------------------------------------------------------           
-
+;-------------------------------------------------------------------------           
+;This is the top of the set secret ID and Password
   SECRET:
-  	      	movb #10, LCD_CUR
-			
-		    movb #15, WAIT
-		    movb #0, NUM 
-		    
-		    movb #'S',disp
-       	 	movb #'E',disp+1
-       	    movb #'C',disp+2
-        	movb #'R',disp+3
-        	movb #'E',disp+4
-        	movb #'T',disp+5
-        	movb #' ',disp+6
-        	movb #'I',disp+7
-        	movb #'D',disp+8
-        	movb #':',disp+9
-        	movb #'-',disp+10
-        	movb #'-',disp+11
-        	movb #' ',disp+12
-        	movb #' ',disp+13
-        	movb #' ',disp+14
-        	movb #' ',disp+15
-        	movb #'P',disp+16
-        	movb #'A',disp+17
-        	movb #'S',disp+18
-        	movb #'S',disp+19
-        	movb #'W',disp+20
-        	movb #'O',disp+21
-        	movb #'R',disp+22
-        	movb #'D',disp+23
-        	movb #':',disp+24
-        	movb #' ',disp+25
-        	movb #' ',disp+26
-        	movb #' ',disp+27
-        	movb #' ',disp+28
-        	movb #' ',disp+29
-        	movb #' ',disp+30
-        	movb #' ',disp+31
-        	movb #0,disp+32
-		    
-		    LDD #disp
-		    jsr display_string
 		    jsr SECRET_SET
 		    RTS
 
 ;------------------------------------------------------------------
+;This is the main of the main menu setup sequence which will display 
+;most of the time
 MAIN_MENU:
         
         JSR MAIN_MENU_SETUP
@@ -325,7 +160,6 @@ MAIN_MENU:
         pshb
         ldaa LCD_CUR	 ;loads current location on LCD SCREEN
         ldab pressed
-        BRSET INPUT_BLOCK, #$22, LEFT
         
   UP:     cmpb #$C		 ;checks if up pressed
         BNE DOWN		 ;if not continue
@@ -345,7 +179,6 @@ MAIN_MENU:
 
         BRA INPUT_DONE
         
-        BRSET INPUT_BLOCK, #$11, INPUT_DONE
            
   LEFT:   cmpb #$A		  ;checks and see if left
         BNE	 RIGHT		  ;if not then continue

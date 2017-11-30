@@ -45,14 +45,11 @@ looop1: ldx #SEQ ; load the sequence in to x
 
 next: ldaa 1,x+ ; load one, and incrament it by x
  beq looop1 ; if equal then branch
- 
  staa port_u ; display the value
- 
  jsr Delay ; my delay counter
  ldaa port_u ; load value from port_u in to a
  staa comparepressedvalue ; store that value in comparepressedvalue
  anda #$0F ; checks if the button is comparepressedvalue or not; uses logical anda to make check if
-
  cmpa #$0F ; compares whats in a to this memory value
  beq next ; if they are not eq
 

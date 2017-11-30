@@ -1,12 +1,13 @@
           XDEF SECRET_SET, SECRET_ID, SECRET_PASS
           XREF pressed, LCD_VAL, LCD_CUR
-          XREF disp_loc, keypadoutput, INPUT
+          XREF disp_loc, keypadoutput, INPUT, SECRET_MENU_SETUP
 SECRET_RAM: section          
 SECRET_ID: ds.b $2
 SECRET_PASS: ds.b $8
 
 SECRET_CODE: section
 SECRET_SET:
+	JSR SECRET_MENU_SETUP
     ldx #SECRET_ID
     
     SECRET_ID_SET:

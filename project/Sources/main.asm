@@ -1,28 +1,23 @@
             INCLUDE 'derivative.inc'
             
-            XDEF _Startup, MAIN, port_s, ddr_s, port_t,stateofelevator
+            XDEF _Startup, MAIN, stateofelevator
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY
-            XREF WELCOME, DT_TI, ADMIN, SECRET, MAIN_MENU
-            XREF init_LCD
+            XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS
+            
             XREF keypad, pressed, TIME_VAL, DATE_VAL
             XREF __SEG_END_SSTACK,blink      ; symbol defined by the linker for the end of the stack
 
 
 My_Constant: 		section
-port_s          equ     $248
-ddr_s           equ     $24A
-port_t			equ		$240
 going_up_sequence       dc.b    $01, $02, $04, $08, $10, $20, $40, $80
 going_down_sequence		dc.b	$80, $40, $20, $10, $08, $04, $02, $01
 blink_sequence 			dc.b 	$FF, $00
 lenghtofdelay	equ		50000
 MONTH_DAYS: dc.b 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
-ddr_port_u equ $26A
-psr_port_u equ $26D
-pde_port_u equ $26C	
+	
 
 My_Variable: 	section 
 WAIT: ds.b $2
@@ -37,9 +32,9 @@ Count_2:ds.b 1
 MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
-    JSR INITIALIZE
+    JSR INITIALIZE_PORTS
     JSR WELCOME
-    JSR DT_TI
+    JSR DATE_TIME
     JSR ADMIN
     JSR SECRET
 
@@ -49,7 +44,7 @@ MAIN:
    JSR keypad
   ; LDAA #pressed
    ;CMPA #0
-   BEQ MAIN
+   ;BEQ MAIN
    
 
 
@@ -61,16 +56,7 @@ MAIN:
 
 
 
-INITIALIZE:
-  JSR init_LCD
-  
-  bset $24A, #$FF ; used to intiliaze the LED display
-  
-  bset ddr_port_u, #$F0; used to intiliaze the hex keys
-  bset psr_port_u, #$F0
-  bset pde_port_u, #$0F
-    
-  RTS
+
   
   
 
@@ -85,7 +71,7 @@ INITIALIZE:
 ;INTERRUPTS
 
   
-TIME_INT:
+;TIME_INT:
     
 
 
@@ -152,14 +138,14 @@ TIME_INT:
   
   
 
-IRQ_INT:
+;IRQ_INT:
 
 
 
-DOOR_OPEN_INT:
+;DOOR_OPEN_INT:
 
 
 
-SECRET_MODE_INT:
+;SECRET_MODE_INT:
 
 
