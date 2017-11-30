@@ -32,7 +32,7 @@ move: bclr var_b,#$0F
  bra looop2;
 
 Delay: PSHX
- LDX #1000
+ LDX #4000
 DLoop: DEX
  BNE DLoop
  PULX

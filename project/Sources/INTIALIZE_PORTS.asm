@@ -1,9 +1,10 @@
 		XDEF INITIALIZE_PORTS
-		XDEF port_s, port_t, port_p
+		XDEF port_s, port_t, port_p, port_u
 	    XREF init_LCD
 
 
 PORTS_RAM: SECTION
+port_u: equ $268
 ddr_port_u: equ $26A
 psr_port_u: equ $26D
 pde_port_u: equ $26C

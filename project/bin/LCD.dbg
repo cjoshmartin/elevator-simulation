@@ -105,21 +105,21 @@ DATE_TIME:
           DATE:
               
             JSR DATE_SET
-            ldaa TIME_VAL
-            cmpa #0
-            BEQ ENTER_DT
-            bra END_DT
+            JSR keypadoutput
+            ldaa pressed
+            cmpa #$D
+            BNE ENTER_DT
+            RTS
           
           TIME: 
             JSR TIME_SET
-            ldaa DATE_VAL
-            cmpa #0
-            BEQ ENTER_DT
-            BRA END_DT
+            JSR keypadoutput
+            ldaa pressed
+            cmpa #$D
+            BNE ENTER_DT
+            RTS
           
-          
-          END_DT:
-              RTS
+
 
 ;------------------------------------------------------------------------
 ;This is the top of the set admin password        	        
@@ -167,7 +167,7 @@ MAIN_MENU:
         BLT INPUT_DONE	 ;if so then exit
         suba #16		 ;else add 16  store and exit
         staa LCD_CUR
-
+		ldy #1
         BRA INPUT_DONE
          
   DOWN:   cmpb #$E		 ;checks if down is pressed
@@ -176,7 +176,7 @@ MAIN_MENU:
         BGE INPUT_DONE	 ;if greater than then exit
         adda #16		 ;else subtract 16 save and exit 
         staa LCD_CUR
-
+		ldy #1
         BRA INPUT_DONE
         
            
@@ -186,9 +186,9 @@ MAIN_MENU:
         BEQ	 INPUT_DONE	  
         cmpa #16
         BEQ	 INPUT_DONE
-        deca			  ;if not then decrement and store
+        suba #1			  ;if not then decrement and store
         staa LCD_CUR
-
+		ldy #1
         bra INPUT_DONE
       
   RIGHT:  cmpb #$B		  ;check and see if right is pressed and if not continue
@@ -199,13 +199,13 @@ MAIN_MENU:
         BEQ INPUT_DONE
         adda #1			  ;if not then add one to shift it right and save
         staa LCD_CUR
-
+		ldy #1
         bra INPUT_DONE
   
   INPUT_DONE:
   
   ENTER:
-        cmpb #$0
+        cmpb #$10
         BNE INPUT_OVER
         ldx #1
   INPUT_OVER:

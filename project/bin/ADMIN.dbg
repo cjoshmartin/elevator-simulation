@@ -16,36 +16,21 @@ ADMIN_SET:
      
       jsr keypadoutput  ; call the keypad ; TODO: NEEED TO fix
       ldaa pressed	   	; store the value from the keypad to Registor 'A'
+      adda #48
       staa LCD_VAL		; 'A' -> 'LCD_VAL'
-      cmpa #0			; if the keypress is '0'(enter key) then set the password
-      BEQ ADMIN_PASS_SET
-      ldaa LCD_CUR
-      
-	  
-	  sty LCD_CUR
-	  movb #'*', LCD_VAL
-	  jsr disp_loc
-	  iny       
-      ;JSR INPUT
-      ;cmpa #LCD_CUR
-      bra ADMIN_PASS_SET
       
       
       ldaa LCD_CUR
       ADMIN_PASS_CON_1:
-        CMPA #24
+        CMPA #19
         BGT ADMIN_PASS_CON_2
-        movb #25, LCD_CUR
+        movb #20, LCD_CUR
           
       ADMIN_PASS_CON_2:
-        cmpa #31
-        BLE ADMIN_PASS_CON_3
-        movb #25, LCD_CUR
-        
-      ADMIN_PASS_CON_3:
-        cmpa #32
-        BNE ADMIN_PASS_CONF
+        cmpa #27
+        BLE ADMIN_PASS_CONF
         RTS
+
         
     ADMIN_PASS_CONF:
       JSR disp_loc     
@@ -54,7 +39,7 @@ ADMIN_SET:
          stab LCD_CUR
          ldaa pressed       
          staa 1,x+
-      ;JMP ADMIN_USER_SET
+       bra ADMIN_PASS_SET 
       
           
                 
