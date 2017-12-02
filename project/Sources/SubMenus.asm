@@ -10,9 +10,9 @@ SUBMENU_CODE: Section
             pshb
             movb #11, LCD_CUR 
         
-            movb #'E',disp        
+          movb #'E',disp        
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -30,14 +30,14 @@ SUBMENU_CODE: Section
         	movb #'M',disp+17
         	movb #'?',disp+18
         	movb #'(',disp+19
-        	movb #'a',disp+20
+        	movb #'C',disp+20
         	movb #')',disp+21
         	movb #' ',disp+22
         	movb #'P',disp+23
         	movb #'M',disp+24
         	movb #'?',disp+25
         	movb #'(',disp+26
-        	movb #'b',disp+27
+        	movb #'D',disp+27
         	movb #')',disp+28
         	movb #' ',disp+29
         	movb #' ',disp+30
@@ -105,9 +105,9 @@ DATE_SUBMENU:
 SECRET_ID_SUBMENU:
          psha
          pshb
-    		movb #'E',disp        
+    	  	movb #'E',disp        
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5

@@ -1,4 +1,4 @@
-    XDEF MAIN_MENU_SETUP,ADMIN_MENU_SETUP, display_DATE_TIME_SET, ERROR_MENU, SECRET_MENU_SETUP, SYS_SET_MAIN_MENU
+    XDEF MAIN_MENU_SETUP, ADMIN_MENU_SETUP, display_DATE_TIME_SET, ERROR_MENU, SECRET_MENU_SETUP, SYS_SET_MAIN_MENU
     XDEF Floor_SEL_MENU, NEXT_FLOOR_MENU, ERROR_MENU
     
     XREF disp, LCD_VAL, LCD_CUR
@@ -144,6 +144,8 @@ ADMIN_MENU_SETUP:
        	movb #'*',disp+31
        	movb #0,disp+32
        	
+       	ldd #disp
+       	JSR display_string
       pulb
       pula
       RTS
@@ -175,7 +177,7 @@ SECRET_MENU_SETUP:
        	movb #'S',disp+18
        	movb #'S',disp+19
        	movb #':',disp+20
-       	movb #'-',disp+21
+       	movb #'*',disp+21
        	movb #'-',disp+22
        	movb #'-',disp+23
        	movb #'-',disp+24
@@ -184,8 +186,8 @@ SECRET_MENU_SETUP:
        	movb #'-',disp+27
        	movb #'-',disp+28
        	movb #'-',disp+29
-      	movb #'-',disp+30
-       	movb #'-',disp+31
+      	movb #'*',disp+30
+       	movb #'*',disp+31
        	movb #0,disp+32
        	
        	ldd #disp

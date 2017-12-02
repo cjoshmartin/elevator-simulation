@@ -63,6 +63,8 @@ WELCOME:
           BNE WELCOME_WAIT
           movb #0, CARRY
           movb #0, WAIT
+          SEI
+          
 		  RTS
 		
 ;------------------------------------------------------------------------
