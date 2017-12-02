@@ -17,6 +17,7 @@ disp_loc:
   pshb
   pshx
   psha
+  pshy
   ldab LCD_CUR
         
   disp_0:
@@ -214,6 +215,7 @@ disp_loc:
   disp_loc_end:
     ldd #disp
     jsr display_string
+    puly
     pula
     pulx
     pulb

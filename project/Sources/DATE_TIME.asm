@@ -49,17 +49,18 @@ TIME_SET:
          CMPA #11
          BNE TC_5
          ldab pressed     ;if so checks to make sure an impossible value was inputted
+         subb #48
          cmpb #1
-         BGT TC_5
+         BLE TC_5
          jmp TIME_IN
          
        TC_5:                ;checks the tens place for minutes
          CMPA #14
-         BNE TC_6
+         BNE TIME_IN_CONF
          ldab pressed           ;if greater than then continue if equal to then
+         subb #48
          cmpb #6 
-         BGT TC_6
-         cmpb #6
+         BLT TIME_IN_CONF
          JMP TIME_IN
            
            
@@ -99,8 +100,7 @@ TIME_SET:
          cmpa #16
          BEQ AM_PM
          
-         
-         BRA TIME_IN   
+         JMP TIME_IN   
 
 ;-----------------------------------------------------------------
 

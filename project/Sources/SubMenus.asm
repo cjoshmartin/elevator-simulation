@@ -1,4 +1,5 @@
             xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT
+            XDEF CORRECT_ADM_PASS, INCORRECT_INPUT
             xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed
             xref display_string
             xref TIME_INT, WAIT, CARRY
@@ -364,4 +365,101 @@ EXIT:
            pulb
            pula
            
-         RTS	       	
+         RTS
+         
+;-------------------------------------------------------------------------
+
+CORRECT_ADM_PASS:
+
+        
+          pshd
+          movb #40, WAIT
+          movb #0, CARRY
+           
+          movb #'Y',disp        
+       		movb #'o',disp+1
+          movb #'u',disp+2
+        	movb #' ',disp+3
+        	movb #'E',disp+4
+        	movb #'n',disp+5
+        	movb #'t',disp+6
+        	movb #'e',disp+7
+        	movb #'r',disp+8
+        	movb #'e',disp+9
+        	movb #'d',disp+10
+        	movb #' ',disp+11
+        	movb #'T',disp+12
+        	movb #'h',disp+13
+        	movb #'e',disp+14
+        	movb #' ',disp+15
+        	movb #'C',disp+16
+        	movb #'o',disp+17
+        	movb #'d',disp+18
+        	movb #'e',disp+19
+        	movb #' ',disp+20
+        	movb #'W',disp+21
+        	movb #'i',disp+22
+        	movb #'s',disp+23
+        	movb #'e',disp+24
+        	movb #'l',disp+25
+        	movb #'y',disp+26
+        	movb #' ',disp+27
+        	movb #' ',disp+28
+        	movb #' ',disp+29
+        	movb #' ',disp+30
+        	movb #' ',disp+31
+        	movb #0,disp+32
+        
+          ldd #disp
+        	jsr display_string
+        	
+       puld
+       RTS
+       
+;-----------------------------------------------------------------------
+
+INCORRECT_INPUT:
+
+          movb #40, WAIT
+          movb #0, CARRY
+          pshd
+           
+          movb #'S',disp        
+       		movb #'o',disp+1
+          movb #'r',disp+2
+        	movb #'r',disp+3
+        	movb #'y',disp+4
+        	movb #' ',disp+5
+        	movb #'A',disp+6
+        	movb #'c',disp+7
+        	movb #'c',disp+8
+        	movb #'e',disp+9
+        	movb #'s',disp+10
+        	movb #'s',disp+11
+        	movb #' ',disp+12
+        	movb #'i',disp+13
+        	movb #'s',disp+14
+        	movb #' ',disp+15
+        	movb #'O',disp+16
+        	movb #'n',disp+17
+        	movb #'l',disp+18
+        	movb #'y',disp+19
+        	movb #' ',disp+20
+        	movb #'F',disp+21
+        	movb #'o',disp+22
+        	movb #'r',disp+23
+        	movb #' ',disp+24
+        	movb #'T',disp+25
+        	movb #'h',disp+26
+        	movb #'e',disp+27
+        	movb #' ',disp+28
+        	movb #'F',disp+29
+        	movb #'e',disp+30
+        	movb #'w',disp+31
+        	movb #0,disp+32
+        
+          ldd #disp
+        	jsr display_string 
+        	
+        	puld
+       RTS 	       	   	       	

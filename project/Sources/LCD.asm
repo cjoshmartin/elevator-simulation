@@ -5,7 +5,7 @@
     XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET, EXIT
     XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
     XREF TIME_INT
-    XREF NEXT_FLOOR, stateofelevator
+    XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
@@ -65,6 +65,8 @@ WELCOME:
           movb #0, WAIT
           SEI
           
+          JSR INFO_MENU_1
+          JSR INFO_MENU_2
 		  RTS
 		
 ;------------------------------------------------------------------------
@@ -77,8 +79,16 @@ WELCOME:
 DATE_TIME:
         JSR display_DATE_TIME_SET
         ldy #0
-          
+              
+             movb #6, LCD_CUR
+        	   JSR DATE_disp
+        	   movb #22, LCD_CUR
+        	   JSR TIME_disp 
+        	   movb #0, LCD_CUR
+        	   
         	ENTER_DT:
+
+        	  
              jsr keypadoutput
              ldaa pressed
              
@@ -129,7 +139,11 @@ DATE_TIME:
             JSR display_DATE_TIME_SET
             movb #6, LCD_CUR
             JSR DATE_disp
-            BRA ENTER_DT
+            movb #22, LCD_CUR
+            JSR TIME_disp
+            movb #0, LCD_CUR
+            movb #'>', LCD_VAL
+            JMP ENTER_DT
             
           TIME:             ;This is the time set sequence which goes to the time set
             JSR TIME_SET
@@ -152,9 +166,12 @@ DATE_TIME:
             BEQ Exit_DT
             
             JSR display_DATE_TIME_SET
+            movb #6, LCD_CUR
+            JSR DATE_disp
             movb #22, LCD_CUR
             JSR TIME_disp
-            
+            movb #0, LCD_CUR
+            movb #'>', LCD_VAL
             JMP ENTER_DT
            
            Exit_DT: 

@@ -1,5 +1,5 @@
      xdef pressed, keypadoutput
-     XREF keypad, port_s, ADMIN_MENU_SETUP, port_u
+     XREF keypad, port_s, ADMIN_SET, port_u, ADMIN_CHECK
 
 RAM: section     
      pressed: ds.b 1
@@ -28,8 +28,10 @@ CODE: section
     RTS
 
      pressedf: clr pressed
-               ;jsr ADMIN_MENU_SETUP
-               bra redoo
+               jsr ADMIN_CHECK
+               puly
+               pulx
+               rts
                
      presseda: ldab #$FA
                stab port_s

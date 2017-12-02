@@ -1,7 +1,8 @@
 		XDEF INITIALIZE_PORTS
-		XDEF port_s, port_t, port_p, port_u
-	  XREF init_LCD
-	  XREF WAIT, CARRY, CRGINT, RTICTL
+		XDEF port_s, port_t, port_p, port_u, 
+	  XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
+	  XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
+	  XREF ADMIN_PASS
 
 
 PORTS_RAM: SECTION
@@ -22,6 +23,42 @@ PORTS_CODE:	 SECTION
 	JSR init_LCD
 	movb #0, WAIT
 	movb #0, CARRY
+	movb #'1', stateofelevator
+	movb #'1', NEXT_FLOOR
+	movb #0, Count_1
+	movb #0, Count_2
+	
+	;pre-initialize the value for time
+	movb #'-', TIME_VAL
+	movb #'-', TIME_VAL+1
+	movb #':', TIME_VAL+2
+  movb #'-', TIME_VAL+3
+  movb #'-', TIME_VAL+4
+  movb #'-', TIME_VAL+5
+  movb #'-', TIME_VAL+6
+  
+  ;pre-initialize the value for date
+  movb #'-', DATE_VAL
+  movb #'-', DATE_VAL+1
+  movb #'/', DATE_VAL+2
+  movb #'-', DATE_VAL+3
+  movb #'-', DATE_VAL+4
+  movb #'/', DATE_VAL+5
+  movb #'-', DATE_VAL+6
+  movb #'-', DATE_VAL+7
+  movb #'-', DATE_VAL+8
+  movb #'-', DATE_VAL+9
+  
+  ;pre-initialize the password for ADMIN Password
+  movb #48, ADMIN_PASS
+  movb #48, ADMIN_PASS+1
+  movb #48, ADMIN_PASS+2
+  movb #48, ADMIN_PASS+3
+  movb #48, ADMIN_PASS+4
+  movb #48, ADMIN_PASS+5
+  movb #48, ADMIN_PASS+6
+  movb #48, ADMIN_PASS+7
+  
 	bset port_s_ddr, #$FF ; used to intiliaze the LED display
 	bset ddr_port_u, #$F0; used to intiliaze the hex keys
   bset psr_port_u, #$F0

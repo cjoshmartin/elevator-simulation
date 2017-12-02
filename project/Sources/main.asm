@@ -4,11 +4,11 @@
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
-            XDEF WAIT, CARRY, CRGINT, RTICTL
-            XDEF TIME_INT
+            XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
+            XDEF TIME_INT, Count_1, Count_2
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS
             
-            XREF keypad, pressed, TIME_VAL, DATE_VAL
+            XREF keypadoutput, pressed, TIME_VAL, DATE_VAL
             XREF __SEG_END_SSTACK,blink      ; symbol defined by the linker for the end of the stack
 
 
@@ -25,6 +25,7 @@ WAIT: ds.b  1
 CARRY: ds.b $1
 disp:	ds.b 33
 stateofelevator ds.b 1
+NEXT_FLOOR: ds.b 8
 Count_1: ds.b 1
 Count_2:ds.b 1
 
@@ -42,10 +43,10 @@ _Startup:
 MAIN:
  
    JSR MAIN_MENU
-   JSR keypad
-   LDAA #pressed
-   CMPA #0
-   BEQ MAIN
+   JSR keypadoutput
+   BRA MAIN
+   ;BEQ MAIN
+   
    
 
 
@@ -88,28 +89,28 @@ TIME_INT:
 
 
 ;CLOCK_INT:
-  ;LDAA #Count_1
+  ;LDAA Count_1
   ;inca
- ; staa Count_1
- ; CMPA #20
- ; BNE CLOCK_DONE
- ; movb #0, Count_1
+  ;staa Count_1
+  ;CMPA #20
+  ;BNE CLOCK_DONE
+  ;movb #0, Count_1
   
- ; LDAA #Count_2
- ; inca
- ; staa Count_2
- ; cmpa #60
+  ;LDAA Count_2
+  ;inca
+  ;staa Count_2
+  ;cmpa #60
   ;BNE CLOCK_DONE
   ;movb #0, Count_2
   
- ; CLOCK_MINUTES_ONES:
- ; LDAA TIME_VAL+4
- ; inca
- ; staa TIME_VAL+4
- ; cmpa #10
- ; BNE CLOCK_DONE
- ; movb #0, TIME_VAL+4
-  ;BRA CLOCK_MINUTES_TENS
+  ;CLOCK_MINUTES_ONES:
+  ;LDAA TIME_VAL+4
+  ;inca
+  ;staa TIME_VAL+4
+  ;cmpa #10
+  ;BNE CLOCK_DONE
+  ;movb #0, TIME_VAL+4
+ ;BRA CLOCK_MINUTES_TENS
   
   ;CLOCK_MINUTES_TENS:
   ;ldaa TIME_VAL+3
@@ -119,35 +120,35 @@ TIME_INT:
   ;BNE CLOCK_DONE
   ;movb #0, TIME_VAL+3
   ;bra CLOCK_HOURS_ONES
-  
+  ;
   ;CLOCK_HOURS_ONES:
-  ;ldaa TIME_VAL+2
+  ;ldaa TIME_VAL+1
   ;inca
-  ;staa TIME_VAL+2
+  ;staa TIME_VAL+1
   ;cmpa #3
   ;BNE CLOCK_HOURS_ONES_CHECK
   
   ;CLOCK_HOURS_ONES_CONT:
   ;cmpa #10
   ;BNE CLOCK_DONE 
-  ;movb #0, TIME_VAL+2
-  ;bra CLOCK_MINUTE_TENS
-  ;
+  ;movb #0, TIME_VAL+1
+  ;bra CLOCK_HOURS_TENS
+  
   ;CLOCK_MINUTE_ONES_CHECK:
   ;psha
-  ;LDAA TIME_VAL+1
+  ;LDAA TIME_VAL
   ;cmpa #1
   ;BNE CLOCK_HOURS_ONES_CONT
-  ;movb #1, TIME_VAL+2
+  ;movb #1, TIME_VAL
   ;movb #0, TIME_VAL+1
   ;bra CLOCK_DATE_DAYS
-  ;CLOCK_MINUTE_TENS:
   
-  ;ldaa TIME_VAL+1
+  ;CLOCK_HOURS_TENS:
+  ;ldaa TIME_VAL
   ;inca
-  ;staa TIME_VAL+1
+  ;staa TIME_VAL
   ;cmpa #6
-  
+  ;
   
 
 ;IRQ_INT:

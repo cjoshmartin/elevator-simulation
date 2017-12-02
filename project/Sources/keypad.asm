@@ -46,7 +46,12 @@ next: ldaa 1,x+ ; load one, and incrament it by x
  jsr Delay ; my delay counter
  ldaa port_u ; load value from port_u in to a
  BRSET port_p, #$20, next_1
- ldab #$10
+held_P:
+   ldaa port_p
+   cmpa #0
+   BEQ held_P
+   
+   ldab #$10
  RTS
 next_1: 
  staa comparepressedvalue ; store that value in comparepressedvalue
