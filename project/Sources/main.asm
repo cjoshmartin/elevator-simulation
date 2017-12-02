@@ -4,7 +4,8 @@
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
-            XDEF WAIT, CARRY
+            XDEF WAIT, CARRY, CRGINT, RTICTL
+            XDEF TIME_INT
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS
             
             XREF keypad, pressed, TIME_VAL, DATE_VAL
@@ -32,7 +33,7 @@ Count_2:ds.b 1
 MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
-    JSR INITIALIZE_PORTS
+    JSR INITIALIZE_PORTS 
     JSR WELCOME
     JSR DATE_TIME
     JSR ADMIN
@@ -71,7 +72,18 @@ MAIN:
 ;INTERRUPTS
 
   
-;TIME_INT:
+TIME_INT:
+  ldaa WAIT
+  deca
+  staa WAIT
+  cmpa #0
+  BNE TIME_DONE
+  movb #1, CARRY
+  movb #0, WAIT
+  
+  TIME_DONE:
+    bset CRGFLG, $80
+    RTI
     
 
 

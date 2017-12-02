@@ -1,6 +1,7 @@
 		XDEF INITIALIZE_PORTS
 		XDEF port_s, port_t, port_p, port_u
-	    XREF init_LCD
+	  XREF init_LCD
+	  XREF WAIT, CARRY, CRGINT, RTICTL
 
 
 PORTS_RAM: SECTION
@@ -19,11 +20,16 @@ PORTS_CODE:	 SECTION
 
 	INITIALIZE_PORTS:
 	JSR init_LCD
+	movb #0, WAIT
+	movb #0, CARRY
 	bset port_s_ddr, #$FF ; used to intiliaze the LED display
 	bset ddr_port_u, #$F0; used to intiliaze the hex keys
-    bset psr_port_u, #$F0
-    bset pde_port_u, #$0F
-    bset port_p_ddr, #$1E ;Turns the stepper motor on
-    BSET port_t_ddr, #$08 ;Turns the DC MOTOR
+  bset psr_port_u, #$F0
+  bset pde_port_u, #$0F
+  bset port_p_ddr, #$1E ;Turns the stepper motor on
+  BSET port_t_ddr, #$08 ;Turns the DC MOTOR
+  bset CRGINT, #$80					  ;sets CRGINT
+  movb #$6B ,RTICTL					  ;Sets RTICTIL to about 50 milliseconds
+  CLI 
     RTS    
 				
