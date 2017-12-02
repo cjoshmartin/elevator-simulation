@@ -21,7 +21,7 @@ MONTH_DAYS: dc.b 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	
 
 My_Variable: 	section 
-WAIT: ds.b $2
+WAIT: ds.b  1
 CARRY: ds.b $1
 disp:	ds.b 33
 stateofelevator ds.b 1
@@ -43,9 +43,9 @@ MAIN:
  
    JSR MAIN_MENU
    JSR keypad
-  ; LDAA #pressed
-   ;CMPA #0
-   ;BEQ MAIN
+   LDAA #pressed
+   CMPA #0
+   BEQ MAIN
    
 
 
