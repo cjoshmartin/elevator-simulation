@@ -1,4 +1,4 @@
-          XDEF SECRET_SET, SECRET_ID, SECRET_PASS
+          XDEF SECRET_SET, SECRET_ID, SECRET_PASS, disp_SECRET_ID, disp_SECRET_PASS
           XREF pressed, LCD_VAL, LCD_CUR
           XREF disp_loc, keypadoutput, INPUT, SECRET_MENU_SETUP
 SECRET_RAM: section          
@@ -11,11 +11,14 @@ SECRET_SET:
    	pshx
     ldx #SECRET_ID
     clr pressed
+    
     movb #12, LCD_CUR
     SECRET_ID_SET:
       ldy #0
       jsr keypadoutput
       ldaa pressed
+      cmpa #9
+	    BGT SECRET_ID_SET
       
       JSR INPUT
       cpy #1
@@ -38,8 +41,6 @@ SECRET_SET:
           BLT SECRET_ID_CONF
           movb #22, LCD_CUR
           clr pressed
-          ldaa #0
-          staa 1, x+
           ldx #SECRET_PASS
           jmp SECRET_PASS_SET
              
@@ -60,6 +61,8 @@ SECRET_SET:
       ldy #0
       jsr keypadoutput
       ldaa pressed
+      cmpa #9
+	    BGT SECRET_PASS_SET
       
       JSR INPUT
       cpy #1
@@ -68,6 +71,7 @@ SECRET_SET:
       SECRET_PASS_CON:
         adda #48
         staa LCD_VAL
+        staa pressed
         
         ldaa LCD_CUR
         SECRET_PASS_CON_1:
@@ -80,8 +84,6 @@ SECRET_SET:
           BLT SECRET_PASS_CONF
           movb #0, LCD_VAL
           movb #0, LCD_CUR
-          ldaa #0
-          staa 1, x+
           pulx
           RTS
           
@@ -90,11 +92,59 @@ SECRET_SET:
         JSR disp_loc
         ldaa pressed       
         staa 1,x+     
-         ldaa LCD_CUR
-         inca   
-         staa LCD_CUR
-         cmpa #30
-         BEQ SECRET_PASS_CON_2
+        ldaa LCD_CUR
+        inca   
+        staa LCD_CUR
+        cmpa #30
+        BEQ SECRET_PASS_CON_2
          
-        BRA SECRET_PASS_SET    
+        BRA SECRET_PASS_SET
+        
+        
+;------------------------------------------------
+
+disp_SECRET_ID:        
+  LDX #SECRET_ID
+  ldab LCD_CUR
+  ldy #0
+  SECRET_disp_L1:
+    LDAA 1, X+
+    STAA LCD_VAL
+    jsr disp_loc
+    incb
+    stab LCD_CUR
+    
+    SECRET_disp_CON_1:
+    cpy #1 
+    BNE SECRET_disp_CON_2
+    RTS
+    
+    SECRET_disp_CON_2:
+    iny
+    bra SECRET_disp_L1
+    
+;--------------------------------------------------
+
+disp_SECRET_PASS:
+  ldab LCD_CUR
+  addb #2
+  stab LCD_CUR
+  LDX #SECRET_PASS
+  ldy #0
+  
+  SECRET_disp_L2:
+    LDAA 1, X+
+    STAA LCD_VAL
+    jsr disp_loc
+    incb
+    stab LCD_CUR
+    
+    SECRET_disp_CON_3:
+    cpy #8 
+    BNE SECRET_disp_CON_4
+    RTS
+    
+    SECRET_disp_CON_4:
+    iny
+    bra SECRET_disp_L2                
           

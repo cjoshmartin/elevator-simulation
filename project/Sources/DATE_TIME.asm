@@ -3,8 +3,8 @@
     XREF disp_loc, keypadoutput, INPUT, TIME_SUBMENU, DATE_SUBMENU, display_DATE_TIME_SET      ; REFERENCED FUNCTIONS
     
 TD_RAM: section
-TIME_VAL: ds.b $6
-DATE_VAL: ds.b $8    
+TIME_VAL: ds.b $7
+DATE_VAL: ds.b $A    
 
 TD_CODE: section    
 TIME_SET:
@@ -16,6 +16,8 @@ TIME_SET:
        ldy #0
        JSR keypadoutput
        ldaa pressed
+	     cmpa #9
+	     BGT TIME_IN
 	     JSR INPUT
        cpy #1
        BEQ TIME_IN
@@ -25,20 +27,42 @@ TIME_SET:
        staa LCD_VAL
        staa pressed
      
-       TC_1:
+       TC_1:             ;checks if current location is below appropriate value
          LDAA LCD_CUR
          CMPA #10
          BGT TC_2
          movb #11, LCD_CUR
               
-       TC_2:
+       TC_2:             ;checks if current values is 13 if not continue else
          CMPA #13
          BNE TC_3
+         LDAA #':'             ;sets it to : increments and continues
+         STAA 1, x+
          movb #14, LCD_CUR
-       TC_3:
+      
+       TC_3:                   ;sees if it reached the end or not 
          cmpa #16
          BNE TIME_IN_CONF
          
+         
+       TC_4:               ;sees if it is the tens place for hours
+         CMPA #11
+         BNE TC_5
+         ldab pressed     ;if so checks to make sure an impossible value was inputted
+         cmpb #1
+         BGT TC_5
+         jmp TIME_IN
+         
+       TC_5:                ;checks the tens place for minutes
+         CMPA #14
+         BNE TC_6
+         ldab pressed           ;if greater than then continue if equal to then
+         cmpb #6 
+         BGT TC_6
+         cmpb #6
+         JMP TIME_IN
+           
+           
        AM_PM:  
          JSR keypadoutput
          ldaa pressed
@@ -55,7 +79,7 @@ TIME_SET:
          RTS
          
        PM:
-         cmpa #$D
+         cmpa #$E
          BNE AM_PM  
          ldaa #$50
          staa 1,x+
@@ -89,6 +113,8 @@ DATE_SET:
        ldy #0 
        JSR keypadoutput
        ldaa pressed
+       cmpa #9
+	     BGT DATE_IN
        
        JSR INPUT
        cpy #1
@@ -107,11 +133,15 @@ DATE_SET:
        DATE_CON_2:
        CMPA #19
        BNE DATE_CON_3
+       LDAA #'/'
+       STAA 1, x+
        movb #20, LCD_CUR
        
        DATE_CON_3:
        cmpa #22
        BNE DATE_CON_4
+       LDAA #'/'
+       STAA 1, x+
        movb #23, LCD_CUR
        
        DATE_CON_4:
@@ -136,57 +166,46 @@ DATE_SET:
       
 
 TIME_disp:
-  movb #0, LCD_CUR
+  
   LDX #TIME_VAL
   ldab LCD_CUR
-  
+  ldy #0
   TIME_disp_L:
     LDAA 1, X+
     STAA LCD_VAL
     jsr disp_loc
     incb
     stab LCD_CUR
-    cmpb #2
-    BNE  TIME_disp_CON_1
-    movb #3, LCD_CUR
-    incb
     
     TIME_disp_CON_1:
-    cmpb #7
+    cpy #6 
     BNE TIME_disp_CON_2
     RTS
     
     TIME_disp_CON_2:
+    iny
     bra TIME_disp_L        
 
 ;---------------------------------------------------------------------
 
 DATE_disp:
-  movb #16, LCD_CUR
+
   LDX #DATE_VAL
   ldab LCD_CUR
-  
+  ldy #0
   DATE_disp_L:
     LDAA 1, X+
     STAA LCD_VAL
     jsr disp_loc
     incb
     stab LCD_CUR
-    cmpb #18
-    BNE DATE_disp_CON_1
-    movb #19, LCD_CUR
-    incb
+    
     
   DATE_disp_CON_1:
-    cmpb #21
-    BNE DATE_disp_CON_2
-    movb #22, LCD_CUR
-    incb
-    
-  DATE_disp_CON_2:
-    CMPB #26
+    CPY #9
     BNE DATE_disp_CON_3
     RTS
   
   DATE_disp_CON_3:
+    iny
     BRA DATE_disp_L         

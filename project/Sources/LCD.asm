@@ -1,11 +1,11 @@
 		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU ;Functions defined
 		XDEF disp, LCD_CUR, LCD_VAL                              ;Variables defined
 		
-		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL, CARRY  
-    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
-    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET
+		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL, CARRY, You_Entered, CORRECT_SUBMENU
+    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET, EXIT
+    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
     XREF TIME_INT
-    
+    XREF NEXT_FLOOR, stateofelevator
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
@@ -75,13 +75,9 @@ WELCOME:
 ;there
 
 DATE_TIME:
-		movb #0, LCD_CUR
-		movb #'>', LCD_VAL
-			
-       	JSR display_DATE_TIME_SET
+        JSR display_DATE_TIME_SET
         ldy #0
-            
-        	
+          
         	ENTER_DT:
              jsr keypadoutput
              ldaa pressed
@@ -110,21 +106,58 @@ DATE_TIME:
             cmpa #0
             BNE TIME
             
-          DATE:
-              
+          DATE:               ;This the Date set sequence which goes to the DATE set and sets
             JSR DATE_SET
-            JSR keypadoutput
-            ldaa pressed
-            cmpa #$D
-            BNE ENTER_DT
-            RTS
-          
-          TIME: 
+            JSR You_Entered
+            JSR DATE_disp
+            CLI
+            
+          Pause_D:
+            ldaa CARRY
+            cmpa #1
+            BNE Pause_D
+            movb #0, CARRY
+            SEI
+            
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ DATE
+               
+            JSR EXIT
+            cpy #1
+            BEQ Exit_DT
+            JSR display_DATE_TIME_SET
+            movb #6, LCD_CUR
+            JSR DATE_disp
+            BRA ENTER_DT
+            
+          TIME:             ;This is the time set sequence which goes to the time set
             JSR TIME_SET
-            JSR keypadoutput
-            ldaa pressed
-            cmpa #$D
-            BNE ENTER_DT
+            JSR You_Entered
+            JSR TIME_disp
+            CLI
+            
+          Pause_T:
+            ldaa CARRY
+            cmpa #1
+            BNE Pause_T
+            movb #0, CARRY
+            SEI
+            
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ TIME
+            JSR EXIT
+            cpy #1
+            BEQ Exit_DT
+            
+            JSR display_DATE_TIME_SET
+            movb #22, LCD_CUR
+            JSR TIME_disp
+            
+            JMP ENTER_DT
+           
+           Exit_DT: 
             RTS
           
 
@@ -133,12 +166,42 @@ DATE_TIME:
 ;This is the top of the set admin password        	        
 ADMIN:	  
         jsr ADMIN_SET
+        JSR You_Entered
+        JSR disp_ADMIN
+        CLI
+            
+          Pause_A:
+            ldaa CARRY
+            cmpa #1
+            BNE Pause_A
+            movb #0, CARRY
+            SEI
+            
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ ADMIN
         RTS
         
 ;-------------------------------------------------------------------------           
 ;This is the top of the set secret ID and Password
   SECRET:
 		    jsr SECRET_SET
+		    JSR You_Entered
+        JSR disp_SECRET_ID
+        JSR disp_SECRET_PASS
+        CLI
+            
+          Pause_S:
+            ldaa CARRY
+            cmpa #1
+            BNE Pause_S
+            movb #0, CARRY
+            SEI
+            
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ SECRET
+        RTS
 		    RTS
 
 ;------------------------------------------------------------------
@@ -147,11 +210,14 @@ ADMIN:
 MAIN_MENU:
         
         JSR MAIN_MENU_SETUP
+        
+        movb #0, LCD_CUR
         JSR TIME_disp
+        movb #16, LCD_CUR
         JSR DATE_disp
         
-       ;movb #FLOOR_CUR, disp+15
-       ;movb #FLOOR_DEST, disp+31
+        movb stateofelevator, disp+15
+        movb NEXT_FLOOR, disp+31
         ldd #disp
         jsr display_string
         

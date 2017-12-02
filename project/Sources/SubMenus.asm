@@ -1,6 +1,7 @@
-            xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU
-            xref disp, LCD_CUR
+            xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT
+            xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed
             xref display_string
+            xref TIME_INT, WAIT, CARRY
             
             
 SUBMENU_CODE: Section
@@ -37,7 +38,7 @@ SUBMENU_CODE: Section
         	movb #'M',disp+24
         	movb #'?',disp+25
         	movb #'(',disp+26
-        	movb #'D',disp+27
+        	movb #'E',disp+27
         	movb #')',disp+28
         	movb #' ',disp+29
         	movb #' ',disp+30
@@ -59,9 +60,9 @@ DATE_SUBMENU:
             pshb
             movb #17, LCD_CUR
     
-    		movb #'E',disp        
+    		  movb #'E',disp        
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -151,9 +152,9 @@ SECRET_ID_SUBMENU:
 SECRET_PASS_SUBMENU:
          psha
          pshb
-    		movb #'E',disp        ;remaining code loads in Welcome and startup
+    		  movb #'E',disp        ;remaining code loads in Welcome and startup
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -198,9 +199,9 @@ CORRECT_SUBMENU:
         psha
         pshb
         
-            movb #'I',disp        
-       	 	movb #'s',disp+1
-            movb #' ',disp+2
+          movb #'I',disp        
+       		movb #'s',disp+1
+          movb #' ',disp+2
         	movb #'T',disp+3
         	movb #'h',disp+4
         	movb #'a',disp+5
@@ -218,13 +219,13 @@ CORRECT_SUBMENU:
         	movb #'e',disp+17
         	movb #'s',disp+18
         	movb #'(',disp+19
-        	movb #'a',disp+20
+        	movb #'C',disp+20
         	movb #')',disp+21
         	movb #' ',disp+22
         	movb #'N',disp+23
         	movb #'o',disp+24
         	movb #'(',disp+25
-        	movb #'b',disp+26
+        	movb #'E',disp+26
         	movb #')',disp+27
         	movb #' ',disp+28
         	movb #' ',disp+29
@@ -234,9 +235,133 @@ CORRECT_SUBMENU:
         	
         	ldd #disp
         	jsr display_string
+      
+      Answer:  	
+        	JSR keypadoutput
+        	ldaa pressed
         	
-        pulb
-        pula
+        	
+        Correct:
+           cmpa #$C
+           BNE Incorrect	
+           pulb
+           pula
+        RTS
         
-        RTS	
-               
+        Incorrect:
+           cmpa #$E
+           BNE Answer
+           pulb
+           pula
+           ldy #1
+         RTS  
+        	       
+;----------------------------------------------------------------------------------
+You_Entered:
+
+  pshd
+          
+          movb #40, WAIT
+          movb #16, LCD_CUR
+           
+          movb #'Y',disp        
+       		movb #'o',disp+1
+          movb #'u',disp+2
+        	movb #' ',disp+3
+        	movb #'E',disp+4
+        	movb #'n',disp+5
+        	movb #'t',disp+6
+        	movb #'e',disp+7
+        	movb #'r',disp+8
+        	movb #'e',disp+9
+        	movb #'d',disp+10
+        	movb #':',disp+11
+        	movb #' ',disp+12
+        	movb #' ',disp+13
+        	movb #' ',disp+14
+        	movb #' ',disp+15
+        	movb #' ',disp+16
+        	movb #' ',disp+17
+        	movb #' ',disp+18
+        	movb #' ',disp+19
+        	movb #' ',disp+20
+        	movb #' ',disp+21
+        	movb #' ',disp+22
+        	movb #' ',disp+23
+        	movb #' ',disp+24
+        	movb #' ',disp+25
+        	movb #' ',disp+26
+        	movb #' ',disp+27
+        	movb #' ',disp+28
+        	movb #' ',disp+29
+        	movb #' ',disp+30
+        	movb #' ',disp+31
+        	movb #0,disp+32
+        	       	
+  puld      	
+  RTS      	
+  
+;-----------------------------------------------------------
+
+EXIT:
+
+        pshd
+          movb #16, LCD_CUR
+           
+          movb #'A',disp        
+       		movb #'r',disp+1
+          movb #'e',disp+2
+        	movb #' ',disp+3
+        	movb #'Y',disp+4
+        	movb #'o',disp+5
+        	movb #'u',disp+6
+        	movb #' ',disp+7
+        	movb #'d',disp+8
+        	movb #'o',disp+9
+        	movb #'n',disp+10
+        	movb #'e',disp+11
+        	movb #'?',disp+12
+        	movb #' ',disp+13
+        	movb #' ',disp+14
+        	movb #' ',disp+15
+        	movb #' ',disp+16
+        	movb #'Y',disp+17
+        	movb #'e',disp+18
+        	movb #'s',disp+19
+        	movb #' ',disp+20
+        	movb #'(',disp+21
+        	movb #'C',disp+22
+        	movb #')',disp+23
+        	movb #' ',disp+24
+        	movb #'N',disp+25
+        	movb #'o',disp+26
+        	movb #' ',disp+27
+        	movb #'(',disp+28
+        	movb #'E',disp+29
+        	movb #')',disp+30
+        	movb #' ',disp+31
+        	movb #0,disp+32
+        
+          ldd #disp
+        	jsr display_string
+      
+      Answer_E:  	
+        	JSR keypadoutput
+        	ldaa pressed
+        	
+        	
+        Exit_Prog:
+           cmpa #$C
+           BNE Cont_Prog	
+           pulb
+           pula
+           ldy #1
+        RTS
+        
+        Cont_Prog:
+           cmpa #$E
+           BNE Answer_E
+           pulb
+           pula
+           
+         RTS	       	

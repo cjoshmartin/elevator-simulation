@@ -1,4 +1,4 @@
-           XDEF ADMIN_SET, ADMIN_PASS
+           XDEF ADMIN_SET, ADMIN_PASS, disp_ADMIN
            XREF pressed, LCD_VAL, LCD_CUR
            XREF disp_loc, keypadoutput, INPUT, disp, display_string, ADMIN_MENU_SETUP
 
@@ -17,6 +17,8 @@ ADMIN_SET:
       ldy #0
       jsr keypadoutput  ; call the keypad ; TODO: NEEED TO fix
       ldaa pressed	   	; store the value from the keypad to Registor 'A'
+      cmpa #9
+	    BGT ADMIN_PASS_SET
       
       JSR INPUT
       cpy #1
@@ -51,7 +53,31 @@ ADMIN_SET:
          staa LCD_CUR
          cmpa #28
          BEQ ADMIN_PASS_CON_2 
-       bra ADMIN_PASS_SET 
+       bra ADMIN_PASS_SET
+       
+;---------------------------------------------------------------------------
+
+
+disp_ADMIN:
+
+  LDX #ADMIN_PASS
+  ldab LCD_CUR
+  ldy #0
+  TIME_disp_L:
+    LDAA 1, X+
+    STAA LCD_VAL
+    jsr disp_loc
+    incb
+    stab LCD_CUR
+    
+    TIME_disp_CON_1:
+    cpy #8 
+    BNE TIME_disp_CON_2
+    RTS
+    
+    TIME_disp_CON_2:
+    iny
+    bra TIME_disp_L        
       
           
                 
