@@ -1,9 +1,10 @@
-		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU
-		XDEF disp, LCD_CUR, LCD_VAL
+		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU ;Functions defined
+		XDEF disp, LCD_CUR, LCD_VAL                              ;Variables defined
 		
-		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL  
-        XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
-        XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET
+		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL, CARRY  
+    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET
+    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET
+    XREF TIME_INT
     
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
@@ -17,11 +18,11 @@ LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 CODE_LCD: SECTION
 ;This segment of the code only occurs upon the start up of the elevator		
 WELCOME:
-            movb #40, WAIT		  ;Loads in value for interrupt
-			
-		    movb #'W',disp        ;remaining code loads in Welcome and startup
+          movb #40, WAIT		  ;Loads in value for interrupt
+			    
+		      movb #'W',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
-            movb #'l',disp+2
+          movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -56,7 +57,12 @@ WELCOME:
         	ldd #disp
         	jsr display_string
         	
-          ;WAI TIME_INT              ;waits for interrupt to occur
+        	WELCOME_WAIT:
+          ldaa CARRY
+          cmpa #1
+          BNE WELCOME_WAIT
+          movb #0, CARRY
+          movb #0, WAIT
 		  RTS
 		
 ;------------------------------------------------------------------------
