@@ -1,9 +1,8 @@
-            xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT
-            XDEF CORRECT_ADM_PASS, INCORRECT_INPUT
+            xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
             xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed
             xref display_string
             xref TIME_INT, WAIT, CARRY
-            
+            XDEF CORRECT_ADM_PASS, INCORRECT_INPUT
             
 SUBMENU_CODE: Section
 
@@ -462,4 +461,47 @@ INCORRECT_INPUT:
         	jsr display_string 
         	
         	puld
-       RTS 	       	   	       	
+       RTS 	    
+ERROR_DOOR:
+        psha
+        pshb
+        
+  		movb #' ',disp
+       	movb #' ',disp+1
+       	movb #'P',disp+2
+      	movb #'L',disp+3
+       	movb #'E',disp+4
+       	movb #'A',disp+5
+       	movb #'S',disp+6
+       	movb #'E',disp+7
+       	movb #' ',disp+8
+       	movb #'C',disp+9
+       	movb #'L',disp+10
+       	movb #'O',disp+11
+       	movb #'S',disp+12
+       	movb #'E',disp+13
+       	movb #' ',disp+14
+       	movb #' ',disp+15
+       	movb #' ',disp+16
+       	movb #' ',disp+17
+       	movb #' ',disp+18
+       	movb #'T',disp+19
+       	movb #'H',disp+20
+       	movb #'E',disp+21
+       	movb #' ',disp+22
+       	movb #'D',disp+23
+       	movb #'O',disp+24
+       	movb #'O',disp+25
+       	movb #'R',disp+26
+       	movb #'!',disp+27
+       	movb #' ',disp+28
+       	movb #' ',disp+29
+      	movb #' ',disp+30
+       	movb #' ',disp+31
+       	movb #0,disp+32    
+       	
+       	ldd #disp
+       	JSR display_string
+       	pulb
+       	pula
+      RTS

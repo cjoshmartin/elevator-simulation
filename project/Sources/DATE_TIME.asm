@@ -1,6 +1,6 @@
-    XDEF TIME_VAL, DATE_VAL, TIME_SET, DATE_SET, TIME_disp, DATE_disp       ;DEFINED FUNCTIONS FOR THIS FILE
+	XDEF TIME_VAL, DATE_VAL, TIME_SET, DATE_SET, TIME_disp, DATE_disp       ;DEFINED FUNCTIONS FOR THIS FILE
     XREF LCD_VAL, LCD_CUR, pressed                                          ;REFERNECED VARIABLES
-    XREF disp_loc, keypadoutput, INPUT, TIME_SUBMENU, DATE_SUBMENU, display_DATE_TIME_SET      ; REFERENCED FUNCTIONS
+    XREF disp_loc, keypadoutput, INPUT, TIME_SUBMENU, DATE_SUBMENU, display_DATE_TIME_SET, keypad      ; REFERENCED FUNCTIONS
     
 TD_RAM: section
 TIME_VAL: ds.b $7

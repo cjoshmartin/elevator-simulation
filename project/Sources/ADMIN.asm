@@ -1,6 +1,6 @@
            XDEF ADMIN_SET, ADMIN_PASS, disp_ADMIN, ADMIN_CHECK
            XREF pressed, LCD_VAL, LCD_CUR, WAIT, CARRY, CORRECT_ADM_PASS, INCORRECT_INPUT
-           XREF disp_loc, keypadoutput, INPUT, disp, display_string, ADMIN_MENU_SETUP
+           XREF disp_loc, keypadoutput, INPUT, disp, display_string, ADMIN_MENU_SETUP, keypad
            XREF TIME_INT
 
 

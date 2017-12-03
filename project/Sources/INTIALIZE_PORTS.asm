@@ -1,21 +1,26 @@
 		XDEF INITIALIZE_PORTS
-		XDEF port_s, port_t, port_p, port_u, 
-	  XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
-	  XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
-	  XREF ADMIN_PASS
+		XDEF port_s, port_t, port_p,port_u, ddr_port_u ,psr_port_u, pde_port_u 
+	    XDEF RTIENA,RTIFLG
+	     XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
+	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
+	  	XREF ADMIN_PASS
+
+	   
 
 
 PORTS_RAM: SECTION
-port_u: equ $268
 ddr_port_u: equ $26A
 psr_port_u: equ $26D
 pde_port_u: equ $26C
-port_s: equ     $248
+port_u      equ $268
+port_s:     equ $248
 port_s_ddr: equ $24A
-port_t: equ		$240 ;DC Motor
+port_t:     equ	$240 ;DC Motor
 port_t_ddr: equ $242
-port_p: equ     $258 ;Stepper Motor
+port_p: 	equ $258 ;Stepper Motor
 port_p_ddr: equ $25A
+RTIENA:		equ $38
+RTIFLG: 	equ $37
 		
 PORTS_CODE:	 SECTION
 
@@ -27,6 +32,7 @@ PORTS_CODE:	 SECTION
 	movb #'1', NEXT_FLOOR
 	movb #0, Count_1
 	movb #0, Count_2
+	movb #%00011110, port_p_ddr ; intialize the stepper motor
 	
 	;pre-initialize the value for time
 	movb #'-', TIME_VAL
@@ -58,15 +64,16 @@ PORTS_CODE:	 SECTION
   movb #48, ADMIN_PASS+5
   movb #48, ADMIN_PASS+6
   movb #48, ADMIN_PASS+7
-  
 	bset port_s_ddr, #$FF ; used to intiliaze the LED display
 	bset ddr_port_u, #$F0; used to intiliaze the hex keys
-  bset psr_port_u, #$F0
-  bset pde_port_u, #$0F
-  bset port_p_ddr, #$1E ;Turns the stepper motor on
-  BSET port_t_ddr, #$08 ;Turns the DC MOTOR
-  bset CRGINT, #$80					  ;sets CRGINT
-  movb #$6B ,RTICTL					  ;Sets RTICTIL to about 50 milliseconds
-  CLI 
+    bset psr_port_u, #$F0
+    bset pde_port_u, #$0F
+    bset port_p_ddr, #$1E ;Turns the stepper motor on
+    BSET port_t_ddr, #$08 ;Turns the DC MOTOR
+   
+    clr stateofelevator
+	bset CRGINT, #$80					  ;sets CRGINT
+ 	movb #$6B ,RTICTL					  ;Sets RTICTIL to about 50 milliseconds
+ 	CLI 
     RTS    
 				
