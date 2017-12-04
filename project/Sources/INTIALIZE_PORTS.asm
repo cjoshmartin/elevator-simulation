@@ -1,10 +1,12 @@
 		XDEF INITIALIZE_PORTS
 		XDEF port_s, port_t, port_p,port_u, ddr_port_u ,psr_port_u, pde_port_u 
 	    XDEF RTIENA,RTIFLG
-	     XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
+	    
+	    XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
-
+	  	XREF state_of_load, stepper_flag,direction,floor, current_step_in_seq, stepper_delay, max_value_of_pot, currentfloor
+	   	XREF flag
 	   
 
 
@@ -72,8 +74,20 @@ PORTS_CODE:	 SECTION
     BSET port_t_ddr, #$08 ;Turns the DC MOTOR
    
     clr stateofelevator
+    clr currentfloor
+    clr floor
+    clr state_of_load
+    clr stepper_flag
+   
+	movb #0, stepper_flag ;init state of the stepper
+	movb #0, flag
+   	movb #$74, max_value_of_pot
+    movb #0, state_of_load
+    movb #1, floor ; the highest or lowest floor 
+    movb #2, direction ; tell the elevator wants to move upwards
+	
 	bset CRGINT, #$80					  ;sets CRGINT
- 	movb #$6B ,RTICTL					  ;Sets RTICTIL to about 50 milliseconds
- 	CLI 
+ 	movb #$40 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 
+ 	CLI
     RTS    
 				

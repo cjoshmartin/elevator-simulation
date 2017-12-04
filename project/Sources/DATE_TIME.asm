@@ -14,7 +14,7 @@ TIME_SET:
      clr pressed             
      TIME_IN:
        ldy #0
-       JSR keypadoutput
+       JSR keypad
        ldaa pressed
 	     cmpa #9
 	     BGT TIME_IN
@@ -65,7 +65,7 @@ TIME_SET:
            
            
        AM_PM:  
-         JSR keypadoutput
+         JSR keypad
          ldaa pressed
          cmpa #$C
          BNE PM
@@ -111,7 +111,7 @@ DATE_SET:
     clr pressed                 
     DATE_IN:
        ldy #0 
-       JSR keypadoutput
+       JSR keypad
        ldaa pressed
        cmpa #9
 	     BGT DATE_IN

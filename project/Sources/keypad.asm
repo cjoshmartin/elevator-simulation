@@ -1,5 +1,5 @@
 	xdef keypad
-    xref port_p, port_u, port_s, port_t, pressed
+    xref port_p, port_u, port_s, port_t
 KEYPAD_RAM: SECTION
 var_a ds.b 1
 var_b ds.b 1
@@ -23,7 +23,6 @@ looop2:
  bclr var_b, #$F0
  stab comparepressedvalue
  
- stab pressed
  rts ; END OF PROGRAM
 
 move: bclr var_b,#$0F

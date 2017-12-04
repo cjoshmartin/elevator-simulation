@@ -1,7 +1,8 @@
 			xdef pot_meter
 			xref read_pot, pot_value
 			xref WAIT,CARRY
-			XREF stepper_flag,stepper_delay, is_open_or_closed,was_open_or_closed
+			XREF DC_flag,DC_delay, is_open_or_closed,was_open_or_closed
+			XREF flag
 			XREF max_value_of_pot
 			XREF ERROR_DOOR,ERROR_MENU,MAIN_MENU
 MY_EXTENDED_RAM: SECTION
@@ -20,18 +21,21 @@ port_u    equ $268
 
 pot_meter:  ;movb #8, WAIT	
             ;movb #5, press
-
+			movb #1, flag ; telling the RTI that it is in the pot_meter subroutine
 
 getpotentiometer: 
 		   jsr potentiometer ; gets the imput of the potentiometer 
 		   ldab press ; loads the value into B
 		   stab ton
+		   ;rts ;temp
+; UP TO HERE WORKS, if you step through it
 		   
 checkton: beq interruptdelay
-		   bset port_t, #$08
- hitloop:  ;jsr cpudelay
+		   bset port_t, #$08 ;turns the motor on 
+		   rts
+ hitloop:  jsr cpudelay
  		   dec ton
-		   ;bne hitloop
+		   bne hitloop
 		   	 
 
 interruptdelay:	 ldab press
@@ -40,10 +44,13 @@ interruptdelay:	 ldab press
 				 staa toff
 				 beq getpotentiometer ; branch to toff is equal to zero
 				 bclr port_t, #$08 ; else clears the bit 3
-		looppy:  ;jsr cpudelay
+				 
+		looppy:  
+				 movb #1,DC_flag
+				 jsr cpudelay
 				 ;dec toff
 				 ;bne looppy
-				 ;bra getpotentiometer
+				 bra getpotentiometer
 				 rts				 		   
 
 potentiometer:  
@@ -62,6 +69,8 @@ potentiometer:
   			movb #1, is_open_or_closed 
 return:     rts
 
+
+; ------------------------------------------------------------------------------
 is_FF: stab  press
 	   ldaa was_open_or_closed
 	   cmpa is_open_or_closed
@@ -87,14 +96,10 @@ is_zero: ldab #$80
 		 stab press
 		 movb #1, is_open_or_closed 
 		 rts
-reset_delay:
-			movb #400, stepper_delay
-			rts
-			
+;---------------------------------------------------------------------------------
 cpudelay: 
-		  movb #1,stepper_flag
-		  ldaa stepper_delay
-		  deca
-		  cmpa #0
-		  beq  reset_delay
+		  ldaa DC_flag
+		  cmpa #1
+		  beq  cpudelay
           rts
+          

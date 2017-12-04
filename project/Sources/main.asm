@@ -7,11 +7,12 @@
             XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
             XDEF NEXT_FLOOR
             xdef direction
-            XDEF TIME_INT, Count_1, Count_2
+            XDEF TIME_INT, Count_1, Count_2, flag
             XDEF is_open_or_closed, was_open_or_closed
-            XDEF enable_admin
+            XDEF DC_flag,DC_delay
             xdef stepper_flag, stepper_delay
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
+           	
            	XREF stepper_motor	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
@@ -43,62 +44,47 @@ state_of_load:			ds.b	1
 ;stepper Motor
 stepper_flag:			ds.b    1
 stepper_delay:			ds.w    1
+;DC MOTOR
+DC_flag:				ds.b 	1
+DC_delay:				ds.b	1
+;DOOR
 is_open_or_closed:		ds.b	1 ; if 0 then closed, if 1 then openned...
 was_open_or_closed:     ds.b    1 ; stores the old value of is_open_or_closed
-;POT_Motor
+;POT_Moter
 max_value_of_pot:		ds.b	1
 ; Interrupts
 Count_1: 				ds.b    1
 Count_2:				ds.b    1
-; Keypad
-enable_admin: 			ds.b	1  ; 0 is non-enable, 1 is enable
+flag:					ds.b 	1
 
 
 ; code section
 MyCode:     SECTION
-_Startup: 
-	movb #0, enable_admin
-	
+_Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
-    JSR WELCOME
-    JSR DATE_TIME
-    JSR ADMIN
-    JSR SECRET
-    JSR MAIN_MENU
+    ;JSR WELCOME
+    ;JSR DATE_TIME
+    ;JSR ADMIN
+    ;JSR SECRET
+    ;JSR MAIN_MENU
     
-   movb #1, enable_admin
-   clr currentfloor
-   clr floor
-   clr state_of_load
-   clr stepper_flag
    
-   movb #0, stepper_flag ;init state of the stepper
-   movb #400,stepper_delay
-   movb #$A7, max_value_of_pot
-   movb #0, state_of_load
-   movb #1, floor ; the highest or lowest floor 
-   
-   movb #2, direction ; tell the elevator wants to move upwards
-   
- 
- 
 MAIN_2:
+    ;JSR keypadoutput
    
-   JSR keypadoutput
-   JSR pot_meter 
+   JSR pot_meter ; doesn't work right now 
    jsr dip_switches
    jsr LED
-   jsr stepper_motor 
+   jsr stepper_motor   
 
-   CLI
-   WELCOME_WAIT:
-   ldaa CARRY
-   cmpa #1
-   BNE WELCOME_WAIT
-   movb #0, CARRY
-   movb #4, WAIT
-   SEI
+
+   ;WELCOME_WAIT:
+   ;ldaa CARRY
+   ;cmpa #1
+   ;BNE WELCOME_WAIT
+   ;movb #0, CARRY
+  ; movb #4, WAIT
   
    bra MAIN_2 ; TODO: change this later
    
@@ -108,16 +94,67 @@ MAIN_2:
 
   
 TIME_INT:
-  ldaa WAIT
-  deca
-  staa WAIT
-  cmpa #0
-  BNE TIME_DONE
-  movb #1, CARRY
-  movb #0, WAIT
-  
+
+; ---------------Instructions on flag----------------
+; 0 - step up
+; 1 - pot_meter
+; 2 - LED
+; 3 - stepper_motor 
+; 4 - ERROR MESSAGE
+
+;---------------------------------------------------- 
+ ldaa flag
+	 cmpa #0
+	 	beq just_delay
+	 cmpa #1
+	 beq pot_meter_delay
+	 cmpa #3 
+	 	beq stepper_delayer
+	
+	 bra TIME_DONE
+	 
+just_delay:	;0   
+   	  ldaa CARRY
+	  	  cmpa #1 
+	  	 	 beq TIME_DONE  
+	  	  ldaa WAIT
+	 	  	deca
+	  	  	staa WAIT
+	      cmpa #0
+	 	  	BNE TIME_DONE
+	      movb #1, CARRY
+	      movb #0, WAIT
+	  	  bra  TIME_DONE
+
+pot_meter_delay:
+	   ldaa DC_flag
+		   cmpa #0
+		   	beq TIME_DONE
+		   ldx DC_delay
+		   	 dex
+		  	 stx DC_delay
+		   cpx #0
+		   	BNE TIME_DONE
+		   movb #0,DC_flag
+		   movb #10,DC_delay  
+  	  
+stepper_delayer: ; 3
+	   ldaa stepper_flag
+	   cmpa #0
+	   beq TIME_DONE
+	   
+ 	   ldx stepper_delay
+	   dex
+	   stx stepper_delay
+ 	   cpx #0
+	   BNE TIME_DONE
+	   movb #0, stepper_flag
+	   movw #10, stepper_delay
+	   
+	   bra TIME_DONE
+  	  
   TIME_DONE:
-    bset CRGFLG, $80
+    bset CRGFLG, #$80
     RTI
     
 
