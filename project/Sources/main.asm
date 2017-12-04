@@ -12,7 +12,7 @@
             XDEF DC_flag,DC_delay
             xdef stepper_flag, stepper_delay
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
-           	
+           	XDEF LED_flag,LED_delay
            	XREF stepper_motor	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
@@ -41,6 +41,8 @@ currentfloor:           ds.b    1
 stateofelevator         ds.b    1
 floor:					ds.b    1
 state_of_load:			ds.b	1
+LED_flag:				ds.b 	1
+LED_delay:				ds.b	1
 ;stepper Motor
 stepper_flag:			ds.b    1
 stepper_delay:			ds.w    1
@@ -63,12 +65,13 @@ MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
-    ;JSR WELCOME
+    JSR WELCOME
     ;JSR DATE_TIME
     ;JSR ADMIN
     ;JSR SECRET
     ;JSR MAIN_MENU
-    
+    movb #99, flag
+    CLI
    
 MAIN_2:
     ;JSR keypadoutput
@@ -101,13 +104,15 @@ TIME_INT:
 ; 2 - LED
 ; 3 - stepper_motor 
 ; 4 - ERROR MESSAGE
-
+; 99 - DO Nothing
 ;---------------------------------------------------- 
  ldaa flag
 	 cmpa #0
 	 	beq just_delay
 	 cmpa #1
 	 beq pot_meter_delay
+	 cmpa #2
+	 beq LED_delay_RTI
 	 cmpa #3 
 	 	beq stepper_delayer
 	
@@ -126,7 +131,7 @@ just_delay:	;0
 	      movb #0, WAIT
 	  	  bra  TIME_DONE
 
-pot_meter_delay:
+pot_meter_delay: ; 1
 	   ldaa DC_flag
 		   cmpa #0
 		   	beq TIME_DONE
@@ -137,7 +142,19 @@ pot_meter_delay:
 		   	BNE TIME_DONE
 		   movb #0,DC_flag
 		   movb #10,DC_delay  
-  	  
+
+LED_delay_RTI: ; 2
+	   ldaa LED_flag
+		   cmpa #0
+		   	beq TIME_DONE
+		   ldab LED_delay
+		   	 decb
+		  	 stab LED_delay
+		   cmpb #0
+		   	BNE TIME_DONE
+		   movb #0,LED_flag
+		   movb #60,LED_delay  
+  	    	  
 stepper_delayer: ; 3
 	   ldaa stepper_flag
 	   cmpa #0
@@ -149,7 +166,7 @@ stepper_delayer: ; 3
  	   cpx #0
 	   BNE TIME_DONE
 	   movb #0, stepper_flag
-	   movw #10, stepper_delay
+	   movw #60, stepper_delay
 	   
 	   bra TIME_DONE
   	  

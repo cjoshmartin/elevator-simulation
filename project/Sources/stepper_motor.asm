@@ -30,6 +30,7 @@ change_in_direction:
 
 Delay:  ldaa stepper_flag
 		cmpa #1
+		CLI	; had problem with interupt flag not getting reset
 		beq Delay
 			
 again: 
