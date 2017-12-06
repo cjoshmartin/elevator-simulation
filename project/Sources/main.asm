@@ -1,11 +1,11 @@
             INCLUDE 'derivative.inc'
             
-            XDEF _Startup, MAIN, MAIN_2, stateofelevator
+            XDEF _Startup, MAIN, stateofelevator
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
-            XDEF NEXT_FLOOR
+            XDEF NEXT_FLOOR, Count
             xdef direction
             XDEF TIME_INT, Count_1, Count_2, flag
             XDEF is_open_or_closed, was_open_or_closed
@@ -13,7 +13,7 @@
             xdef stepper_flag, stepper_delay
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
            	XDEF LED_flag,LED_delay
-           	XREF stepper_motor	
+           	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
             XREF dip_switches
@@ -55,8 +55,9 @@ was_open_or_closed:     ds.b    1 ; stores the old value of is_open_or_closed
 ;POT_Moter
 max_value_of_pot:		ds.b	1
 ; Interrupts
-Count_1: 				ds.b    1
+Count_1: 				ds.b    2
 Count_2:				ds.b    1
+Count: 					ds.b    2
 flag:					ds.b 	1
 
 
@@ -77,12 +78,10 @@ MAIN:
    JSR keypadoutput
    ldaa pressed
    cmpa #9
-   BGT MAIN_2
+   BGT MAIN
    JSR ELEVATOR_FLOOR
    BRA MAIN
    
-
-BRA MAIN
 
 
 ;--------------------------------------------------------------------------------
@@ -112,10 +111,7 @@ TIME_INT:
 	
 	 bra TIME_DONE
 	 
-just_delay:	;0   
-   	  ;ldaa CARRY
-	  	  ;cmpa #1 
-	  	 	 ;beq TIME_DONE  
+just_delay:	;0    
 	  	     ldx WAIT
 	 	  	 dex
 	  	  	 stx WAIT

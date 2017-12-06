@@ -81,8 +81,8 @@ PORTS_CODE:	 SECTION
     clr LED_delay
     clr stepper_delay
    
-    movb #1, currentfloor
-    movb #1, NEXT_FLOOR
+    movb #'1', currentfloor
+    movb #'1', NEXT_FLOOR
 	movb #0, stepper_flag ;init state of the stepper
 	movb #0, flag
    	movb #$74, max_value_of_pot
