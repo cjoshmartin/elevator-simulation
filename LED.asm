@@ -14,7 +14,7 @@ blink_sequence: 			dc.b 	$FF, $00, $FF,$00,$FA ; FA is the end of the seqence
 
 lenghtofdelay:	        equ		50000
 
-LED: ;movb #2, flag 
+LED: movb #2, flag 
 	 movb #$00, port_s
 	 ldaa direction
 	 cmpa #1
@@ -22,7 +22,7 @@ LED: ;movb #2, flag
 	 cmpa #2
 	 beq going_down_leds
 	       
-blink:            movb #2, flag 
+blink:
 			ldx #blink_sequence
 			 
 Delay:		 ldaa LED_flag
