@@ -10,7 +10,7 @@
             XDEF TIME_INT, Count_1, Count_2, flag
             XDEF is_open_or_closed, was_open_or_closed
             XDEF DC_flag,DC_delay
-            xdef stepper_flag, stepper_delay
+            xdef stepper_flag, stepper_delay, should_led
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
            	XDEF LED_flag,LED_delay
            	XREF stepper_motor	
@@ -19,6 +19,7 @@
             XREF dip_switches
             XREF keypadoutput, pressed, TIME_VAL, DATE_VAL,port_s
        
+       		XREF sound_arr,SendsChr,PlayTone
             XREF __SEG_END_SSTACK     ; symbol defined by the linker for the end of the stack
 
 
@@ -46,6 +47,7 @@ LED_delay:				ds.b	1
 ;stepper Motor
 stepper_flag:			ds.b    1
 stepper_delay:			ds.w    1
+should_led:				ds.b	1
 ;DC MOTOR
 DC_flag:				ds.b 	1
 DC_delay:				ds.b	1
@@ -54,6 +56,8 @@ is_open_or_closed:		ds.b	1 ; if 0 then closed, if 1 then openned...
 was_open_or_closed:     ds.b    1 ; stores the old value of is_open_or_closed
 ;POT_Moter
 max_value_of_pot:		ds.b	1
+; Sound
+sound_delay:			ds.b    1
 ; Interrupts
 Count_1: 				ds.b    1
 Count_2:				ds.b    1
@@ -65,6 +69,7 @@ MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
+
     JSR WELCOME
     JSR DATE_TIME
     JSR ADMIN
@@ -72,21 +77,14 @@ _Startup:
     movb #99, flag
     CLI
    
-MAIN_2:
-   JSR MAIN_MENU
-   JSR keypadoutput
-   jsr dip_switches
-   JSR pot_meter ; doesn't work right now 
-   jsr stepper_motor   
-   BRA MAIN_2
 
-   ;WELCOME_WAIT:
-   ;ldaa CARRY
-   ;cmpa #1
-   ;BNE WELCOME_WAIT
-   ;movb #0, CARRY
-   ;movb #4, WAIT
-  
+   movb #99, flag
+    ;JSR keypadoutput
+   jsr dip_switches
+   ;JSR pot_meter ; doesn't work right now 
+   ;jsr stepper_motor   
+   movb #5, flag
+
    bra MAIN_2 ; TODO: change this later
    
 
@@ -102,7 +100,9 @@ TIME_INT:
 ; 2 - LED
 ; 3 - stepper_motor 
 ; 4 - ERROR MESSAGE
-; 5 - General Delay
+
+; 5 - sound
+
 ; 99 - DO Nothing
 ;---------------------------------------------------- 
  ldaa flag
@@ -114,10 +114,13 @@ TIME_INT:
 	 beq LED_delay_RTI
 	 cmpa #3 
 	 	beq stepper_delayer
-	
-	 bra TIME_DONE
+	 cmpa #5
+	 	lbra sounds_RTI
+	 	
+	 lbra TIME_DONE
 	 
 just_delay:	;0   
+
    	  ;ldaa CARRY
 	  	  ;cmpa #1 
 	  	 	 ;beq TIME_DONE  
@@ -169,10 +172,31 @@ stepper_delayer: ; 3
  	   cpx #0
 	   BNE TIME_DONE
 	   movb #0, stepper_flag
-	   movw #40, stepper_delay
+
+	   movw #$FF, stepper_delay
 	   
-	   bra TIME_DONE	   
-  	  
+	   bra TIME_DONE
+sounds_RTI:;5
+	   ldx #sound_arr
+	   ldaa 1,x+
+	   psha
+	   jsr SendsChr
+	   pula
+	   ;clr sound_delay
+play_note:
+	   ldd sound_delay
+	   addd #1
+	   jsr PlayTone
+	   std sound_delay
+	   cpd #2000
+	   bne TIME_DONE
+	 
+	 bra TIME_DONE
+	   	   
+	   
+	   
+; 99 or other unknown input	   
+
   TIME_DONE:
     JSR CLOCK_INT
     bset CRGFLG, #$80
