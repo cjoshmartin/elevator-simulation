@@ -3,9 +3,7 @@
 					XREF port_p_ddr,port_t,port_p
 					XREF direction, is_open_or_closed, LED
 					XREF flag
-					XREF stepper_delay, stepper_flag
-					XREF should_led
-
+					XREF stepper_delay, stepper_flag, stepper_seq, current_step_in_seq
 val ds.b 1
 highorlow ds.w 2
 DelayCount ds.w 1
@@ -42,14 +40,8 @@ again:
        STAA port_p
        movb #1, stepper_flag
        bra Delay
-       
-increment:  inc should_led
-		    ldaa should_led
-			cmpa #8
-			bne nope
+increment: 
 		    jsr LED
-		    movb #0,should_led
-
 nope:  rts
 
 
