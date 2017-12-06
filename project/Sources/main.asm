@@ -5,20 +5,22 @@
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
-            XDEF NEXT_FLOOR
+            XDEF NEXT_FLOOR, Count
             xdef direction
             XDEF TIME_INT, Count_1, Count_2, flag
             XDEF is_open_or_closed, was_open_or_closed
             XDEF DC_flag,DC_delay
             xdef stepper_flag, stepper_delay
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
+
            	XDEF LED_flag,LED_delay, should_led
+
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
             XREF dip_switches
             XREF keypadoutput, pressed, TIME_VAL, DATE_VAL,port_s
-       		XREF sound_arr,SendsChr,PlayTone
+	XREF sound_arr,SendsChr,PlayTone
        		
             XREF __SEG_END_SSTACK     ; symbol defined by the linker for the end of the stack
 
@@ -57,8 +59,9 @@ was_open_or_closed:     ds.b    1 ; stores the old value of is_open_or_closed
 ;POT_Moter
 max_value_of_pot:		ds.b	1
 ; Interrupts
-Count_1: 				ds.b    1
+Count_1: 				ds.b    2
 Count_2:				ds.b    1
+Count: 					ds.b    2
 flag:					ds.b 	1
 ; Sound
 sound_flag:		    	ds.b    1
@@ -69,6 +72,7 @@ MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
+
    ; JSR WELCOME
     ;JSR DATE_TIME
     ;JSR ADMIN
@@ -127,9 +131,7 @@ TIME_INT:
 ; 2 - LED
 ; 3 - stepper_motor 
 ; 4 - ERROR MESSAGE
-
-; 5 - sound
-
+; 5 - General Delay
 ; 99 - DO Nothing
 ;---------------------------------------------------- 
  ldaa flag
@@ -141,12 +143,14 @@ TIME_INT:
 	 beq LED_delay_RTI
 	 cmpa #3 
 	 	beq stepper_delayer
+
 	 ;cmpa #5
 	 ;	lbeq sounds_RTI
 	 	
 	 lbra TIME_DONE
 	 
 just_delay:	;0     
+
 	  	     ldx WAIT
 	 	  	 dex
 	  	  	 stx WAIT
@@ -195,6 +199,7 @@ stepper_delayer: ; 3
  	   cpx #0
 	   BNE TIME_DONE
 	   movb #0, stepper_flag
+
 
 	   movw #30, stepper_delay
 	   

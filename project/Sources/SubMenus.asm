@@ -546,7 +546,9 @@ FLOOR_ENTRY:
        	movb #' ',disp+27
        	movb #'-',disp+28
        	movb #' ',disp+29
-      	movb #'-',disp+30
+
+      	movb #' ',disp+30
+
        	movb #' ',disp+31
        	movb #0,disp+32    
        	

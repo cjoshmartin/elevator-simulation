@@ -6,7 +6,9 @@
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
 	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
+
 	   	XREF flag, LED_flag, should_led
+
 	   
 
 
@@ -35,7 +37,9 @@ PORTS_CODE:	 SECTION
 	movb #0, Count_1
 	movb #0, Count_2
 	movb #%00011110, port_p_ddr ; intialize the stepper motor
+
 ;	movb #$20, port_t_ddr ;intialize speaker
+
 	
 	;pre-initialize the value for time
 	movb #'-', TIME_VAL
@@ -81,11 +85,14 @@ PORTS_CODE:	 SECTION
     clr LED_flag
     clr LED_delay
     clr stepper_delay
+
+   
+    movb #'1', currentfloor
+    movb #'1', NEXT_FLOOR
+
     
     clr should_led
-   
-    movb #1, currentfloor
-    movb #1, NEXT_FLOOR
+
 	movb #0, stepper_flag ;init state of the stepper
 	movb #0, flag
    	movb #$74, max_value_of_pot
