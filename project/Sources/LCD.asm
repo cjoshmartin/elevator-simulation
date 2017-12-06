@@ -13,6 +13,7 @@ disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 
+number_to_ascii_convert: ds.b 1
 
 ;----------------------------------------------------------------------
 CODE_LCD: SECTION
@@ -246,8 +247,17 @@ MAIN_MENU:
         movb #16, LCD_CUR
         JSR DATE_disp
         
-        movb currentfloor, disp+15
-        movb NEXT_FLOOR, disp+31
+        ldab currentfloor
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+15
+        
+        ldab NEXT_FLOOR
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+31
         ldd #disp
         jsr display_string
         
