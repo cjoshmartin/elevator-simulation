@@ -2,13 +2,11 @@
 		XDEF port_s, port_t, port_p,port_u, ddr_port_u ,psr_port_u, pde_port_u 
 	    XDEF RTIENA,RTIFLG
 	    
-	    XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL, should_led
+	    XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
 	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
-
-	   	XREF flag,LED_flag
-
+	   	XREF flag, LED_flag, should_led
 	   
 
 
@@ -37,8 +35,8 @@ PORTS_CODE:	 SECTION
 	movb #0, Count_1
 	movb #0, Count_2
 	movb #%00011110, port_p_ddr ; intialize the stepper motor
-	movb #$20, port_t_ddr ;intialize speaker
-		
+;	movb #$20, port_t_ddr ;intialize speaker
+	
 	;pre-initialize the value for time
 	movb #'-', TIME_VAL
 	movb #'-', TIME_VAL+1
@@ -77,17 +75,17 @@ PORTS_CODE:	 SECTION
     BSET port_t_ddr, #$08 ;Turns the DC MOTOR
    
     clr stateofelevator
-    clr currentfloor
     clr floor
     clr state_of_load
     clr stepper_flag
     clr LED_flag
     clr LED_delay
     clr stepper_delay
-
+    
     clr should_led
-
    
+    movb #1, currentfloor
+    movb #1, NEXT_FLOOR
 	movb #0, stepper_flag ;init state of the stepper
 	movb #0, flag
    	movb #$74, max_value_of_pot
