@@ -16,7 +16,7 @@ ADMIN_SET:
              
     ADMIN_PASS_SET:
       ldy #0
-      jsr keypad  ; call the keypad ; TODO: NEEED TO fix
+      jsr keypadoutput  ; call the keypad ; TODO: NEEED TO fix
       ldaa pressed	   	; store the value from the keypad to Registor 'A'
       cmpa #9
 	    BGT ADMIN_PASS_SET

@@ -264,9 +264,9 @@ You_Entered:
           movb #40, WAIT
           movb #16, LCD_CUR
            
-          movb #'Y',disp        
+            movb #'Y',disp        
        		movb #'o',disp+1
-          movb #'u',disp+2
+            movb #'u',disp+2
         	movb #' ',disp+3
         	movb #'E',disp+4
         	movb #'n',disp+5
@@ -371,13 +371,13 @@ EXIT:
 CORRECT_ADM_PASS:
 
         
-          pshd
-          movb #40, WAIT
-          movb #0, CARRY
+            pshd
+            movb #4000, WAIT
+            movb #0, CARRY
            
-          movb #'Y',disp        
+            movb #'Y',disp        
        		movb #'o',disp+1
-          movb #'u',disp+2
+            movb #'u',disp+2
         	movb #' ',disp+3
         	movb #'E',disp+4
         	movb #'n',disp+5
@@ -409,7 +409,7 @@ CORRECT_ADM_PASS:
         	movb #' ',disp+31
         	movb #0,disp+32
         
-          ldd #disp
+            ldd #disp
         	jsr display_string
         	
        puld
@@ -423,9 +423,9 @@ INCORRECT_INPUT:
           movb #0, CARRY
           pshd
            
-          movb #'S',disp        
+            movb #'S',disp        
        		movb #'o',disp+1
-          movb #'r',disp+2
+            movb #'r',disp+2
         	movb #'r',disp+3
         	movb #'y',disp+4
         	movb #' ',disp+5
@@ -461,7 +461,10 @@ INCORRECT_INPUT:
         	jsr display_string 
         	
         	puld
-       RTS 	    
+       RTS
+       
+;------------------------------------------------------------------------------       
+        	    
 ERROR_DOOR:
         psha
         pshb

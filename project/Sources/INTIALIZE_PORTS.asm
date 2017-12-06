@@ -5,8 +5,8 @@
 	    XREF init_LCD, Count_1, Count_2, TIME_VAL, DATE_VAL
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
-	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay, max_value_of_pot, currentfloor
-	   	XREF flag,LED_flag
+	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
+	   	XREF flag, LED_flag
 	   
 
 
@@ -40,10 +40,10 @@ PORTS_CODE:	 SECTION
 	movb #'-', TIME_VAL
 	movb #'-', TIME_VAL+1
 	movb #':', TIME_VAL+2
-  movb #'-', TIME_VAL+3
-  movb #'-', TIME_VAL+4
-  movb #'-', TIME_VAL+5
-  movb #'-', TIME_VAL+6
+    movb #'-', TIME_VAL+3
+    movb #'-', TIME_VAL+4
+    movb #'-', TIME_VAL+5
+    movb #'-', TIME_VAL+6
   
   ;pre-initialize the value for date
   movb #'-', DATE_VAL
@@ -79,6 +79,8 @@ PORTS_CODE:	 SECTION
     clr state_of_load
     clr stepper_flag
     clr LED_flag
+    clr LED_delay
+    clr stepper_delay
    
 	movb #0, stepper_flag ;init state of the stepper
 	movb #0, flag
@@ -88,7 +90,7 @@ PORTS_CODE:	 SECTION
     movb #2, direction ; tell the elevator wants to move upwards
 	
 	bset CRGINT, #$80					  ;sets CRGINT
- 	movb #$20 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 
+ 	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 
  	CLI
     RTS    
 				

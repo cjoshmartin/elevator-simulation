@@ -31,7 +31,7 @@ MONTH_DAYS: dc.b 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	
 
 My_Variable: 	section 
-WAIT: 	ds.b 		1
+WAIT: 	ds.b 		2
 CARRY: 	ds.b 		1
 disp:	ds.b 		33
 NEXT_FLOOR: ds.b 	1
@@ -66,28 +66,26 @@ _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
     JSR WELCOME
-    ;JSR DATE_TIME
-    ;JSR ADMIN
-    ;JSR SECRET
-    ;JSR MAIN_MENU
+    JSR DATE_TIME
+    JSR ADMIN
+    JSR SECRET
     movb #99, flag
     CLI
    
 MAIN_2:
-    ;JSR keypadoutput
-   
-   JSR pot_meter ; doesn't work right now 
+   JSR MAIN_MENU
+   JSR keypadoutput
    jsr dip_switches
-   jsr LED
+   JSR pot_meter ; doesn't work right now 
    jsr stepper_motor   
-
+   BRA MAIN_2
 
    ;WELCOME_WAIT:
    ;ldaa CARRY
    ;cmpa #1
    ;BNE WELCOME_WAIT
    ;movb #0, CARRY
-  ; movb #4, WAIT
+   ;movb #4, WAIT
   
    bra MAIN_2 ; TODO: change this later
    
@@ -104,6 +102,7 @@ TIME_INT:
 ; 2 - LED
 ; 3 - stepper_motor 
 ; 4 - ERROR MESSAGE
+; 5 - General Delay
 ; 99 - DO Nothing
 ;---------------------------------------------------- 
  ldaa flag
@@ -119,13 +118,13 @@ TIME_INT:
 	 bra TIME_DONE
 	 
 just_delay:	;0   
-   	  ldaa CARRY
-	  	  cmpa #1 
-	  	 	 beq TIME_DONE  
-	  	  ldaa WAIT
-	 	  	deca
-	  	  	staa WAIT
-	      cmpa #0
+   	  ;ldaa CARRY
+	  	  ;cmpa #1 
+	  	 	 ;beq TIME_DONE  
+	  	     ldx WAIT
+	 	  	 dex
+	  	  	 stx WAIT
+	        cpx #0
 	 	  	BNE TIME_DONE
 	      movb #1, CARRY
 	      movb #0, WAIT
@@ -133,27 +132,31 @@ just_delay:	;0
 
 pot_meter_delay: ; 1
 	   ldaa DC_flag
-		   cmpa #0
+		    cmpa #0
 		   	beq TIME_DONE
-		   ldx DC_delay
+		    ldx DC_delay
 		   	 dex
 		  	 stx DC_delay
-		   cpx #0
+		    cpx #0
 		   	BNE TIME_DONE
 		   movb #0,DC_flag
-		   movb #10,DC_delay  
-
+		   movb #10,DC_delay 
+		    
+		  bra TIME_DONE
+		  
 LED_delay_RTI: ; 2
 	   ldaa LED_flag
 		   cmpa #0
 		   	beq TIME_DONE
-		   ldab LED_delay
+		    ldab LED_delay
 		   	 decb
 		  	 stab LED_delay
-		   cmpb #0
+		    cmpb #0
 		   	BNE TIME_DONE
 		   movb #0,LED_flag
-		   movb #60,LED_delay  
+		   movb #$FF,LED_delay
+		     
+  	    bra TIME_DONE
   	    	  
 stepper_delayer: ; 3
 	   ldaa stepper_flag
@@ -166,85 +169,77 @@ stepper_delayer: ; 3
  	   cpx #0
 	   BNE TIME_DONE
 	   movb #0, stepper_flag
-	   movw #60, stepper_delay
+	   movw #40, stepper_delay
 	   
-	   bra TIME_DONE
+	   bra TIME_DONE	   
   	  
   TIME_DONE:
+    JSR CLOCK_INT
     bset CRGFLG, #$80
     RTI
     
 
 
-;CLOCK_INT:
-  ;LDAA #Count_1
-  ;inca
- ; staa Count_1
- ; CMPA #20
- ; BNE CLOCK_DONE
- ; movb #0, Count_1
+CLOCK_INT:
+  LDX Count_1
+  inx
+  stx Count_1
+  CPX #8000
+  BNE CLOCK_DONE
+  movb #0, Count_1
   
- ; LDAA #Count_2
- ; inca
- ; staa Count_2
- ; cmpa #60
-  ;BNE CLOCK_DONE
-  ;movb #0, Count_2
+  LDAA Count_2
+  inca
+  staa Count_2
+  cmpa #60
+  BNE CLOCK_DONE
+  movb #0, Count_2
   
- ; CLOCK_MINUTES_ONES:
- ; LDAA TIME_VAL+4
- ; inca
- ; staa TIME_VAL+4
- ; cmpa #10
- ; BNE CLOCK_DONE
- ; movb #0, TIME_VAL+4
-  ;BRA CLOCK_MINUTES_TENS
+  CLOCK_MINUTES_ONES:
+  LDAA TIME_VAL+4
+  inca
+  staa TIME_VAL+4
+  cmpa #10
+  BNE CLOCK_DONE
+  movb #0, TIME_VAL+4
+  BRA CLOCK_MINUTES_TENS
   
-  ;CLOCK_MINUTES_TENS:
-  ;ldaa TIME_VAL+3
-  ;inca
-  ;staa TIME_VAL+3
-  ;cmpa #6
-  ;BNE CLOCK_DONE
-  ;movb #0, TIME_VAL+3
-  ;bra CLOCK_HOURS_ONES
+  CLOCK_MINUTES_TENS:
+  ldaa TIME_VAL+3
+  inca
+  staa TIME_VAL+3
+  cmpa #6
+  BNE CLOCK_DONE
+  movb #0, TIME_VAL+3
+  bra CLOCK_HOURS_ONES
   
-  ;CLOCK_HOURS_ONES:
-  ;ldaa TIME_VAL+2
-  ;inca
-  ;staa TIME_VAL+2
-  ;cmpa #3
-  ;BNE CLOCK_HOURS_ONES_CHECK
+  CLOCK_HOURS_ONES:
+  ldaa TIME_VAL+2
+  inca
+  staa TIME_VAL+2
+  cmpa #3
+  BNE CLOCK_HOURS_ONES_CHECK
   
-  ;CLOCK_HOURS_ONES_CONT:
-  ;cmpa #10
-  ;BNE CLOCK_DONE 
-  ;movb #0, TIME_VAL+2
-  ;bra CLOCK_MINUTE_TENS
-  ;
-  ;CLOCK_MINUTE_ONES_CHECK:
-  ;psha
-  ;LDAA TIME_VAL+1
-  ;cmpa #1
-  ;BNE CLOCK_HOURS_ONES_CONT
-  ;movb #1, TIME_VAL+2
-  ;movb #0, TIME_VAL+1
-  ;bra CLOCK_DATE_DAYS
-  ;CLOCK_MINUTE_TENS:
+  CLOCK_HOURS_ONES_CONT:
+  cmpa #10
+  BNE CLOCK_DONE 
+  movb #0, TIME_VAL+2
+  bra CLOCK_MINUTE_TENS
   
-  ;ldaa TIME_VAL+1
-  ;inca
-  ;staa TIME_VAL+1
-  ;cmpa #6
+  CLOCK_HOURS_ONES_CHECK:
+  psha
+  LDAA TIME_VAL+1
+  cmpa #1
+  BNE CLOCK_HOURS_ONES_CONT
+  movb #1, TIME_VAL+2
+  movb #0, TIME_VAL+1
+  bra CLOCK_DONE
+  CLOCK_MINUTE_TENS:
   
+  ldaa TIME_VAL+1
+  inca
+  staa TIME_VAL+1
+  cmpa #6
   
-
-;IRQ_INT:
-
-
-
-;DOOR_OPEN_INT:
-
-
-
-;SECRET_MODE_INT:
+  CLOCK_DONE:
+  RTS
