@@ -1,6 +1,8 @@
 
+
 		XDEF ELEVATOR_FLOOR, Floors_Entered
 		XREF floor, FLOOR_ENTRY, FLOOR_DEST, LCD_CUR, LCD_VAL, disp_loc, keypadoutput, pressed, currentfloor, disp, display_string
+
 ELEVATOR_RAM: SECTION
 Floors_Entered: ds.b 7
 Floors_Sorted: ds.b 7
@@ -20,6 +22,7 @@ ELEVATOR_FLOOR:
 		   ldaa pressed
 		   cmpa #$D
 
+
 		   BEQ EF_2
 		   cmpa currentfloor
 		   BEQ EF_1
@@ -27,6 +30,7 @@ ELEVATOR_FLOOR:
 		   BGT EF_1
 		   staa 1, x+
 		  EF_1_CONT:  
+
 
 		   adda #48
 		   staa LCD_VAL

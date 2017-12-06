@@ -15,6 +15,7 @@
 
            	XDEF LED_flag,LED_delay, should_led
 
+
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
@@ -82,12 +83,14 @@ _Startup:
     clr sound_flag
 MAIN:
    JSR MAIN_MENU
+
    ;JSR keypadoutput
    ;ldaa pressed
    ;cmpa #9
    ;BGT MAIN
    ;JSR ELEVATOR_FLOOR
     ;JSR keypadoutput
+
    
    jsr dip_switches
    JSR pot_meter ; doesn't work right now 
@@ -102,6 +105,7 @@ MAIN:
 ;	   clr sound_delay 
 ;	   movb #1, sound_flag
 	   
+
 
 	   
 ;load_it:ldaa sound_delay

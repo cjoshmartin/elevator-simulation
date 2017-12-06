@@ -1,4 +1,4 @@
-    XDEF MAIN_MENU_SETUP,ADMIN_MENU_SETUP, display_DATE_TIME_SET, ERROR_MENU, SECRET_MENU_SETUP, SYS_SET_MAIN_MENU
+ XDEF MAIN_MENU_SETUP, ADMIN_MENU_SETUP, display_DATE_TIME_SET, ERROR_MENU, SECRET_MENU_SETUP, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
     XDEF Floor_SEL_MENU, NEXT_FLOOR_MENU, ERROR_MENU
     
     XREF disp, LCD_VAL, LCD_CUR
@@ -144,6 +144,8 @@ ADMIN_MENU_SETUP:
        	movb #'*',disp+31
        	movb #0,disp+32
        	
+       	ldd #disp
+       	JSR display_string
       pulb
       pula
       RTS
@@ -175,7 +177,7 @@ SECRET_MENU_SETUP:
        	movb #'S',disp+18
        	movb #'S',disp+19
        	movb #':',disp+20
-       	movb #'-',disp+21
+       	movb #'*',disp+21
        	movb #'-',disp+22
        	movb #'-',disp+23
        	movb #'-',disp+24
@@ -184,8 +186,8 @@ SECRET_MENU_SETUP:
        	movb #'-',disp+27
        	movb #'-',disp+28
        	movb #'-',disp+29
-      	movb #'-',disp+30
-       	movb #'-',disp+31
+      	movb #'*',disp+30
+       	movb #'*',disp+31
        	movb #0,disp+32
        	
        	ldd #disp
@@ -341,43 +343,43 @@ ERROR_MENU:
       
 ;----------------------------------------------------------------------------------------
 
-SYS_SET_MAIN_MENU:
+SYS_SET_MAIN_MEN_1:
 
     psha
     pshb
     
         movb #'>',disp
        	movb #'D',disp+1
-       	movb #'T',disp+2
-      	movb #'/',disp+3
-       	movb #'T',disp+4
-       	movb #'I',disp+5
-       	movb #' ',disp+6
-       	movb #' ',disp+7
-       	movb #' ',disp+8
-       	movb #'A',disp+9
-       	movb #'D',disp+10
-       	movb #'M',disp+11
-       	movb #'I',disp+12
-       	movb #'N',disp+13
-       	movb #' ',disp+14
-       	movb #' ',disp+15
+       	movb #'A',disp+2
+      	movb #'T',disp+3
+       	movb #'E',disp+4
+       	movb #'/',disp+5
+       	movb #'T',disp+6
+       	movb #'I',disp+7
+       	movb #'M',disp+8
+       	movb #'E',disp+9
+       	movb #'*',disp+10
+       	movb #'*',disp+11
+       	movb #'*',disp+12
+       	movb #'*',disp+13
+       	movb #'*',disp+14
+       	movb #'*',disp+15
        	movb #' ',disp+16
-       	movb #'S',disp+17
-       	movb #'E',disp+18
-       	movb #'C',disp+19
-       	movb #' ',disp+20
-       	movb #'I',disp+21
-       	movb #'D',disp+22
-       	movb #' ',disp+23
-       	movb #' ',disp+24
+       	movb #'A',disp+17
+       	movb #'D',disp+18
+       	movb #'M',disp+19
+       	movb #'I',disp+20
+       	movb #'N',disp+21
+       	movb #' ',disp+22
+       	movb #'P',disp+23
+       	movb #'A',disp+24
        	movb #'S',disp+25
-       	movb #'E',disp+26
-       	movb #'C',disp+27
-       	movb #' ',disp+28
-       	movb #'P',disp+29
-      	movb #'A',disp+30
-       	movb #'S',disp+31
+       	movb #'S',disp+26
+       	movb #'W',disp+27
+       	movb #'O',disp+28
+       	movb #'R',disp+29
+      	movb #'D',disp+30
+       	movb #'*',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
@@ -385,4 +387,53 @@ SYS_SET_MAIN_MENU:
        	
       pulb
       pula
-      RTS            
+      RTS
+                 
+;------------------------------------------------------------------------------------------
+
+SYS_SET_MAIN_MEN_2:
+
+    psha
+    pshb
+    
+        movb #'>',disp
+       	movb #'S',disp+1
+       	movb #'E',disp+2
+      	movb #'C',disp+3
+       	movb #'R',disp+4
+       	movb #'E',disp+5
+       	movb #'T',disp+6
+       	movb #' ',disp+7
+       	movb #'I',disp+8
+       	movb #'D',disp+9
+       	movb #'/',disp+10
+       	movb #'P',disp+11
+       	movb #'A',disp+12
+       	movb #'S',disp+13
+       	movb #'S',disp+14
+       	movb #'*',disp+15
+       	movb #' ',disp+16
+       	movb #'E',disp+17
+       	movb #'x',disp+18
+       	movb #'i',disp+19
+       	movb #'t',disp+20
+       	movb #' ',disp+21
+       	movb #'S',disp+22
+       	movb #'Y',disp+23
+       	movb #'S',disp+24
+       	movb #'.',disp+25
+       	movb #' ',disp+26
+       	movb #'S',disp+27
+       	movb #'e',disp+28
+       	movb #'t',disp+29
+      	movb #'.',disp+30
+       	movb #'*',disp+31
+       	movb #0,disp+32
+       	
+       	LDD #disp
+       	JSR display_string
+       	
+      pulb
+      pula
+      RTS                 
+                  
