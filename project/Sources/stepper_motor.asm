@@ -5,6 +5,7 @@
 					XREF flag
 					XREF stepper_delay, stepper_flag
 					XREF should_led
+
 val ds.b 1
 highorlow ds.w 2
 DelayCount ds.w 1
@@ -41,12 +42,14 @@ again:
        STAA port_p
        movb #1, stepper_flag
        bra Delay
+       
 increment:  inc should_led
 		    ldaa should_led
 			cmpa #8
 			bne nope
 		    jsr LED
 		    movb #0,should_led
+
 nope:  rts
 
 

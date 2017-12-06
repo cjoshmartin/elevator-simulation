@@ -1,11 +1,13 @@
 		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU ;Functions defined
-		XDEF disp, LCD_CUR, LCD_VAL                              ;Variables defined
+		XDEF disp, LCD_CUR, LCD_VAL,  SYS_SETTINGS                              ;Variables defined
 		
 		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL, CARRY, You_Entered, CORRECT_SUBMENU
     XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET, EXIT
     XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
     XREF TIME_INT
-    XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2, keypad
+    XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2, keypad, INFO_MENU_3, INFO_MENU_4, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
+    XREF INFO_MENU_5, INFO_MENU_6
+    
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
@@ -16,11 +18,11 @@ LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 CODE_LCD: SECTION
 ;This segment of the code only occurs upon the start up of the elevator		
 WELCOME:
-          movb #40, WAIT		  ;Loads in value for interrupt
+            movb #9999, WAIT		  ;Loads in value for interrupt
 			    
-		      movb #'W',disp        ;remaining code loads in Welcome and startup
+		    movb #'W',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
-          movb #'l',disp+2
+            movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -55,7 +57,7 @@ WELCOME:
         	ldd #disp
         	jsr display_string
         	
-        	WELCOME_WAIT:
+        WELCOME_WAIT:
           ldaa CARRY
           cmpa #1
           BNE WELCOME_WAIT
@@ -64,6 +66,8 @@ WELCOME:
           
           JSR INFO_MENU_1
           JSR INFO_MENU_2
+          JSR INFO_MENU_3
+          JSR INFO_MENU_5
 		  RTS
 		
 ;------------------------------------------------------------------------
@@ -76,19 +80,23 @@ WELCOME:
 DATE_TIME:
         JSR display_DATE_TIME_SET
         ldy #0
-              
+               
                movb #6, LCD_CUR
         	   JSR DATE_disp
         	   movb #22, LCD_CUR
         	   JSR TIME_disp 
         	   movb #0, LCD_CUR
-        	   
+        	   movb #'>', LCD_VAL
         	ENTER_DT:
 
         	  
              jsr keypadoutput
              ldaa pressed
+             cmpa #$D
+             BNE ENTER_DT_CONT
+             jmp Exit_DT
              
+           ENTER_DT_CONT:  
              ldaa LCD_CUR
              jsr INPUT
              cpx #1
@@ -171,10 +179,18 @@ DATE_TIME:
             movb #'>', LCD_VAL
             JMP ENTER_DT
            
-           Exit_DT: 
+           Exit_DT:
+             ldaa TIME_VAL
+             CMPA #'-'
+             BEQ NO_EXIT_DT
+             ldaa DATE_VAL
+             cmpa #'-'
+             BEQ NO_EXIT_DT
             RTS
           
-
+		   NO_EXIT_DT:
+		     JSR INFO_MENU_6
+		     jmp DATE_TIME
 
 ;------------------------------------------------------------------------
 ;This is the top of the set admin password        	        
@@ -239,9 +255,108 @@ MAIN_MENU:
         RTS	    	
  
 ;------------------------------------------------------------------- 
+;The code below allows navigation through the system settings menu
+
+SYS_SETTINGS:
+    JSR INFO_MENU_4
+    JSR SYS_SET_MAIN_MEN_1
+	movb #0, LCD_CUR
+    movb #'>', LCD_VAL
+    
+      SYS_SET_1:
+        JSR keypadoutput
+        ldaa LCD_CUR
+        cmpa #16
+        BNE SYS_SET_1_CONT
+        ldaa pressed
+        cmpa #$B
+        BNE SYS_SET_1
+        JSR SYS_SET_MAIN_MEN_2
+        JMP SYS_SET_2
+        
+       SYS_SET_1_CONT:
+         cmpa #$D
+         BEQ SYS_SET_EXIT
+         cmpa #$10
+         BEQ SYS_SET_SEL_1a
+         ldaa LCD_CUR
+         JSR INPUT
+         
+         
+         KERNAl_2:
+                  
+             jsr disp_loc ; will change where the  '>' is
+             ldab LCD_CUR
+             staa LCD_CUR
+             movb #' ', LCD_VAL ; changes to the current location of '>' to  ' '
+             jsr disp_loc
+             stab LCD_CUR
+             movb #'>', LCD_VAL ; after '>' moves will set it to that position
+             ldx #0
+             bra SYS_SET_1  ; return to the top of DT_TI 
+      
+      SYS_SET_SEL_1a:
+        ldaa LCD_CUR
+        cmpa #0
+        BNE SYS_SET_SEL_1b
+        JSR DATE_TIME
+        JSR SYS_SET_MAIN_MEN_1
+        jmp SYS_SET_1
+        
+      SYS_SET_SEL_1b:
+        JSR ADMIN
+        JSR SYS_SET_MAIN_MEN_1
+  		jmp SYS_SET_1
+        
+      SYS_SET_EXIT:
+        RTS
+          
+      SYS_SET_2:
+        JSR keypadoutput
+        ldaa LCD_CUR
+        cmpa #0
+        BNE SYS_SET_2_CONT
+        ldaa pressed
+        cmpa #$A
+        BNE SYS_SET_2
+        JSR SYS_SET_MAIN_MEN_1
+        jmp SYS_SET_1
+        
+        
+       SYS_SET_2_CONT:
+         cmpa #$D
+         BEQ SYS_SET_EXIT
+         cmpa #$10
+         BEQ SYS_SET_SEL_2a
+         ldaa LCD_CUR
+         JSR INPUT
+         
+         
+         KERNAl_3:     
+             jsr disp_loc ; will change where the  '>' is
+             ldab LCD_CUR
+             staa LCD_CUR
+             movb #' ', LCD_VAL ; changes to the current location of '>' to  ' '
+             jsr disp_loc
+             stab LCD_CUR
+             movb #'>', LCD_VAL ; after '>' moves will set it to that position
+             ldx #0
+             bra SYS_SET_2  ; return to the top of DT_TI 
+      
+      SYS_SET_SEL_2a:
+        ldaa LCD_CUR
+        cmpa #0
+        BNE SYS_SET_SEL_2b
+        JSR SECRET_SET
+        JSR SYS_SET_MAIN_MEN_2
+        jmp SYS_SET_2
+      SYS_SET_SEL_2b:
+         jmp SYS_SET_EXIT
+      
+        
  
  
- 
+;-------------------------------------------------------------------------------------
   INPUT:
         
         psha			 ;saves value of A
@@ -249,7 +364,7 @@ MAIN_MENU:
         ldaa LCD_CUR	 ;loads current location on LCD SCREEN
         ldab pressed
         
-  UP:     cmpb #$C		 ;checks if up pressed
+  UP:     cmpb #$A		 ;checks if up pressed
         BNE DOWN		 ;if not continue
         cmpa #16		 ;check if LCD SCREEN is on upper 16 
         BLT INPUT_DONE	 ;if so then exit
@@ -258,37 +373,14 @@ MAIN_MENU:
 		ldy #1
         BRA INPUT_DONE
          
-  DOWN:   cmpb #$E		 ;checks if down is pressed
-        BNE LEFT		 ;if not then continue
+  DOWN:   cmpb #$B		 ;checks if down is pressed
+        BNE INPUT_DONE		 ;if not then continue
         cmpa #16		 ;check if LCD SCREEN is on lower 16
         BGE INPUT_DONE	 ;if greater than then exit
         adda #16		 ;else subtract 16 save and exit 
         staa LCD_CUR
 		ldy #1
         BRA INPUT_DONE
-        
-           
-  LEFT:   cmpb #$A		  ;checks and see if left
-        BNE	 RIGHT		  ;if not then continue
-        cmpa #0			  ;compare it to 0 and 16 to see if it is already all the way to the left if so then branch
-        BEQ	 INPUT_DONE	  
-        cmpa #16
-        BEQ	 INPUT_DONE
-        suba #1			  ;if not then decrement and store
-        staa LCD_CUR
-		ldy #1
-        bra INPUT_DONE
-      
-  RIGHT:  cmpb #$B		  ;check and see if right is pressed and if not continue
-        BNE INPUT_DONE	  
-        cmpa #15		  ;compare it to 15 and 31 to see if it is already all the way to the right if so then branch
-        BEQ INPUT_DONE	  
-        cmpa #31
-        BEQ INPUT_DONE
-        adda #1			  ;if not then add one to shift it right and save
-        staa LCD_CUR
-		ldy #1
-        bra INPUT_DONE
   
   INPUT_DONE:
   
