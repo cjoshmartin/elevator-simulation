@@ -1,5 +1,4 @@
             xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
-            xdef FLOOR_ENTRY, FLOOR_DEST
             xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed
             xref display_string
             xref TIME_INT, WAIT, CARRY
@@ -12,9 +11,9 @@ SUBMENU_CODE: Section
             pshb
             movb #11, LCD_CUR 
         
-            movb #'E',disp        
+          movb #'E',disp        
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -109,7 +108,7 @@ SECRET_ID_SUBMENU:
          pshb
     	  	movb #'E',disp        
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -153,9 +152,9 @@ SECRET_ID_SUBMENU:
 SECRET_PASS_SUBMENU:
          psha
          pshb
-    	    movb #'E',disp        ;remaining code loads in Welcome and startup
+    		  movb #'E',disp        ;remaining code loads in Welcome and startup
        	 	movb #'n',disp+1
-            movb #'t',disp+2
+          movb #'t',disp+2
         	movb #'e',disp+3
         	movb #'r',disp+4
         	movb #' ',disp+5
@@ -265,9 +264,9 @@ You_Entered:
           movb #40, WAIT
           movb #16, LCD_CUR
            
-            movb #'Y',disp        
+          movb #'Y',disp        
        		movb #'o',disp+1
-            movb #'u',disp+2
+          movb #'u',disp+2
         	movb #' ',disp+3
         	movb #'E',disp+4
         	movb #'n',disp+5
@@ -309,9 +308,9 @@ EXIT:
         pshd
           movb #16, LCD_CUR
            
-            movb #'A',disp        
+          movb #'A',disp        
        		movb #'r',disp+1
-            movb #'e',disp+2
+          movb #'e',disp+2
         	movb #' ',disp+3
         	movb #'Y',disp+4
         	movb #'o',disp+5
@@ -372,13 +371,13 @@ EXIT:
 CORRECT_ADM_PASS:
 
         
-            pshd
-            movb #4000, WAIT
-            movb #0, CARRY
+          pshd
+          movb #40, WAIT
+          movb #0, CARRY
            
-            movb #'Y',disp        
+          movb #'Y',disp        
        		movb #'o',disp+1
-            movb #'u',disp+2
+          movb #'u',disp+2
         	movb #' ',disp+3
         	movb #'E',disp+4
         	movb #'n',disp+5
@@ -410,7 +409,7 @@ CORRECT_ADM_PASS:
         	movb #' ',disp+31
         	movb #0,disp+32
         
-            ldd #disp
+          ldd #disp
         	jsr display_string
         	
        puld
@@ -424,9 +423,9 @@ INCORRECT_INPUT:
           movb #0, CARRY
           pshd
            
-            movb #'S',disp        
+          movb #'S',disp        
        		movb #'o',disp+1
-            movb #'r',disp+2
+          movb #'r',disp+2
         	movb #'r',disp+3
         	movb #'y',disp+4
         	movb #' ',disp+5
@@ -462,10 +461,7 @@ INCORRECT_INPUT:
         	jsr display_string 
         	
         	puld
-       RTS
-       
-;------------------------------------------------------------------------------       
-        	    
+       RTS 	    
 ERROR_DOOR:
         psha
         pshb
@@ -509,96 +505,3 @@ ERROR_DOOR:
        	pulb
        	pula
       RTS
-      
-;-------------------------------------------------------------------------------------
-
-FLOOR_ENTRY:
-
-        pshd
-        
-  		movb #'Y',disp
-       	movb #'o',disp+1
-       	movb #'u',disp+2
-      	movb #' ',disp+3
-       	movb #'C',disp+4
-       	movb #'h',disp+5
-       	movb #'o',disp+6
-       	movb #'s',disp+7
-       	movb #'e',disp+8
-       	movb #' ',disp+9
-       	movb #'F',disp+10
-       	movb #'l',disp+11
-       	movb #'o',disp+12
-       	movb #'o',disp+13
-       	movb #'r',disp+14
-       	movb #'s',disp+15
-       	movb #'-',disp+16
-       	movb #' ',disp+17
-       	movb #'-',disp+18
-       	movb #' ',disp+19
-       	movb #'-',disp+20
-       	movb #' ',disp+21
-       	movb #'-',disp+22
-       	movb #' ',disp+23
-       	movb #'-',disp+24
-       	movb #' ',disp+25
-       	movb #'-',disp+26
-       	movb #' ',disp+27
-       	movb #'-',disp+28
-       	movb #' ',disp+29
-
-      	movb #' ',disp+30
-
-       	movb #' ',disp+31
-       	movb #0,disp+32    
-       	
-       	ldd #disp
-       	JSR display_string
-       
-       	puld
-      RTS
-      
-;----------------------------------------------------------------------------------- 
-
-FLOOR_DEST:
-		 pshd
-        
-  		movb #'Y',disp
-       	movb #'o',disp+1
-       	movb #'u',disp+2
-      	movb #' ',disp+3
-       	movb #'H',disp+4
-       	movb #'a',disp+5
-       	movb #'v',disp+6
-       	movb #'e',disp+7
-       	movb #' ',disp+8
-       	movb #'R',disp+9
-       	movb #'e',disp+10
-       	movb #'a',disp+11
-       	movb #'c',disp+12
-       	movb #'h',disp+13
-       	movb #'e',disp+14
-       	movb #'d',disp+15
-       	movb #'F',disp+16
-       	movb #'l',disp+17
-       	movb #'o',disp+18
-       	movb #'o',disp+19
-       	movb #'r',disp+20
-       	movb #':',disp+21
-       	movb #'*',disp+22
-       	movb #'*',disp+23
-       	movb #'*',disp+24
-       	movb #'*',disp+25
-       	movb #'0',disp+26
-       	movb #'-',disp+27
-       	movb #'*',disp+28
-       	movb #'*',disp+29
-      	movb #'*',disp+30
-       	movb #'*',disp+31
-       	movb #0,disp+32    
-       	
-       	ldd #disp
-       	JSR display_string
-       
-       	puld
-      RTS      
