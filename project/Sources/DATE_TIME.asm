@@ -14,7 +14,7 @@ TIME_SET:
      clr pressed             
      TIME_IN:
        ldy #0
-       JSR keypadoutput
+       JSR keypad
        ldaa pressed
 	     cmpa #9
 	     BGT TIME_IN
@@ -39,12 +39,10 @@ TIME_SET:
          LDAA #':'             ;sets it to : increments and continues
          STAA 1, x+
          movb #14, LCD_CUR
-         jmp TIME_IN
       
        TC_3:                   ;sees if it reached the end or not 
          cmpa #16
-         BNE TC_4
-         BRA AM_PM
+         BNE TIME_IN_CONF
          
          
        TC_4:               ;sees if it is the tens place for hours
@@ -56,35 +54,18 @@ TIME_SET:
          BLE TC_5
          jmp TIME_IN
          
-       TC_5:
-         CMPA #12
-         BNE TC_6
-         ldab TIME_VAL
-         subb #48
-         cmpb #1
-         BNE TC_6
-         ldab pressed
-         subb #48
-         cmpb #2
-         BLE TC_6
-         jmp TIME_IN
-         
-           
-       TC_6:                ;checks the tens place for minutes
+       TC_5:                ;checks the tens place for minutes
          CMPA #14
          BNE TIME_IN_CONF
          ldab pressed           ;if greater than then continue if equal to then
          subb #48
-         cmpb #5 
-         BGT TC_END
-         JMP TIME_IN_CONF
+         cmpb #6 
+         BLT TIME_IN_CONF
+         JMP TIME_IN
            
-       
-       TC_END:
-         jmp TIME_IN
-             
+           
        AM_PM:  
-         JSR keypadoutput
+         JSR keypad
          ldaa pressed
          cmpa #$C
          BNE PM
@@ -130,7 +111,7 @@ DATE_SET:
     clr pressed                 
     DATE_IN:
        ldy #0 
-       JSR keypadoutput
+       JSR keypad
        ldaa pressed
        cmpa #9
 	     BGT DATE_IN
@@ -148,7 +129,6 @@ DATE_SET:
        CMPA #16
        BGT DATE_CON_2
        movb #17, LCD_CUR
-       jmp DATE_IN
         
        DATE_CON_2:
        CMPA #19
@@ -156,7 +136,6 @@ DATE_SET:
        LDAA #'/'
        STAA 1, x+
        movb #20, LCD_CUR
-       jmp DATE_IN
        
        DATE_CON_3:
        cmpa #22
@@ -164,54 +143,8 @@ DATE_SET:
        LDAA #'/'
        STAA 1, x+
        movb #23, LCD_CUR
-       JMP DATE_IN
        
        DATE_CON_4:
-       cmpa #17
-       BNE DATE_CON_5
-       LDAB pressed
-       subb #48
-       cmpb #1
-       BLE DATE_CON_5 
-       JMP DATE_IN
-       
-       DATE_CON_5:
-       cmpa #18
-       BNE DATE_CON_6
-       ldab DATE_VAL
-       subb #48
-       CMPB #1
-       BGT DATE_IN
-       ldab pressed
-       subb #48
-       cmpb #2
-       BLE DATE_CON_6
-	   jmp DATE_IN
-	   
-	   DATE_CON_6:
-	   CMPA #20
-	   BNE DATE_CON_7
-	   ldab pressed
-	   subb #48
-	   cmpb #3
-	   BLE DATE_CON_7
-	   jmp DATE_IN
-	   
-	   DATE_CON_7:
-	   cmpa #21
-	   BNE DATE_CON_8
-	   ldab DATE_VAL+3
-	   subb #48
-	   cmpb #3
-	   BLT DATE_CON_8
-	   ldab pressed
-	   subb #48
-	   cmpb #1
-	   BLE DATE_CON_8
-	   jmp DATE_IN
-	   
-       
-       DATE_CON_8:
        CMPA #27
        BNE DATE_IN_CONF
        pulx
@@ -227,7 +160,7 @@ DATE_SET:
       staa LCD_CUR
       cmpa #27
       BEQ DATE_CON_4
-      JMP DATE_IN
+      BRA DATE_IN
       
 ;---------------------------------------------------------------------      
       

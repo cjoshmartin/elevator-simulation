@@ -42,7 +42,7 @@ SECRET_SET:
           movb #22, LCD_CUR
           clr pressed
           ldx #SECRET_PASS
-          BRA SECRET_PASS_SET
+          jmp SECRET_PASS_SET
              
       SECRET_ID_CONF:
         JSR disp_loc
@@ -56,7 +56,7 @@ SECRET_SET:
         BRA SECRET_ID_SET
         
 ;-------------------------------------------------------------        
- 
+          
     SECRET_PASS_SET:
       ldy #0
       jsr keypadoutput
@@ -140,7 +140,7 @@ disp_SECRET_PASS:
     stab LCD_CUR
     
     SECRET_disp_CON_3:
-    cpy #7 
+    cpy #8 
     BNE SECRET_disp_CON_4
     RTS
     
