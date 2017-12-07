@@ -13,16 +13,17 @@ disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 
+number_to_ascii_convert: ds.b 1
 
 ;----------------------------------------------------------------------
 CODE_LCD: SECTION
 ;This segment of the code only occurs upon the start up of the elevator		
 WELCOME:
-          movw #24000, WAIT		  ;Loads in value for interrupt
+            movw #9999, WAIT		  ;Loads in value for interrupt
 			    
-		      movb #'W',disp        ;remaining code loads in Welcome and startup
+		    movb #'W',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
-          movb #'l',disp+2
+            movb #'l',disp+2
         	movb #'c',disp+3
         	movb #'o',disp+4
         	movb #'m',disp+5
@@ -62,6 +63,7 @@ WELCOME:
           cmpa #1
           BNE WELCOME_WAIT
           movb #0, CARRY
+          movb #0, WAIT
           
           JSR INFO_MENU_1
           JSR INFO_MENU_2
@@ -245,8 +247,17 @@ MAIN_MENU:
         movb #16, LCD_CUR
         JSR DATE_disp
         
-        movb currentfloor, disp+15
-        movb NEXT_FLOOR, disp+31
+        ldab currentfloor
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+15
+        
+        ldab NEXT_FLOOR
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+31
         ldd #disp
         jsr display_string
         

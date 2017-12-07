@@ -1,5 +1,4 @@
 ; sound 
-
 ; no where near done
 
 		xdef seq_1, speaker
@@ -7,8 +6,7 @@
 		XREF number_in_sound_seq, repeats
 		XREF flag,sound_flag
 		XREF did_play, to_play
-		
-
+		XREF done_playing
 			; musical notes
 		A3: equ 37
 		B3: equ 33
@@ -44,7 +42,6 @@
 		
 
 
-
 		seq_1: dc.b	D3F,255,E4,255,E4,E4,255,E4,255,E4,E4,255,E4,G4,C4,D4,E4,E4
 		seq_2: dc.b	20,20,20,27,24,24,27,255,16,16,18,18,20
 		seq_3: dc.b	20,20,20,27,24,24,27,255,16,16,18,18,20
@@ -77,9 +74,12 @@ compare_4: cmpb #4
 	 ldx seq_4
 
 cont:	 
-  	 movb #0, number_in_sound_seq
+  	 ;movb #0, number_in_sound_seq
   	  
-  	 loop: ldaa number_in_sound_seq	 
+  	 loop: ldaa number_in_sound_seq
+  	  cmpa #12
+  	  BHI reset_this
+  	  	 
   	  movb #5,flag
       ldab a,x
  	  movb #1, sound_flag 
@@ -91,77 +91,19 @@ cont:
  	   pulb
  	   pula
  	   pulx
- 	    
+ 	   
+ 	   ldaa done_playing ; check if the note needs to keep going
+ 	   cmpa #0
+ 	   beq loop
+ 	   movb #0, done_playing 
+ 	   
  	   ldaa number_in_sound_seq
  	   cmpa	#12
- 	   BLO	loop			;length of song
- 	   movb #0, number_in_sound_seq
+ 	   BLO	skip			;length of song
+ reset_this:	   movb #0, number_in_sound_seq
  	   movb #1, did_play
  skip: rts
 
 
-;--------------------- JUNK CODE ------------------------------------------
-	
-	;	pshx
-	;	pshy
-	;	pshd	 
-;	   movb #5, flag
-	   
-;reload: ldx #seq_1 
-		movb #0, number_in_sound_seq
-		
-;play_sound: ;ldaa number_in_sound_seq
-;			ldaa D3F;a,x
-;	   		psha
-;	   		jsr SendsChr
-;	   		pula
-;	   		jsr PlayTone
-	   		;cmpa #12 	   ;loads the value of number_in_sound_seq and then compares it to 12
-	   		;bne play_sound 
-	   		;inc repeats
-	   		;ldaa repeats
-	   		;ldaa #4 
-	   		;bne reload
-	   		;movb #99, flag
-	   		
-	   ;	puld
-		;puly
-		;pulx 
-;		rts	 
-	   
-;------------------------- crap code --------------------------
- ;      ldab sound_flag
-;	   cmpb #1
-;	   beq load_it
-;	   ldx #seq_1
-;	   movw #0,number_in_sound_seq
-;	   movb #1, sound_flag
-	   
-   
-;load_it:ldd number_in_sound_seq
-;		cpd #0
-;		 bne keeping_going ;play_note
-;	   ldaa 1,x+
-;	   staa sent_sound
-;	   cmpa #$FE
-;	   bne keeping_going
-;	   movb #0, sound_flag
-	   
-
-; ldaa sent_sound
-	  ; psha
-	  ; jsr SendsChr
-	   ;pula
-;play_note:
-	   ;ldd number_in_sound_seq
-	   ;addd #1
-	   ;std number_in_sound_seq
-	   ;jsr PlayTone	   
-	   ;cpd #19
-	   ;bne TIME_DONE
- 	   
- 	   ;movw #0,number_in_sound_seq
- 	   
-	   
 
 

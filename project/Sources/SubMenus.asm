@@ -1,9 +1,9 @@
             xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
             xdef FLOOR_ENTRY, FLOOR_DEST
-            xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed, flag
+            xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed
             xref display_string
             xref TIME_INT, WAIT, CARRY
-            XDEF CORRECT_ADM_PASS, INCORRECT_INPUT, Go_Up, Go_Down
+            XDEF CORRECT_ADM_PASS, INCORRECT_INPUT
             
 SUBMENU_CODE: Section
 
@@ -546,7 +546,9 @@ FLOOR_ENTRY:
        	movb #' ',disp+27
        	movb #'-',disp+28
        	movb #' ',disp+29
+
       	movb #' ',disp+30
+
        	movb #' ',disp+31
        	movb #0,disp+32    
        	
@@ -561,8 +563,6 @@ FLOOR_ENTRY:
 FLOOR_DEST:
 		 pshd
         
-        movw #8000, WAIT
-        movb #0, CARRY
   		movb #'Y',disp
        	movb #'o',disp+1
        	movb #'u',disp+2
@@ -600,110 +600,5 @@ FLOOR_DEST:
        	ldd #disp
        	JSR display_string
        
-       Down_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE Down_WAIT
-       
        	puld
-      RTS 
-      
-;----------------------------------------------------------------------------------- 
-
-Go_Up:
-	pshd
-        movw #8000, WAIT
-        movb #0, CARRY
-        movb #0, flag
-        
-  		movb #'G',disp
-       	movb #'o',disp+1
-       	movb #'i',disp+2
-      	movb #'n',disp+3
-       	movb #'g',disp+4
-       	movb #' ',disp+5
-       	movb #'U',disp+6
-       	movb #'p',disp+7
-       	movb #' ',disp+8
-       	movb #'T',disp+9
-       	movb #'o',disp+10
-       	movb #' ',disp+11
-       	movb #'T',disp+12
-       	movb #'h',disp+13
-       	movb #'e',disp+14
-       	movb #' ',disp+15
-       	movb #'F',disp+16
-       	movb #'l',disp+17
-       	movb #'o',disp+18
-       	movb #'o',disp+19
-       	movb #'r',disp+20
-       	movb #':',disp+21
-       	movb #'*',disp+22
-       	movb #'*',disp+23
-       	movb #'*',disp+24
-       	movb #'*',disp+25
-       	movb #'0',disp+26
-       	movb #'-',disp+27
-       	movb #'*',disp+28
-       	movb #'*',disp+29
-      	movb #'*',disp+30
-       	movb #'*',disp+31
-       	movb #0,disp+32    
-       	
-       	ldd #disp
-       	JSR display_string
-       	
-      Up_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE Up_WAIT
-          
-        movb #3, flag   
-       	puld
-      RTS 
-      
-;----------------------------------------------------------------------------------- 
-
-Go_Down:
-	pshd
-        
-  		movb #'G',disp
-       	movb #'o',disp+1
-       	movb #'i',disp+2
-      	movb #'n',disp+3
-       	movb #'g',disp+4
-       	movb #' ',disp+5
-       	movb #'D',disp+6
-       	movb #'o',disp+7
-       	movb #'w',disp+8
-       	movb #'n',disp+9
-       	movb #' ',disp+10
-       	movb #'T',disp+11
-       	movb #'o',disp+12
-       	movb #' ',disp+13
-       	movb #' ',disp+14
-       	movb #' ',disp+15
-       	movb #'F',disp+16
-       	movb #'l',disp+17
-       	movb #'o',disp+18
-       	movb #'o',disp+19
-       	movb #'r',disp+20
-       	movb #':',disp+21
-       	movb #'*',disp+22
-       	movb #'*',disp+23
-       	movb #'*',disp+24
-       	movb #'*',disp+25
-       	movb #'0',disp+26
-       	movb #'-',disp+27
-       	movb #'*',disp+28
-       	movb #'*',disp+29
-      	movb #'*',disp+30
-       	movb #'*',disp+31
-       	movb #0,disp+32    
-       	
-       	ldd #disp
-       	JSR display_string
-       
-       	puld
-      RTS                  
-                            
+      RTS      

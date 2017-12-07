@@ -118,8 +118,6 @@ TIME_SET:
          staa LCD_CUR
          cmpa #16
          BEQ AM_PM
-         cmpa #13
-         lBEQ TC_2
          
          JMP TIME_IN   
 
@@ -205,22 +203,11 @@ DATE_SET:
 	   ldab DATE_VAL+3
 	   subb #48
 	   cmpb #3
-	   BLT DATE_CON_7b
+	   BLT DATE_CON_8
 	   ldab pressed
 	   subb #48
 	   cmpb #1
 	   BLE DATE_CON_8
-	   jmp DATE_IN
-	   
-	   DATE_CON_7b:
-	   ldab DATE_VAL+3
-	   subb #48
-	   cmpb #0
-	   BNE DATE_CON_8
-	   ldab pressed
-	   subb #48
-	   cmpb #0
-	   BNE DATE_CON_8
 	   jmp DATE_IN
 	   
        
@@ -239,11 +226,7 @@ DATE_SET:
       inca   
       staa LCD_CUR
       cmpa #27
-      LBEQ DATE_CON_4
-      cmpa #19
-      lBEQ DATE_CON_2
-      cmpa #22
-      lBEQ DATE_CON_3
+      BEQ DATE_CON_4
       JMP DATE_IN
       
 ;---------------------------------------------------------------------      

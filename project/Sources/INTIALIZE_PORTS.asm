@@ -6,6 +6,7 @@
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
 	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
+
 	   	XREF flag, LED_flag, should_led
 
 		XREF did_play
@@ -32,11 +33,14 @@ PORTS_CODE:	 SECTION
 	JSR init_LCD
 	movb #0, WAIT
 	movb #0, CARRY
-	movb #'1', stateofelevator
-	movb #'1', NEXT_FLOOR
+	movb #1, stateofelevator
+	movb #0, NEXT_FLOOR
 	movb #0, Count_1
 	movb #0, Count_2
 	movb #%00011110, port_p_ddr ; intialize the stepper motor
+
+	movb #$20, port_t_ddr ;intialize speaker
+
 	
 	;pre-initialize the value for time
 	movb #'-', TIME_VAL
@@ -70,21 +74,20 @@ PORTS_CODE:	 SECTION
   movb #48, ADMIN_PASS+7
 	bset port_s_ddr, #$FF ; used to intiliaze the LED display
 	bset ddr_port_u, #$F0; used to intiliaze the hex keys
-  bset psr_port_u, #$F0
-  bset pde_port_u, #$0F
-  bset port_p_ddr, #$1E ;Turns the stepper motor on
-  BSET port_t_ddr, #$08 ;Turns the DC MOTOR
+    bset psr_port_u, #$F0
+    bset pde_port_u, #$0F
+    bset port_p_ddr, #$1E ;Turns the stepper motor on
+    BSET port_t_ddr, #$08 ;Turns the DC MOTOR
    
-  clr stateofelevator
-  clr floor
-  clr state_of_load
-  clr stepper_flag
-  clr LED_flag
-  clr LED_delay
-  movw #4000, stepper_delay
-  movw #4, stepper_del_length
-  
-  
+    clr stateofelevator
+    clr floor
+    clr state_of_load
+    clr stepper_flag
+    clr LED_flag
+    clr LED_delay
+    clr stepper_delay
+
+   
     movb #0, currentfloor
     movb #0, NEXT_FLOOR
 
@@ -98,14 +101,9 @@ PORTS_CODE:	 SECTION
     movb #0, state_of_load
     movb #8, floor ; the highest or lowest floor 
     movb #0, direction ; tell the elevator wants to move upwards
-    movb #0, flash
-
-  
- 
-
 	
 	bset CRGINT, #$80					  ;sets CRGINT
- 	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 10 nanoseconds 
+ 	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 
  	CLI
     RTS    
 				
