@@ -1,4 +1,5 @@
 ; sound 
+
 ; no where near done
 
 		xdef seq_1, speaker
@@ -7,6 +8,7 @@
 		XREF flag,sound_flag
 		XREF did_play, to_play
 		
+
 			; musical notes
 		A3: equ 37
 		B3: equ 33
@@ -40,6 +42,7 @@
 		E5F: equ 13
 		G5F: equ 11
 		
+
 
 
 		seq_1: dc.b	D3F,255,E4,255,E4,E4,255,E4,255,E4,E4,255,E4,G4,C4,D4,E4,E4

@@ -1,7 +1,7 @@
-           XDEF ADMIN_SET, ADMIN_PASS, disp_ADMIN, ADMIN_CHECK
+           XDEF ADMIN_SET, ADMIN_PASS, disp_ADMIN, ADMIN_CHECK, ADMIN_CHECK_ERROR
            XREF pressed, LCD_VAL, LCD_CUR, WAIT, CARRY, CORRECT_ADM_PASS, INCORRECT_INPUT
            XREF disp_loc, keypadoutput, INPUT, disp, display_string, ADMIN_MENU_SETUP, keypad
-           XREF TIME_INT
+           XREF TIME_INT, ADMIN_MENU_ERROR
 
 
 ADMIN_RAM: section          
@@ -106,30 +106,57 @@ ADMIN_CHECK:
     BNE ADMIN_CHECK_L
     
     JSR CORRECT_ADM_PASS
-    CLI
+    
     ADMIN_MATCH_WAIT:
       ldaa CARRY
       cmpa #1
       BNE ADMIN_MATCH_WAIT
       movb #0, CARRY
       movb #0, WAIT
-      SEI
+      
       
     ldy #1
     RTS
     
     INVALID_AD:
       JSR INCORRECT_INPUT
-      CLI
+      
     ADMIN_INVALID_WAIT:
       ldaa CARRY
       cmpa #1
       BNE ADMIN_INVALID_WAIT
       movb #0, CARRY
       movb #0, WAIT
-      SEI
       
       RTS
+
+;---------------------------------------------------------------------
+      
+ADMIN_CHECK_ERROR:
+  JSR ADMIN_MENU_ERROR
+  movb #20, LCD_CUR
+  movb #'*', LCD_VAL
+  LDX #ADMIN_PASS
+  ldaa LCD_CUR
+  ldy #0
+  ADMIN_CHECK_L_E:
+    JSR keypadoutput
+    ldab 1, x+
+    subb #48
+    cmpb pressed
+    BNE ADMIN_CHECK_ERROR
+    
+    inca
+    staa LCD_CUR
+    JSR disp_loc
+    
+    iny
+    cpy #8
+    BNE ADMIN_CHECK_L_E
+    
+    RTS
+    
+          
       
     
                 
