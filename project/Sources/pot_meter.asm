@@ -31,8 +31,9 @@ getpotentiometer:
 ; UP TO HERE WORKS, if you step through it
 		   
 checkton: beq interruptdelay
-		   bset port_t, #$08 ;turns the motor on 
-		   rts
+		  bset port_t, #$08 ;turns the motor on 
+		  rts
+		  
  hitloop:  jsr cpudelay
  		   dec ton
 		   bne hitloop

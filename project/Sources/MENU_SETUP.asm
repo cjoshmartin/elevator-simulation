@@ -1,5 +1,5 @@
-    XDEF MAIN_MENU_SETUP, ADMIN_MENU_SETUP, display_DATE_TIME_SET, ERROR_MENU, SECRET_MENU_SETUP, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
-    XDEF Floor_SEL_MENU, NEXT_FLOOR_MENU, ERROR_MENU
+    XDEF MAIN_MENU_SETUP, ADMIN_MENU_SETUP, display_DATE_TIME_SET, SECRET_MENU_SETUP, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
+    XDEF Floor_SEL_MENU, NEXT_FLOOR_MENU, ADMIN_MENU_ERROR
     
     XREF disp, LCD_VAL, LCD_CUR
     XREF display_string, display_admin
@@ -209,33 +209,33 @@ Floor_SEL_MENU:
        	movb #'O',disp+2
       	movb #'O',disp+3
        	movb #'R',disp+4
-       	movb #'(',disp+5
+       	movb #' ',disp+5
        	movb #'S',disp+6
-       	movb #')',disp+7
-       	movb #' ',disp+8
-       	movb #'S',disp+9
-       	movb #'E',disp+10
-       	movb #'L',disp+11
-       	movb #'E',disp+12
-       	movb #'C',disp+13
-       	movb #'T',disp+14
-       	movb #':',disp+15
-       	movb #'-',disp+16
-       	movb #' ',disp+17
-       	movb #'-',disp+18
-       	movb #' ',disp+19
-       	movb #'-',disp+20
-       	movb #' ',disp+21
-       	movb #'-',disp+22
-       	movb #' ',disp+23
+       	movb #'e',disp+7
+       	movb #'l',disp+8
+       	movb #'e',disp+9
+       	movb #'c',disp+10
+       	movb #'t',disp+11
+       	movb #'e',disp+12
+       	movb #'d',disp+13
+       	movb #':',disp+14
+       	movb #' ',disp+15
+       	movb #'*',disp+16
+       	movb #'*',disp+17
+       	movb #'*',disp+18
+       	movb #'*',disp+19
+       	movb #'*',disp+20
+       	movb #'*',disp+21
+       	movb #'*',disp+22
+       	movb #'0',disp+23
        	movb #'-',disp+24
-       	movb #' ',disp+25
-       	movb #'-',disp+26
-       	movb #' ',disp+27
-       	movb #'-',disp+28
-       	movb #' ',disp+29
-      	movb #'-',disp+30
-       	movb #'-',disp+31
+       	movb #'*',disp+25
+       	movb #'*',disp+26
+       	movb #'*',disp+27
+       	movb #'*',disp+28
+       	movb #'*',disp+29
+      	movb #'*',disp+30
+       	movb #'*',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
@@ -268,22 +268,22 @@ NEXT_FLOOR_MENU:
        	movb #'I',disp+13
        	movb #'O',disp+14
        	movb #'N',disp+15
-       	movb #'-',disp+16
-       	movb #' ',disp+17
-       	movb #'-',disp+18
-       	movb #' ',disp+19
-       	movb #'-',disp+20
-       	movb #' ',disp+21
-       	movb #'-',disp+22
-       	movb #' ',disp+23
+       	movb #'*',disp+16
+       	movb #'*',disp+17
+       	movb #'*',disp+18
+       	movb #'*',disp+19
+       	movb #'*',disp+20
+       	movb #'*',disp+21
+       	movb #'*',disp+22
+       	movb #'0',disp+23
        	movb #'-',disp+24
-       	movb #' ',disp+25
-       	movb #'-',disp+26
-       	movb #' ',disp+27
-       	movb #'-',disp+28
-       	movb #' ',disp+29
-      	movb #'-',disp+30
-       	movb #' ',disp+31
+       	movb #'*',disp+25
+       	movb #'*',disp+26
+       	movb #'*',disp+27
+       	movb #'*',disp+28
+       	movb #'*',disp+29
+      	movb #'*',disp+30
+       	movb #'*',disp+31
        	movb #0,disp+32
        	
        	LDD #disp
@@ -295,7 +295,7 @@ NEXT_FLOOR_MENU:
       
 ;---------------------------------------------------------------------
 
-ERROR_MENU:
+ADMIN_MENU_ERROR:
 
     psha
     pshb

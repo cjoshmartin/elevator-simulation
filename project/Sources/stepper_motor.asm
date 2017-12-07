@@ -3,10 +3,7 @@
 					XREF port_p_ddr,port_t,port_p
 					XREF direction, is_open_or_closed, LED
 					XREF flag
-
-					XREF stepper_delay, stepper_flag
-					XREF should_led
-
+					XREF stepper_delay, stepper_flag, stepper_seq, current_step_in_seq
 val ds.b 1
 highorlow ds.w 2
 DelayCount ds.w 1
@@ -15,9 +12,7 @@ clockwise_seq: dc.b $0A, $12, $14, $0C, $0
 counterclockwise_seq: dc.b $0C, $14, $12, $0A, $0
 
 stepper_motor:
-		ldaa direction
-		cmpa #0
-		beq led_blink
+		
 		ldaa is_open_or_closed
 		cmpa #1
 		beq nope
@@ -34,25 +29,21 @@ change_in_direction:
         
 
 Delay:  ldaa stepper_flag
+        CLI
 		cmpa #1
-		CLI	; had problem with interupt flag not getting reset
 		beq Delay
-			
+	    	
 again: 
        LDAA 1,x+
  	   cmpa #$0
+       beq nope
        beq increment
        STAA port_p
+       
        movb #1, stepper_flag
        bra Delay
-
-increment:  inc should_led
-		    ldaa should_led
-			cmpa #6
-			bne nope
-led_blink:   jsr LED
-		    movb #0,should_led
-
+increment: 
+		    jsr LED
 nope:  rts
 
 
