@@ -6,45 +6,45 @@ SECRET_ID: ds.b $2
 SECRET_PASS: ds.b $8
 
 SECRET_CODE: section
-SECRET_SET:
+SECRET_SET_1:
    	JSR SECRET_MENU_SETUP
    	pshx
-    ldx #SECRET_ID
+    ldx #SECRET_ID_1
     clr pressed
     
     movb #12, LCD_CUR
-    SECRET_ID_SET:
+    SECRET_ID_SET_1:
       ldy #0
       jsr keypadoutput
       ldaa pressed
       cmpa #9
-	    BGT SECRET_ID_SET
+	    BGT SECRET_ID_SET_1
       
       JSR INPUT
       cpy #1
-      BEQ SECRET_ID_SET  
+      BEQ SECRET_ID_SET_1  
       
       
-      SECRET_ID_CON:
+      SECRET_ID_CON_1:
       adda #48
       staa LCD_VAL
       staa pressed
       
         ldaa LCD_CUR  
-        SECRET_ID_CON_1:
+        SECRET_ID_CON_1_1:
           cmpa #11
-          BGT SECRET_ID_CON_2
+          BGT SECRET_ID_CON_2_1
           movb #12, LCD_CUR
                     
-        SECRET_ID_CON_2:
+        SECRET_ID_CON_2_1:
           cmpa #14
-          BLT SECRET_ID_CONF
+          BLT SECRET_ID_CONF_1
           movb #22, LCD_CUR
           clr pressed
-          ldx #SECRET_PASS
-          BRA SECRET_PASS_SET
+          ldx #SECRET_PASS_1
+          BRA SECRET_PASS_SET_1
              
-      SECRET_ID_CONF:
+      SECRET_ID_CONF_1:
         JSR disp_loc
          ldaa pressed       
          staa 1,x+     
@@ -52,43 +52,43 @@ SECRET_SET:
          inca   
          staa LCD_CUR
          cmpa #14
-         BEQ SECRET_ID_CON_2
-        BRA SECRET_ID_SET
+         BEQ SECRET_ID_CON_2_1
+        BRA SECRET_ID_SET_1
         
 ;-------------------------------------------------------------        
  
-    SECRET_PASS_SET:
+    SECRET_PASS_SET_1:
       ldy #0
       jsr keypadoutput
       ldaa pressed
       cmpa #9
-	    BGT SECRET_PASS_SET
+	    BGT SECRET_PASS_SET_1
       
       JSR INPUT
       cpy #1
-      BEQ SECRET_PASS_SET
+      BEQ SECRET_PASS_SET_1
       
-      SECRET_PASS_CON:
+      SECRET_PASS_CON_1:
         adda #48
         staa LCD_VAL
         staa pressed
         
         ldaa LCD_CUR
-        SECRET_PASS_CON_1:
+        SECRET_PASS_CON_1_1:
           cmpa #21
-          BGT SECRET_PASS_CON_2
+          BGT SECRET_PASS_CON_2_1
           movb #22, LCD_CUR
                     
-        SECRET_PASS_CON_2:
+        SECRET_PASS_CON_2_1:
           cmpa #30
-          BLT SECRET_PASS_CONF
+          BLT SECRET_PASS_CONF_1
           movb #0, LCD_VAL
           movb #0, LCD_CUR
           pulx
           RTS
           
              
-      SECRET_PASS_CONF:
+      SECRET_PASS_CONF_1:
         JSR disp_loc
         ldaa pressed       
         staa 1,x+     
@@ -96,9 +96,9 @@ SECRET_SET:
         inca   
         staa LCD_CUR
         cmpa #30
-        BEQ SECRET_PASS_CON_2
+        BEQ SECRET_PASS_CON_2_1
          
-        BRA SECRET_PASS_SET
+        BRA SECRET_PASS_SET_1
         
         
 ;------------------------------------------------

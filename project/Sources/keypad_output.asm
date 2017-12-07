@@ -27,11 +27,10 @@ CODE: section
                movb #0, flag
                jsr ADMIN_CHECK
                cpy #1
-               BNE pressedf_done
+               BNE pressedf
                JSR SYS_SETTINGS
                
-               
-             pressedf_done:
+     pressedf_done:
                movb #99, flag  
                puly
                pulx
