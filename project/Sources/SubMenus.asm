@@ -261,9 +261,6 @@ CORRECT_SUBMENU:
 You_Entered:
 
   pshd
-          
-          movb #8000, WAIT
-          movb #16, LCD_CUR
            
             movb #'Y',disp        
        		movb #'o',disp+1
@@ -298,6 +295,7 @@ You_Entered:
         	movb #' ',disp+30
         	movb #' ',disp+31
         	movb #0,disp+32
+        	
         	       	
   puld      	
   RTS      	
@@ -371,10 +369,7 @@ EXIT:
 
 CORRECT_ADM_PASS:
 
-        
             pshd
-            movw #4000, WAIT
-            movb #0, CARRY
            
             movb #'Y',disp        
        		movb #'o',disp+1
@@ -413,6 +408,7 @@ CORRECT_ADM_PASS:
             ldd #disp
         	jsr display_string
         	
+        	JSR keypadoutput
        puld
        RTS
        
@@ -420,8 +416,6 @@ CORRECT_ADM_PASS:
 
 INCORRECT_INPUT:
 
-          movb #40, WAIT
-          movb #0, CARRY
           pshd
            
             movb #'S',disp        
@@ -458,17 +452,17 @@ INCORRECT_INPUT:
         	movb #'w',disp+31
         	movb #0,disp+32
         
-          ldd #disp
+            ldd #disp
         	jsr display_string 
         	
+        	JSR keypadoutput
         	puld
        RTS
        
 ;------------------------------------------------------------------------------       
         	    
 ERROR_DOOR:
-        psha
-        pshb
+        pshd
         
   		movb #' ',disp
        	movb #' ',disp+1
@@ -506,8 +500,7 @@ ERROR_DOOR:
        	
        	ldd #disp
        	JSR display_string
-       	pulb
-       	pula
+       	puld
       RTS
       
 ;-------------------------------------------------------------------------------------

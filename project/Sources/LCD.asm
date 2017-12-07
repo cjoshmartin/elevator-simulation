@@ -87,8 +87,8 @@ DATE_TIME:
         	   JSR TIME_disp 
         	   movb #0, LCD_CUR
         	   movb #'>', LCD_VAL
+        	   clr pressed
         	ENTER_DT:
-
         	  
              jsr keypadoutput
              ldaa pressed
@@ -122,17 +122,13 @@ DATE_TIME:
             BNE TIME
             
           DATE:               ;This the Date set sequence which goes to the DATE set and sets
+            
             JSR DATE_SET
+            movb #17, LCD_CUR
             JSR You_Entered
             JSR DATE_disp
-            CLI
-            
-          Pause_D:
-            ldaa CARRY
-            cmpa #1
-            BNE Pause_D
-            movb #0, CARRY
-            SEI
+            JSR keypadoutput
+
             
             JSR CORRECT_SUBMENU
             cpy #1
@@ -152,16 +148,11 @@ DATE_TIME:
             
           TIME:             ;This is the time set sequence which goes to the time set
             JSR TIME_SET
+            movb #17, LCD_CUR
             JSR You_Entered
             JSR TIME_disp
-            CLI
+            JSR keypadoutput
             
-          Pause_T:
-            ldaa CARRY
-            cmpa #1
-            BNE Pause_T
-            movb #0, CARRY
-            SEI
             
             JSR CORRECT_SUBMENU
             cpy #1
@@ -196,59 +187,43 @@ DATE_TIME:
 ;This is the top of the set admin password        	        
 ADMIN:	  
         jsr ADMIN_SET
+        movb #17, LCD_CUR
         JSR You_Entered
         JSR disp_ADMIN
-        CLI
-        JSR keypadoutput    
-            
-            JSR CORRECT_SUBMENU
-            cpy #1
-            BEQ ADMIN
+        JSR keypadoutput
         RTS
         
 ;-------------------------------------------------------------------------           
 ;This is the top of the set secret ID and Password
 SECRET_1:
-		    jsr SECRET_SET_1
-		    JSR You_Entered
-            JSR disp_SECRET_ID_1
-            JSR disp_SECRET_PASS_1
-        CLI
-            JSR keypadoutput
-            
-            JSR CORRECT_SUBMENU
-            cpy #1
-            BEQ SECRET_1
-          RTS
-          
-            
-SECRET_2:          
-            jsr SECRET_SET_2
-		    JSR You_Entered
-        JSR disp_SECRET_ID_2
-        JSR disp_SECRET_PASS_2
-        CLI
-            
+		jsr SECRET_SET_1
+		  movb #17, LCD_CUR
+		  JSR You_Entered
+          JSR disp_SECRET_ID_1
+          JSR disp_SECRET_PASS_1
           JSR keypadoutput
-            
-            JSR CORRECT_SUBMENU
-            cpy #1
-            BEQ SECRET_2
-          RTS
+      
+        RTS
+             
+SECRET_2:          
+        jsr SECRET_SET_2
+          movb #17, LCD_CUR
+		  JSR You_Entered
+          JSR disp_SECRET_ID_2
+          JSR disp_SECRET_PASS_2
+          JSR keypadoutput
+
+        RTS
                    
 SECRET_3:           
-            jsr SECRET_SET_3
-		    JSR You_Entered
-        JSR disp_SECRET_ID_3
-        JSR disp_SECRET_PASS_3
-        CLI
-            
-         JSR keypadoutput
+        jsr SECRET_SET_3
+          movb #17, LCD_CUR
+	      JSR You_Entered
+          JSR disp_SECRET_ID_3
+          JSR disp_SECRET_PASS_3
+          JSR keypadoutput
 
-            JSR CORRECT_SUBMENU
-            cpy #1
-            BEQ SECRET_3
-          RTS  
+        RTS  
                          
 		    
 
@@ -337,6 +312,7 @@ SYS_SETTINGS:
         JSR SYS_SET_MAIN_MEN_1
         movb #16, LCD_CUR
         movb #'>', LCD_VAL
+        movb #' ', disp
         JSR disp_loc
   		jmp SYS_SET_1
         
@@ -348,8 +324,6 @@ SYS_SETTINGS:
         ldaa pressed
         cmpa #9
         BLE SYS_SET_2
-        cmpa #$B
-        BEQ SYS_SET_2
         ldaa LCD_CUR
         cmpa #0
         BNE SYS_SET_2_CONT
@@ -411,6 +385,7 @@ SYS_SETTINGS:
         JSR SYS_SET_MAIN_MEN_2
          movb #0, LCD_CUR
          movb #'>', LCD_VAL
+         JSR disp_loc
         jmp SYS_SET_2
         
           

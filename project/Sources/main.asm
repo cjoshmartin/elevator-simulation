@@ -13,14 +13,14 @@
             XDEF TIME_INT, Count_1, Count_2, flag, IRQ_INT
             XDEF is_open_or_closed, was_open_or_closed
             XDEF DC_flag,DC_delay
-            xdef stepper_flag, stepper_delay, stepper_del_length
+            xdef stepper_flag, stepper_delay, stepper_length
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
 
 			XDEF to_play, done_playing
 			
            	XDEF LED_flag,LED_delay, should_led
 			XDEF number_in_sound_seq,repeats
-			XREF speaker
+			XREF speaker, Going_Up, Going_Down
 
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET_1, SECRET_2, SECRET_3, MAIN_MENU, INITIALIZE_PORTS, pot_meter, ADMIN_CHECK
@@ -59,7 +59,7 @@ should_led:             ds.b    1
 ;stepper Motor
 stepper_flag:			ds.b    1
 stepper_delay:			ds.w    1
-stepper_del_length:     ds.w    1
+stepper_length:         ds.b    1
 ;DC MOTOR
 DC_flag:				ds.b 	1
 DC_delay:				ds.b	1
@@ -90,13 +90,9 @@ _Startup:
     JSR INITIALIZE_PORTS
     ;JSR WELCOME
     ;JSR DATE_TIME
-    ;JSR keypadoutput
     ;JSR ADMIN
-    ;JSR keypadoutput
     ;JSR SECRET_1
-    ;JSR keypadoutput
     
-    CLI
     movb #99, flag
     clr sound_flag
     clr did_play
@@ -104,32 +100,24 @@ _Startup:
     JSR speaker
 
   JSR MAIN_MENU
- clr did_play
+  clr did_play
 MAIN:
-
+   jsr dip_switches
    JSR keypadoutput
    ldaa pressed
    cmpa #9
-   BGT MAIN_2
+   BGT skip
    JSR ELEVATOR_FLOOR
+ skip: bra MAIN
 
-MAIN_2:   
-   jsr dip_switches
-   JSR pot_meter ; doesn't work right now 
-
-   ;clr did_play 
-   ;clr sound_flag
-   ;movb #3,to_play
-   ;JSR speaker
-   ;movb #99, flag
-
-   BRA MAIN
 
 
 ;--------------------------------------------------------------------------------
 ;INTERRUPTS
 
 IRQ_INT:
+     movb #4, flag
+     ;JSR stepper_motor
      JSR ADMIN_CHECK_ERROR
      bset CRGFLG, #$80
      RTI
@@ -159,31 +147,17 @@ TIME_INT:
 ;	   bne check_flags
 	   
 check_flags: ldaa flag
-	 ;cmpa #0
-	 	;beq just_delay
 	 cmpa #1
 	   beq pot_meter_delay
 	 cmpa #2
 	   beq LED_delay_RTI
 	 cmpa #3 
-	 	beq stepper_delayer
+	 	beq stepper_delayer	
 	 cmpa #5
 	    lbeq sounds_RTI	
 	
 	 Lbra TIME_DONE
 
-;---------------------------------------------------	 
-;just_delay:	;0    
-	  	     ;ldx WAIT
-	 	  	 ;dex
-	  	  	 ;stx WAIT
-	        ;cpx #0
-	 	  	;LBNE TIME_DONE
-	      ;movb #1, CARRY
-	     ; movb #0, WAIT
-	  	 ; Lbra  TIME_DONE
-
-;---------------------------------------------------
 
 pot_meter_delay: ; 1
 	   ldaa DC_flag
@@ -193,27 +167,27 @@ pot_meter_delay: ; 1
 		   	 dex
 		  	 stx DC_delay
 		    cpx #0
-		   	BNE TIME_DONE
+		   	LBNE TIME_DONE
 		   movb #0,DC_flag
 		   movb #10,DC_delay 
 		    
-		  bra TIME_DONE
+		  Lbra TIME_DONE
 
 ;---------------------------------------------------		  
 
 LED_delay_RTI: ; 2
 	   ldaa LED_flag
 		   cmpa #0
-		   	beq TIME_DONE
+		   	Lbeq TIME_DONE
 		    ldab LED_delay
 		   	 decb
 		  	 stab LED_delay
 		    cmpb #0
-		   	BNE TIME_DONE
+		   	LBNE TIME_DONE
 		   movb #0,LED_flag
-		   movb #$FF,LED_delay
+		   movw #40,LED_delay
 		     
-  	    bra TIME_DONE
+  	    Lbra TIME_DONE
 
 ;--------------------------------------------------
   	    	  
@@ -221,19 +195,22 @@ stepper_delayer: ; 3
 	   ldaa stepper_flag
 	   cmpa #0
 	   beq TIME_DONE
- 	   ldx stepper_delay
-	   dex
-	   stx stepper_delay
- 	   cpx #0
-	   BNE TIME_DONE    
-       JSR stepper_motor
-	   movw #400, stepper_delay
-       movb #0, stepper_flag
 	   
-	 bra TIME_DONE
+ 	        ldx stepper_delay
+	        dex
+	        stx stepper_delay
+ 	        cpx #0
+	        BNE TIME_DONE     
+	   movw #40, stepper_delay
+	   movb #0, stepper_flag
+	   ;ldaa stepper_length
+	   ;deca
+	   ;staa stepper_length 
+       bra TIME_DONE
+
 	   
 ;-------------------------------------------------
-
+    
 sounds_RTI:;5
 	   ldaa sound_flag
 	   cmpa #1
@@ -274,27 +251,7 @@ CLOCK_INT:
   cmpa #60
   LBNE CLOCK_DONE
   movb #0, Count_2
-  
- ;colon_flash:
-   ;ldaa flash
-   ;cmpa #1
-   ;BNE flash_off
-   
-   ;flash_on:
-   ;movb #':', TIME_VAL+2
-   ;movb #':', LCD_VAL
-   ;movb #2, LCD_CUR
-   ;JSR disp_loc
-   ;movb #0, flash
-   ;bra CLOCK_MINUTES_ONES
-   
-   ;flash_off: 
-   ;movb #' ', TIME_VAL+2
-   ;movb #' ', LCD_VAL
-   ;movb #2, LCD_CUR
-   ;JSR disp_loc
-   ;movb #1, flash
-  
+    
   CLOCK_MINUTES_ONES:
   LDAA TIME_VAL+4
   inca

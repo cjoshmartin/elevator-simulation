@@ -105,28 +105,13 @@ ADMIN_CHECK:
     cpy #8
     BNE ADMIN_CHECK_L
     
-    JSR CORRECT_ADM_PASS
-    
-    ADMIN_MATCH_WAIT:
-      ldaa CARRY
-      cmpa #1
-      BNE ADMIN_MATCH_WAIT
-      movb #0, CARRY
-      movb #0, WAIT
-      
-      
+    JSR CORRECT_ADM_PASS   
     ldy #1
     RTS
     
     INVALID_AD:
       JSR INCORRECT_INPUT
       
-    ADMIN_INVALID_WAIT:
-      ldaa CARRY
-      cmpa #1
-      BNE ADMIN_INVALID_WAIT
-      movb #0, CARRY
-      movb #0, WAIT
       
       RTS
 

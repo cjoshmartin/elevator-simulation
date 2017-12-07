@@ -1,11 +1,9 @@
-		XDEF ELEVATOR_FLOOR, Floor_Entered, Floor_Dist
-		XREF floor, FLOOR_ENTRY, FLOOR_DEST, LCD_CUR, LCD_VAL, disp_loc, currentfloor, disp, display_string
-		XREF Floor_SEL_MENU, WAIT, CARRY, flag, direction, stepper_motor, NEXT_FLOOR, MAIN_MENU, keypadoutput, pressed
+		XDEF ELEVATOR_FLOOR, Floor_Entered, Going_Up, Going_Down
+		XREF floor, LCD_CUR, LCD_VAL, disp_loc, currentfloor, disp, display_string, stepper_flag, stepper_length
+		XREF Floor_SEL_MENU, flag, direction, stepper_motor, NEXT_FLOOR, MAIN_MENU, keypadoutput, pressed
 		
 ELEVATOR_RAM: SECTION
 Floor_Entered: ds.b 1
-Floor_Flag: ds.b 1
-Floor_Dist: ds.b 1
 ELEVATOR_CODE: SECTION
 
 ELEVATOR_FLOOR:
@@ -34,12 +32,24 @@ ELEVATOR_FLOOR:
       
     Going_Up:
       movb #1, direction
-      movb #3, flag    
+      movb #3, flag
+      movb #1, stepper_flag
+    Go_Up_L:
+      JSR stepper_motor
+      ldaa direction
+      cmpa #0
+      BNE Go_Up_L
       RTS
       
     Going_Down:
       movb #2, direction
-      movb #3, flag    
+      movb #3, flag
+      movb #1, stepper_flag
+    Go_Down_L:
+      JSR stepper_motor
+      ldaa direction
+      cmpa #0
+      BNE Go_Down_L      
       RTS  
         
         

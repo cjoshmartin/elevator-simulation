@@ -6,7 +6,7 @@
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
 	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
-	   	XREF flag, LED_flag, should_led, flash
+	   	XREF flag, LED_flag, should_led, stepper_length
 
 		XREF did_play
 	   
@@ -82,9 +82,9 @@ PORTS_CODE:	 SECTION
   clr state_of_load
   clr stepper_flag
   clr LED_flag
-  clr LED_delay
-  movw #400, stepper_delay
-  
+  movw #1, LED_delay
+  movw #1, stepper_delay
+  movb #80, stepper_length
   
     movb #0, currentfloor
     movb #0, NEXT_FLOOR
@@ -99,7 +99,6 @@ PORTS_CODE:	 SECTION
     movb #0, state_of_load
     movb #8, floor ; the highest or lowest floor 
     movb #0, direction ; tell the elevator wants to move upwards
-    movb #0, flash
 
   
  
