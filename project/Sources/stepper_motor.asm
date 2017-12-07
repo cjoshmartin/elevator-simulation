@@ -48,7 +48,7 @@ again:
 
 increment:  inc should_led
 		    ldaa should_led
-			cmpa #6
+			cmpa #8
 			bne nope
 led_blink:   jsr LED
 		    movb #0,should_led

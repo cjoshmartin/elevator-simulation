@@ -9,6 +9,7 @@
 
 	   	XREF flag, LED_flag, should_led
 
+		XREF did_play
 	   
 
 
@@ -90,6 +91,7 @@ PORTS_CODE:	 SECTION
     movb #0, currentfloor
     movb #0, NEXT_FLOOR
 
+	clr did_play
     
     clr should_led
 
@@ -98,7 +100,7 @@ PORTS_CODE:	 SECTION
    	movb #$74, max_value_of_pot
     movb #0, state_of_load
     movb #8, floor ; the highest or lowest floor 
-    movb #1, direction ; tell the elevator wants to move upwards
+    movb #0, direction ; tell the elevator wants to move upwards
 	
 	bset CRGINT, #$80					  ;sets CRGINT
  	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 

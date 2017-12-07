@@ -1,27 +1,31 @@
             INCLUDE 'derivative.inc'
             
-            XDEF _Startup, MAIN, stateofelevator
+            XDEF _Startup, MAIN, stateofelevator, did_play
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
             XDEF NEXT_FLOOR, Count
             xdef direction
+            XDEF sound_flag
+            XDEF sound_delay
             XDEF TIME_INT, Count_1, Count_2, flag
             XDEF is_open_or_closed, was_open_or_closed
             XDEF DC_flag,DC_delay
             xdef stepper_flag, stepper_delay
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
-
+			XDEF to_play
+			
            	XDEF LED_flag,LED_delay, should_led
-
+			XDEF number_in_sound_seq,repeats
+			XREF speaker
 
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
             XREF dip_switches
             XREF keypadoutput, pressed, TIME_VAL, DATE_VAL,port_s
-	XREF sound_arr,SendsChr,PlayTone
+			XREF sound_arr,SendsChr,PlayTone
        		
             XREF __SEG_END_SSTACK     ; symbol defined by the linker for the end of the stack
 
@@ -67,22 +71,30 @@ flag:					ds.b 	1
 ; Sound
 sound_flag:		    	ds.b    1
 sound_delay:			ds.w	1
-sent_sound:				ds.b	1 ; stores the sound to be played
+number_in_sound_seq:	ds.b	1
+repeats:			    ds.b 	1
+did_play:				ds.b 	1  ; has a sound already playe
+to_play:				ds.b	1
 ; code section
 MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
 
-    ;JSR WELCOME
+    JSR WELCOME
     ;JSR DATE_TIME
     ;JSR ADMIN
     ;JSR SECRET
     CLI
     movb #99, flag
     clr sound_flag
-MAIN:
-   JSR MAIN_MENU ; HOLDEN THIS IS BREAKING SHIT
+    clr did_play
+    movb #1,to_play
+    JSR speaker
+
+ ;JSR MAIN_MENU
+ clr did_play
+MAIN: ; HOLDEN THIS IS BREAKING SHIT
 
    ;JSR keypadoutput
 ;keypressed:ldaa pressed
@@ -93,11 +105,13 @@ MAIN:
    jsr dip_switches
    JSR pot_meter ; doesn't work right now 
    jsr stepper_motor
- ;sound
- 
-       ;movb #99, flag
+    
+    clr sound_flag
+    movb #2,to_play
+    JSR speaker
+   movb #99, flag
    BRA MAIN
-   
+   ;lbra end_now
 
 
 ;--------------------------------------------------------------------------------
@@ -115,7 +129,19 @@ TIME_INT:
 ; 5 - General Delay
 ; 99 - DO Nothing
 ;---------------------------------------------------- 
- ldaa flag
+
+;	   ldaa port_t
+;	   staa value_dip_switch 
+;	   anda #%0000001 ; clear out all the other values except the 3 bit
+;	   cmpa #1
+;	   bne enter_private_mode
+	   
+;	   ldaa port_t ; secets mode
+;	   anda #%10000000 ; clear out all the other values except the 3 bit
+;	   cmpa #%10000000
+;	   bne check_flags
+	   
+check_flags: ldaa flag
 	 cmpa #0
 	 	beq just_delay
 	 cmpa #1
@@ -190,18 +216,13 @@ sounds_RTI:;5
 	   cmpa #1
 	   lbne TIME_DONE
 	   
-	   ldaa sent_sound
-	  ; psha
-	   ;jsr SendsChr
-	   ;pula
-play_note:
 	   ldd sound_delay
 	   addd #1
 	   std sound_delay
-	   jsr PlayTone	   
-	   cpd #19
-	   bne TIME_DONE
+	   cpd #1953 ;#7812
+	   BLO TIME_DONE
  	   
+ 	   inc number_in_sound_seq
  	   movw #0,sound_delay
 	 
 	 bra TIME_DONE
@@ -282,3 +303,7 @@ CLOCK_INT:
   
   CLOCK_DONE:
   RTS
+  
+  
+  end_now: 
+  end
