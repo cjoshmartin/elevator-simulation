@@ -42,8 +42,15 @@ again:
        
        movb #1, stepper_flag
        bra Delay
-increment: 
-		    jsr LED
+
+increment:  inc should_led
+		    ldaa should_led
+			cmpa #8
+			bne nope
+led_blink:   jsr LED
+		    movb #0,should_led
+
+
 nope:  rts
 
 

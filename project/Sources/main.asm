@@ -1,24 +1,35 @@
             INCLUDE 'derivative.inc'
             
-            XDEF _Startup, MAIN, stateofelevator
+            XDEF _Startup, MAIN, stateofelevator, did_play
             ; we use export 'Entry' as symbol. This allows us to
             ; reference 'Entry' either in the linker .prm file
             ; or from C/C++ later on
             XDEF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
             XDEF NEXT_FLOOR, Count
+
             xdef direction, flash
+            XDEF sound_flag
+            XDEF sound_delay
             XDEF TIME_INT, Count_1, Count_2, flag, IRQ_INT
             XDEF is_open_or_closed, was_open_or_closed
             XDEF DC_flag,DC_delay
             xdef stepper_flag, stepper_delay, stepper_del_length
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
-           	XDEF LED_flag,LED_delay
+
+			XDEF to_play
+			
+           	XDEF LED_flag,LED_delay, should_led
+			XDEF number_in_sound_seq,repeats
+			XREF speaker
+
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter, ADMIN_CHECK
             XREF LED, LCD_VAL, LCD_CUR, disp_loc
             XREF dip_switches, ADMIN_CHECK_ERROR
             XREF keypadoutput, pressed, TIME_VAL, DATE_VAL,port_s
-       
+
+			XREF sound_arr,SendsChr,PlayTone
+       		
             XREF __SEG_END_SSTACK     ; symbol defined by the linker for the end of the stack
 
 
@@ -62,27 +73,53 @@ Count_2:				ds.b    1
 Count: 					ds.b    2
 flag:					ds.b 	1
 
-                                                            
+; Sound
+sound_flag:		    	ds.b    1
+sound_delay:			ds.w	1
+number_in_sound_seq:	ds.b	1
+repeats:			    ds.b 	1
+did_play:				ds.b 	1  ; has a sound already playe
+to_play:				ds.b	1
+
 ; code section
 MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
+
+
     JSR WELCOME
-    JSR DATE_TIME
-    JSR ADMIN
-    JSR SECRET
-    movb #99, flag
+    ;JSR DATE_TIME
+    ;JSR ADMIN
+    ;JSR SECRET
     CLI
-    JSR MAIN_MENU
+    movb #99, flag
+    clr sound_flag
+    clr did_play
+    movb #1,to_play
+    JSR speaker
+
+ ;JSR MAIN_MENU
+ clr did_play
 MAIN:
-   JSR keypadoutput
-   ldaa pressed
-   cmpa #9
-   BGT MAIN
-   JSR ELEVATOR_FLOOR
-   BRA MAIN
+
+   ;JSR keypadoutput
+;keypressed:ldaa pressed
+   ;cmpa #9
+   ;BGT keypressed
+   ;JSR ELEVATOR_FLOOR
    
+   jsr dip_switches
+   JSR pot_meter ; doesn't work right now 
+   jsr stepper_motor
+    
+    clr sound_flag
+    movb #2,to_play
+    JSR speaker
+   movb #99, flag
+
+   BRA MAIN
+   ;lbra end_now
 
 
 ;--------------------------------------------------------------------------------
@@ -105,7 +142,19 @@ TIME_INT:
 ; 5 - General Delay
 ; 99 - DO Nothing
 ;---------------------------------------------------- 
- ldaa flag
+
+;	   ldaa port_t
+;	   staa value_dip_switch 
+;	   anda #%0000001 ; clear out all the other values except the 3 bit
+;	   cmpa #1
+;	   bne enter_private_mode
+	   
+;	   ldaa port_t ; secets mode
+;	   anda #%10000000 ; clear out all the other values except the 3 bit
+;	   cmpa #%10000000
+;	   bne check_flags
+	   
+check_flags: ldaa flag
 	 cmpa #0
 	 	beq just_delay
 	 cmpa #1
@@ -176,8 +225,20 @@ stepper_delayer: ; 3
 	   movw #4000, stepper_delay
        movb #0, stepper_flag
 	   
-	   bra TIME_DONE	   
+
+	   ldd sound_delay
+	   addd #1
+	   std sound_delay
+	   cpd #1953 ;#7812
+	   BLO TIME_DONE
+ 	   
+ 	   inc number_in_sound_seq
+ 	   movw #0,sound_delay
+	 
+	 bra TIME_DONE
+	   
 ;-------------------------------------------------
+
 
 DC_MOTOR:
         	  
@@ -271,3 +332,7 @@ CLOCK_INT:
   
   CLOCK_DONE:
   RTS
+  
+  
+  end_now: 
+  end
