@@ -6,7 +6,7 @@
     XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
     XREF TIME_INT
     XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2, keypad, INFO_MENU_3, INFO_MENU_4, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
-    XREF INFO_MENU_5, INFO_MENU_6, currentfloor
+    XREF INFO_MENU_5, INFO_MENU_6, currentfloor, speaker,sound_flag 
     
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD

@@ -3,8 +3,10 @@
 					XREF port_p_ddr,port_t,port_p
 					XREF direction, is_open_or_closed, LED
 					XREF flag
+
 					XREF stepper_delay, stepper_flag
 					XREF should_led
+
 val ds.b 1
 highorlow ds.w 2
 DelayCount ds.w 1
@@ -13,7 +15,9 @@ clockwise_seq: dc.b $0A, $12, $14, $0C, $0
 counterclockwise_seq: dc.b $0C, $14, $12, $0A, $0
 
 stepper_motor:
-		
+		ldaa direction
+		cmpa #0
+		beq led_blink
 		ldaa is_open_or_closed
 		cmpa #1
 		beq nope
@@ -41,12 +45,14 @@ again:
        STAA port_p
        movb #1, stepper_flag
        bra Delay
+
 increment:  inc should_led
 		    ldaa should_led
 			cmpa #8
 			bne nope
-		    jsr LED
+led_blink:   jsr LED
 		    movb #0,should_led
+
 nope:  rts
 
 
