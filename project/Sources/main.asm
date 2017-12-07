@@ -16,14 +16,14 @@
             xdef stepper_flag, stepper_delay, stepper_del_length
            	XDEF currentfloor,floor,state_of_load, max_value_of_pot
 
-			XDEF to_play
+			XDEF to_play, done_playing
 			
            	XDEF LED_flag,LED_delay, should_led
 			XDEF number_in_sound_seq,repeats
 			XREF speaker
 
            	XREF stepper_motor, ELEVATOR_FLOOR	
-            XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter, ADMIN_CHECK
+            XREF WELCOME, DATE_TIME, ADMIN, SECRET_1, SECRET_2, SECRET_3, MAIN_MENU, INITIALIZE_PORTS, pot_meter, ADMIN_CHECK
             XREF LED, LCD_VAL, LCD_CUR, disp_loc
             XREF dip_switches, ADMIN_CHECK_ERROR
             XREF keypadoutput, pressed, TIME_VAL, DATE_VAL,port_s
@@ -55,6 +55,7 @@ floor:					ds.b    1
 state_of_load:			ds.b	1
 LED_flag:				ds.b 	1
 LED_delay:				ds.b	1
+should_led:             ds.b    1
 ;stepper Motor
 stepper_flag:			ds.b    1
 stepper_delay:			ds.w    1
@@ -80,18 +81,21 @@ number_in_sound_seq:	ds.b	1
 repeats:			    ds.b 	1
 did_play:				ds.b 	1  ; has a sound already playe
 to_play:				ds.b	1
+done_playing:			ds.b	1
 
 ; code section
 MyCode:     SECTION
 _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
-
-
-    JSR WELCOME
+    ;JSR WELCOME
     ;JSR DATE_TIME
+    ;JSR keypadoutput
     ;JSR ADMIN
-    ;JSR SECRET
+    ;JSR keypadoutput
+    ;JSR SECRET_1
+    ;JSR keypadoutput
+    
     CLI
     movb #99, flag
     clr sound_flag
@@ -99,27 +103,27 @@ _Startup:
     movb #1,to_play
     JSR speaker
 
- ;JSR MAIN_MENU
+  JSR MAIN_MENU
  clr did_play
 MAIN:
 
-   ;JSR keypadoutput
-;keypressed:ldaa pressed
-   ;cmpa #9
-   ;BGT keypressed
-   ;JSR ELEVATOR_FLOOR
-   
+   JSR keypadoutput
+   ldaa pressed
+   cmpa #9
+   BGT MAIN_2
+   JSR ELEVATOR_FLOOR
+
+MAIN_2:   
    jsr dip_switches
    JSR pot_meter ; doesn't work right now 
-   jsr stepper_motor
-    
-    clr sound_flag
-    movb #2,to_play
-    JSR speaker
-   movb #99, flag
+
+   ;clr did_play 
+   ;clr sound_flag
+   ;movb #3,to_play
+   ;JSR speaker
+   ;movb #99, flag
 
    BRA MAIN
-   ;lbra end_now
 
 
 ;--------------------------------------------------------------------------------
@@ -155,36 +159,36 @@ TIME_INT:
 ;	   bne check_flags
 	   
 check_flags: ldaa flag
-	 cmpa #0
-	 	beq just_delay
+	 ;cmpa #0
+	 	;beq just_delay
 	 cmpa #1
 	   beq pot_meter_delay
 	 cmpa #2
 	   beq LED_delay_RTI
 	 cmpa #3 
 	 	beq stepper_delayer
-	 cmpa #4
-	    beq DC_MOTOR	
+	 cmpa #5
+	    lbeq sounds_RTI	
 	
 	 Lbra TIME_DONE
 
 ;---------------------------------------------------	 
-just_delay:	;0    
-	  	     ldx WAIT
-	 	  	 dex
-	  	  	 stx WAIT
-	        cpx #0
-	 	  	BNE TIME_DONE
-	      movb #1, CARRY
-	      movb #0, WAIT
-	  	  bra  TIME_DONE
+;just_delay:	;0    
+	  	     ;ldx WAIT
+	 	  	 ;dex
+	  	  	 ;stx WAIT
+	        ;cpx #0
+	 	  	;LBNE TIME_DONE
+	      ;movb #1, CARRY
+	     ; movb #0, WAIT
+	  	 ; Lbra  TIME_DONE
 
 ;---------------------------------------------------
 
 pot_meter_delay: ; 1
 	   ldaa DC_flag
 		    cmpa #0
-		   	beq TIME_DONE
+		   	Lbeq TIME_DONE
 		    ldx DC_delay
 		   	 dex
 		  	 stx DC_delay
@@ -221,26 +225,33 @@ stepper_delayer: ; 3
 	   dex
 	   stx stepper_delay
  	   cpx #0
-	   BNE TIME_DONE
-	   movw #4000, stepper_delay
+	   BNE TIME_DONE    
+       JSR stepper_motor
+	   movw #400, stepper_delay
        movb #0, stepper_flag
 	   
-
-	   ldd sound_delay
-	   addd #1
-	   std sound_delay
-	   cpd #1953 ;#7812
-	   BLO TIME_DONE
- 	   
- 	   inc number_in_sound_seq
- 	   movw #0,sound_delay
-	 
 	 bra TIME_DONE
 	   
 ;-------------------------------------------------
 
+sounds_RTI:;5
+	   ldaa sound_flag
+	   cmpa #1
+	   lbne TIME_DONE
+	   
+	   ldd sound_delay
+	   addd #1
+	   std sound_delay
+	   cpd #3000 ;#7812
+	   BLO TIME_DONE
+ 	   movb #1, done_playing
+ 	   inc number_in_sound_seq
+ 	   movw #0,sound_delay
+	 
+	 bra TIME_DONE
 
-DC_MOTOR:
+
+
         	  
   TIME_DONE:
     JSR CLOCK_INT
@@ -264,25 +275,25 @@ CLOCK_INT:
   LBNE CLOCK_DONE
   movb #0, Count_2
   
- colon_flash:
-   ldaa flash
-   cmpa #1
-   BNE flash_off
+ ;colon_flash:
+   ;ldaa flash
+   ;cmpa #1
+   ;BNE flash_off
    
-   flash_on:
-   movb #':', TIME_VAL+2
-   movb #':', LCD_VAL
-   movb #2, LCD_CUR
-   JSR disp_loc
-   movb #0, flash
-   bra CLOCK_MINUTES_ONES
+   ;flash_on:
+   ;movb #':', TIME_VAL+2
+   ;movb #':', LCD_VAL
+   ;movb #2, LCD_CUR
+   ;JSR disp_loc
+   ;movb #0, flash
+   ;bra CLOCK_MINUTES_ONES
    
-   flash_off: 
-   movb #' ', TIME_VAL+2
-   movb #' ', LCD_VAL
-   movb #2, LCD_CUR
-   JSR disp_loc
-   movb #1, flash
+   ;flash_off: 
+   ;movb #' ', TIME_VAL+2
+   ;movb #' ', LCD_VAL
+   ;movb #2, LCD_CUR
+   ;JSR disp_loc
+   ;movb #1, flash
   
   CLOCK_MINUTES_ONES:
   LDAA TIME_VAL+4

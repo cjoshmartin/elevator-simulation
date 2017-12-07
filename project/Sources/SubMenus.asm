@@ -1,5 +1,5 @@
             xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
-            xdef FLOOR_ENTRY, FLOOR_DEST
+            xdef FLOOR_ENTRY, FLOOR_DEST, secret_sel_menu
             xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed, flag
             xref display_string
             xref TIME_INT, WAIT, CARRY
@@ -200,9 +200,9 @@ CORRECT_SUBMENU:
         psha
         pshb
         
-          movb #'I',disp        
+            movb #'I',disp        
        		movb #'s',disp+1
-          movb #' ',disp+2
+            movb #' ',disp+2
         	movb #'T',disp+3
         	movb #'h',disp+4
         	movb #'a',disp+5
@@ -262,7 +262,7 @@ You_Entered:
 
   pshd
           
-          movb #40, WAIT
+          movb #8000, WAIT
           movb #16, LCD_CUR
            
             movb #'Y',disp        
@@ -612,8 +612,6 @@ FLOOR_DEST:
 
 Go_Up:
 	pshd
-        movw #8000, WAIT
-        movb #0, CARRY
         movb #0, flag
         
   		movb #'G',disp
@@ -653,12 +651,7 @@ Go_Up:
        	ldd #disp
        	JSR display_string
        	
-      Up_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE Up_WAIT
-          
-        movb #3, flag   
+        JSR keypadoutput  
        	puld
       RTS 
       
@@ -705,5 +698,50 @@ Go_Down:
        	JSR display_string
        
        	puld
-      RTS                  
+      RTS 
+      
+;---------------------------------------------------------------------------------
+
+secret_sel_menu:
+	    pshd
+        
+  		movb #'C',disp
+       	movb #'h',disp+1
+       	movb #'n',disp+2
+      	movb #'g',disp+3
+       	movb #' ',disp+4
+       	movb #'W',disp+5
+       	movb #'h',disp+6
+       	movb #'i',disp+7
+       	movb #'c',disp+8
+       	movb #'h',disp+9
+       	movb #' ',disp+10
+       	movb #'S',disp+11
+       	movb #'c',disp+12
+       	movb #'r',disp+13
+       	movb #'t',disp+14
+       	movb #'?',disp+15
+       	movb #'1',disp+16
+       	movb #'(',disp+17
+       	movb #'1',disp+18
+       	movb #')',disp+19
+       	movb #' ',disp+20
+       	movb #'2',disp+21
+       	movb #'(',disp+22
+       	movb #'2',disp+23
+       	movb #')',disp+24
+       	movb #' ',disp+25
+       	movb #'3',disp+26
+       	movb #'(',disp+27
+       	movb #'3',disp+28
+       	movb #')',disp+29
+      	movb #' ',disp+30
+       	movb #' ',disp+31
+       	movb #0,disp+32    
+       	
+       	ldd #disp
+       	JSR display_string
+       
+       	puld
+      RTS                        
                             

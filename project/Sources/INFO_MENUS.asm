@@ -1,10 +1,9 @@
     XDEF INFO_MENU_1, INFO_MENU_2, INFO_MENU_3, INFO_MENU_4, INFO_MENU_5, INFO_MENU_6
-     XREF LCD_VAL, LCD_CUR, display_string, disp, TIME_INT, WAIT, CARRY
+     XREF LCD_VAL, LCD_CUR, display_string, disp, TIME_INT, keypadoutput
      
 INFO_CODE: SECTION
 
 INFO_MENU_1:
-            movb #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -43,21 +42,13 @@ INFO_MENU_1:
         	ldd #disp
         	JSR display_string
         	
-        	CLI
-        IM1_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM1_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
-          SEI
+            JSR keypadoutput
           
         RTS    
         
 ;---------------------------------------------------------------------------
 
 INFO_MENU_2:
-          movb #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -96,21 +87,13 @@ INFO_MENU_2:
         	ldd #disp
         	JSR display_string
         	
-        	CLI
-       	IM2_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM2_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
-          SEI
+        	JSR keypadoutput
           
         RTS 
         
 ;-------------------------------------------------------------------------------
 
 INFO_MENU_3:
-          movb #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'S',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
@@ -149,23 +132,14 @@ INFO_MENU_3:
         	ldd #disp
         	JSR display_string
         	
-        	CLI
-       	IM3_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM3_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
-          SEI
+        	JSR keypadoutput
           
         RTS
         
 ;--------------------------------------------------------------------------------
 
 INFO_MENU_4:
-            movb #8000, WAIT		  ;Loads in value for interrupt
-			movb #0, CARRY
-			    
+
 		    movb #'S',disp        ;remaining code loads in Welcome and startup
        	 	movb #'y',disp+1
             movb #'s',disp+2
@@ -203,20 +177,14 @@ INFO_MENU_4:
         	ldd #disp
         	JSR display_string
         	
-        	CLI
-       	IM4_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM4_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
+        	JSR keypadoutput
             
         RTS 
         
 ;--------------------------------------------------------------------------------
 
 INFO_MENU_5:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -255,20 +223,13 @@ INFO_MENU_5:
         	ldd #disp
         	JSR display_string
         	
-        	CLI
-       	IM5_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM5_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
-          SEI  
+        	JSR keypadoutput 
         RTS
         
 ;------------------------------------------------------------------------------
 
 INFO_MENU_6:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+
 			    
 		    movb #'Y',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -306,13 +267,5 @@ INFO_MENU_6:
         	
         	ldd #disp
         	JSR display_string
-        	CLI
-        	
-       	IM6_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE IM6_WAIT
-          movb #0, CARRY
-          movb #0, WAIT
-          SEI  
+        	JSR keypadoutput  
         RTS                                           

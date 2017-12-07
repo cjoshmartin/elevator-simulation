@@ -1,10 +1,13 @@
-		XDEF WELCOME, DATE_TIME, ADMIN, SECRET, INPUT, MAIN_MENU ;Functions defined
+		XDEF WELCOME, DATE_TIME, ADMIN, SECRET_1, SECRET_2, SECRET_3, INPUT, MAIN_MENU ;Functions defined
 		XDEF disp, LCD_CUR, LCD_VAL,  SYS_SETTINGS                              ;Variables defined
 		
 		XREF WAIT, keypadoutput, pressed, TIME_VAL, DATE_VAL, CARRY, You_Entered, CORRECT_SUBMENU
-    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, SECRET_SET, EXIT
-    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
-    XREF TIME_INT
+    XREF display_string, disp_loc, TIME_SET, DATE_SET, ADMIN_SET, EXIT
+    XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN
+    XREF SECRET_SET_1, SECRET_ID_1, SECRET_PASS_1, disp_SECRET_ID_1, disp_SECRET_PASS_1
+    XREF SECRET_SET_2, SECRET_ID_2, SECRET_PASS_2, disp_SECRET_ID_2, disp_SECRET_PASS_2
+    XREF SECRET_SET_3, SECRET_ID_3, SECRET_PASS_3, disp_SECRET_ID_3, disp_SECRET_PASS_3
+    XREF TIME_INT, secret_sel_menu
     XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2, keypad, INFO_MENU_3, INFO_MENU_4, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
     XREF INFO_MENU_5, INFO_MENU_6, currentfloor, speaker,sound_flag 
     
@@ -56,17 +59,15 @@ WELCOME:
         	
         	ldd #disp
         	jsr display_string
-        	
-        WELCOME_WAIT:
-          ldaa CARRY
-          cmpa #1
-          BNE WELCOME_WAIT
-          movb #0, CARRY
           
           JSR INFO_MENU_1
+          JSR keypadoutput
           JSR INFO_MENU_2
+          JSR keypadoutput
           JSR INFO_MENU_3
+          JSR keypadoutput
           JSR INFO_MENU_5
+          JSR keypadoutput
 		  RTS
 		
 ;------------------------------------------------------------------------
@@ -198,13 +199,7 @@ ADMIN:
         JSR You_Entered
         JSR disp_ADMIN
         CLI
-            
-          Pause_A:
-            ldaa CARRY
-            cmpa #1
-            BNE Pause_A
-            movb #0, CARRY
-            SEI
+        JSR keypadoutput    
             
             JSR CORRECT_SUBMENU
             cpy #1
@@ -213,24 +208,48 @@ ADMIN:
         
 ;-------------------------------------------------------------------------           
 ;This is the top of the set secret ID and Password
-  SECRET:
-		    jsr SECRET_SET
+SECRET_1:
+		    jsr SECRET_SET_1
 		    JSR You_Entered
-        JSR disp_SECRET_ID
-        JSR disp_SECRET_PASS
+            JSR disp_SECRET_ID_1
+            JSR disp_SECRET_PASS_1
         CLI
-            
-          Pause_S:
-            ldaa CARRY
-            cmpa #1
-            BNE Pause_S
-            movb #0, CARRY
-            SEI
+            JSR keypadoutput
             
             JSR CORRECT_SUBMENU
             cpy #1
-            BEQ SECRET
+            BEQ SECRET_1
           RTS
+          
+            
+SECRET_2:          
+            jsr SECRET_SET_2
+		    JSR You_Entered
+        JSR disp_SECRET_ID_2
+        JSR disp_SECRET_PASS_2
+        CLI
+            
+          JSR keypadoutput
+            
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ SECRET_2
+          RTS
+                   
+SECRET_3:           
+            jsr SECRET_SET_3
+		    JSR You_Entered
+        JSR disp_SECRET_ID_3
+        JSR disp_SECRET_PASS_3
+        CLI
+            
+         JSR keypadoutput
+
+            JSR CORRECT_SUBMENU
+            cpy #1
+            BEQ SECRET_3
+          RTS  
+                         
 		    
 
 ;------------------------------------------------------------------
@@ -264,6 +283,14 @@ SYS_SETTINGS:
     
       SYS_SET_1:
         JSR keypadoutput
+        ldaa pressed
+        cmpa #9
+        BLE SYS_SET_1
+        cmpa #$C
+        BEQ SYS_SET_1
+        cmpa #$E
+        BEQ SYS_SET_1
+        
         ldaa LCD_CUR
         cmpa #16
         BNE SYS_SET_1_CONT
@@ -275,6 +302,7 @@ SYS_SETTINGS:
         JMP SYS_SET_2
         
        SYS_SET_1_CONT:
+         ldaa pressed
          cmpa #$D
          BEQ SYS_SET_EXIT
          cmpa #$10
@@ -299,11 +327,17 @@ SYS_SETTINGS:
         BNE SYS_SET_SEL_1b
         JSR DATE_TIME
         JSR SYS_SET_MAIN_MEN_1
+        movb #0, LCD_CUR
+        movb #'>', LCD_VAL
+        JSR disp_loc
         jmp SYS_SET_1
         
       SYS_SET_SEL_1b:
         JSR ADMIN
         JSR SYS_SET_MAIN_MEN_1
+        movb #16, LCD_CUR
+        movb #'>', LCD_VAL
+        JSR disp_loc
   		jmp SYS_SET_1
         
       SYS_SET_EXIT:
@@ -311,6 +345,11 @@ SYS_SETTINGS:
           
       SYS_SET_2:
         JSR keypadoutput
+        ldaa pressed
+        cmpa #9
+        BLE SYS_SET_2
+        cmpa #$B
+        BEQ SYS_SET_2
         ldaa LCD_CUR
         cmpa #0
         BNE SYS_SET_2_CONT
@@ -326,7 +365,7 @@ SYS_SETTINGS:
          cmpa #$D
          BEQ SYS_SET_EXIT
          cmpa #$10
-         BEQ SYS_SET_SEL_2a
+         BEQ SEC_SEL
          ldaa LCD_CUR
          JSR INPUT
          
@@ -341,16 +380,40 @@ SYS_SETTINGS:
              movb #'>', LCD_VAL ; after '>' moves will set it to that position
              ldx #0
              bra SYS_SET_2  ; return to the top of DT_TI 
-      
-      SYS_SET_SEL_2a:
-        ldaa LCD_CUR
+
+      SEC_SEL:  
+        JSR secret_sel_menu
+        JSR keypadoutput
+        ldaa pressed
+        cmpa #$D
+        BEQ SEC_SEL_DONE
+        cmpa #3
+        BGT SEC_SEL
         cmpa #0
-        BNE SYS_SET_SEL_2b
-        JSR SECRET_SET
+        BEQ SEC_SEL
+        cmpa #1
+        BNE SEC_SEL_2
+      
+      SEC_SEL_:  
+        JSR SECRET_1
+        bra SEC_SEL_DONE
+        
+      SEC_SEL_2:
+        cmpa #2
+        BNE SEC_SEL_3
+        JSR SECRET_2
+        bra SEC_SEL_DONE
+        
+      SEC_SEL_3:  
+        JSR SECRET_3
+        
+      SEC_SEL_DONE:  
         JSR SYS_SET_MAIN_MEN_2
+         movb #0, LCD_CUR
+         movb #'>', LCD_VAL
         jmp SYS_SET_2
-      SYS_SET_SEL_2b:
-         jmp SYS_SET_EXIT
+        
+          
       
         
  

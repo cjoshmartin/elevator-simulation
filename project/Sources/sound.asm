@@ -1,5 +1,4 @@
 ; sound 
-
 ; no where near done
 
 		xdef seq_1, speaker
@@ -7,8 +6,7 @@
 		XREF number_in_sound_seq, repeats
 		XREF flag,sound_flag
 		XREF did_play, to_play
-		
-
+		XREF done_playing
 			; musical notes
 		A3: equ 37
 		B3: equ 33
@@ -40,15 +38,19 @@
 		B5F: equ 9
 		D5F: equ 15
 		E5F: equ 13
-		G5F: equ 11
+		G5F: equ 11																																																																																																																																																																																				 
 		
 
 
+		seq_1: dc.b	D3F,255,E4,255,E4,E4,255,E4,255,E4,E4,255,E4,G4,C4,D4,E4,E4, $FA
+		seq_2: dc.b A3,C4,E4,A3,C4,E4,A3,C4,E4,A3,C4,E4,A3,C4,E4,A3,C4,E4,E3,A3,C4,E4,E3,A3,C4,E4,F3,A3,C4,A3,$FA   ; alarm
+		seq_3: dc.b	C5,C5,G5,G5,B5,B5,G5,G5,C5,C5,G5,G5,B5,B5,G5,G5,C5,C5,G5,G5,B5,B5,G5,G5,C5,C5,G5,G5,B5,B5,G5,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,E3,C5,D3,E3,C5,G5,G5,E3,B5,E3,B5,G5,G5,C3,G3,C5,C3,G3,C5,G3,G5,G3,G5,E3,B5,E3,B5,B3,G5,B3,G5,E3,D3F,C5,E3,D3F,C5,C3,G5,C3,G5,B3,D3F,B5,B3,D3F,B5,E3,G5,E3,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,G3,C5,D3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,C3,B3,C5,C3,B3,C5,G3,G5,G3,G5,G3,B5,G3,B5,B3,G5,B3,G5,E3,C4,C5,E3,C4,C5,C3,G5,C3,G5,B3,C4,B5,B3,C4,B5,E3,G5,E3,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,E3,C5,D3,E3,C5,G5,G5,E3,B5,E3,B5,$FA ;G5,G5,C3,G3,C5,C3,G3,C5,G3,G5,G3,G5,E3,B5,E3,B5,B3,G5,B3,G5,E3,D3F,C5,E3,D3F,C5,C3,G5,C3,G5,B3,D3F,B5,B3,D3F,B5,E3,G5,E3,G5,B5,B5,C5,G3,C5,G3,G5,G5,G5,G5,G5,G5,B5,G3,B5,G3,B5,B5,G5,G5,B5,B5,C5,G3,C5,G3,G5,G5,G5,G5,G5,G5,B5,G3,B5,G3,B5,B5,
+		;,G5,G5,D5,D5,C5,B3,C5,B3,G5,G5,G5,G3,G5,G3,E5F,E5F,B5,G3,B5,G3,E5,E5,G5,B3,G5,B3,C5,E3,C3,C5,E3,C3,G5,G5,B3,C3,B5,B3,C3,B5,E3,G5,E3,G5,E3,C5,E3,C5,G5,G5,B5,B5,G5,G5,D3,C5,D3,C5,G5,G5,B5,B5,G5,G5,C3,C5,C3,C5,G5,G5,B5,B5,G5,G5,E3,C5,E3,C5,C3,G5,C3,G5,B3,B5,B3,B5,E3,G5,E3,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,E3,C5,D3,E3,C5,G5,G5,E3,B5,E3,B5,G5,G5,C3,G3,C5,C3,G3,C5,G3,G5,G3,G5,E3,B5,E3,B5,B3,G5,B3,G5,E3,D3F,C5,E3,D3F,C5,C3,G5,C3,G5,B3,D3F,B5,B3,D3F,B5,E3,G5,E3,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,G3,C5,D3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,C3,B3,C5,C3,B3,C5,G3,G5,G3,G5,G3,B5,G3,B5,B3,G5,B3,G5,E3,C4,C5,E3,C4,C5,C3,G5,C3,G5,B3,C4,B5,B3,C4,B5,E3,G5,E3,G5,E3,G3,C5,E3,G3,C5,G5,G5,G3,B5,G3,B5,G5,G5,D3,E3,C5,D3,E3,C5,G5,G5,E3,B5,E3,B5,G5,G5,C3,G3,C5,C3,G3,C5,G3,G5,G3,G5,E3,B5,E3,B5,B3,G5,B3,G5,E3,D3F,C5,E3,D3F,C5,C3,G5,C3,G5,B3,D3F,B5,B3,D3F,B5,E3,G5,E3,G5,B5,B5,C5,G3,C5,G3,G5,G5,G5,G5,G5,G5,B5,G3,B5,G3,B5,B5,G5,G5,B5,B5,C5,G3,C5,G3,G5,G5,G5,G5,G5,G5,B5,G3,B5,G3,B5,B5,G5,G5,D5,D5,C5,B3,C5,B3,G5,G5,G5,G3,G5,G3,E5F,E5F,B5,G3,B5,G3,E5,E5,G5,B3,G5,B3,C5,E3,C3,C5,E3,C3,G5,G5,B3,C3,B5,B3,C3,B5,E3,G5,E3,G5,E3,C5,E3,C5,G5,G5,B5,B5,G5,G5,D3,C5,D3,C5,G5,G5,B5,B5,G5,G5,C3,C5,C3,C5,G5,G5,B5,B5,G5,G5,E3,C5,E3,C5,C3,G5,C3,G5,B3,B5,B3,B5,E3,G5,E3
+	;	seq_4: dc.b	B4,E4,D5,E5,E4,D4,B3,A4,B4,A4,D3,G3F,D4,A3,E4,C3,G3,E3,A4,B4,E5,C3,G3,C3,G3,E5,C3,G3,B4,E5,A3,B3,C3,G3,G3F,C3,G3,C3,G3,G3F,C3,G3,E4,D3,A4,C3,G3,G3F,D4,C3,G3,A3,E4,C3,G3,C3,G3,C3,G3,C3,G3,C3,G3,C3,G3,E3,A4,C3,G3,B4,E4,C3,G3,C3,G3,D5,C3,G3,E5,E4,D4,B3,C3,G3,A4,C3,G3,C3,G3,B4,C3,G3,A4,D3,C3,G3,G3F,D4,C3,G3,A3,E4,C3,G3,C3,G3,C3,G3,G3,G3,G3,B3,G3,E3,E3,A3,C3,B3,E4,C3,G3,C3,E4,C3,G3,B3,E4,A3,C3,G4,G3,C3,C3,G3F,C3,G3,E4,D3F,G3,G3,B4,C3,G3F,G3,C3,E3,D3F,D3F,E4,C3,G3,C3,C3,C3,G3,C3,G3,C3,G3,E3,C3,C3,G4,C3,A4,E4,C3,G3,C3,C3,G3,C4,E4,C4,C3,G4,C3,G3,C3,E3F,G3,B3,B3,G3F,G3,C3,E4,C4,A3,F3,F3,A4,C3,F4,A3,G3,C3,C4,C3,C3,G3,C3,G3,G3,D3F,E3,A3,B3,A3,C3,B3,E4,C3,E3F,C3,E4,C3,E3F,B3,E4,A3,C3,G4,C3,E3F,C3,G3F,C3,E3F,E4,B3,D4,G3,D3,D5,C3,B4,G4,E3F,C3,B3,E3,G3,E3,E4,C3,E3F,C3,C3,E3F,C3,C3,C3,E3F,A3,G3,D3,D3,G4,C3,A4,G3F,$FA
+		seq_4: dc.b E3F,B3F,E3F,E3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,D3,D3,D3,B3,D3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,B3F,B3,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3,B3,B3,B3,B3,B3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,D3F,D3F,D3F,D3F,D3F,B3,D3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3,B3,B3,B3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F, $FA
+		; E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,D3,D3,D3,B3,D2,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3,B3,B3,B3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,F3,F3,F3,F3,F3,B3,D2,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3,B3,B3,B3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,D3,D3,D3,B3,D2,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3F,B3F,B3F,B3F,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,B3,B3,B3,B3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,C4,C4,C4,C3,E3F,E3F,E3F,B3F,E3F,E3F,E3F,E3F,B3F,E3F,D3F,D3F,D3F,B3,Eb4,B3F,Eb4,Eb4,B3F,E3F,E3F,E3F,E3F,E3F,E4,B3,E4,E4,B3,B3,AB3,B3,AB3,B3,B3F,E2,B3,AB3,C4,D3F,Eb4,Eb4,E3F,Eb4,B3F,B3F,B3F,B3F,E3F,B3F,B3F,Gb3,Gb3,Gb3,B3F,B3F,E3F,F3,F3,F3,B3F,Eb4,Eb4,B3F,B3F,B3F,Eb4,E3F,D4,D4,Gb3,Gb3,Gb3,D4,B3F,D3F,D3F,E3F,E3F,E3F,D3F,E3F,B3F,B3F,B3F,B3F,C4,C4,D3,D3,D3,C4,E3F,A3,A3,A3,B3F,B3,B3,C3,C3,C3,B3,E3F,Ab3,Ab3,Ab3,B3F,B3F,B3F,B3,B3,B3,B3F,E3F,Gb3,Gb3,Gb3,B3F,B3,B3,E3,E3,E3,B3,E2,B3,Gb3,Gb3,Gb3,E2,B3,E4,E4,E3,E3,E3,E4,E2,B3,Ab3,Ab3,Ab3,E2,B3,E3,E3,E3,E3,E3,E2,E3,E3,B3,B3,B3,B3,Ab3,Ab3,Ab3,E2,B3,Ab3,Ab3,Ab3,E3,E3,E3,E2,E3,E3,E3,B3,B3,B3,B3,D3F,D3F,D3F,E2,B3,Eb4,Eb4,Eb4,E3F,B3F,B3F,B3F,B3F,E3F,B3F,B3F,Gb3,Gb3,Gb3,B3F,B3F,E3F,F3,F3,F3,B3F,Eb4,Eb4,B3F,B3F,B3F,Eb4,
 
-		seq_1: dc.b	D3F,255,E4,255,E4,E4,255,E4,255,E4,E4,255,E4,G4,C4,D4,E4,E4
-		seq_2: dc.b	20,20,20,27,24,24,27,255,16,16,18,18,20
-		seq_3: dc.b	20,20,20,27,24,24,27,255,16,16,18,18,20
-		seq_4: dc.b	20,20,20,27,24,24,27,255,16,16,18,18,20
+
 		 
 speaker:
 	 ldaa did_play
@@ -77,9 +79,12 @@ compare_4: cmpb #4
 	 ldx seq_4
 
 cont:	 
-  	 movb #0, number_in_sound_seq
+  	 ;movb #0, number_in_sound_seq
   	  
-  	 loop: ldaa number_in_sound_seq	 
+  	 loop: ldaa number_in_sound_seq
+  	  ;cmpa #12
+  	  ;BHI reset_this
+  	  	 
   	  movb #5,flag
       ldab a,x
  	  movb #1, sound_flag 
@@ -91,77 +96,15 @@ cont:
  	   pulb
  	   pula
  	   pulx
- 	    
+ 	   
+ 	   ldaa done_playing ; check if the note needs to keep going
+ 	   cmpa #0
+ 	   beq loop
+ 	   movb #0, done_playing 
+ 	   
  	   ldaa number_in_sound_seq
- 	   cmpa	#12
- 	   BLO	loop			;length of song
- 	   movb #0, number_in_sound_seq
+ 	   cmpb	#$FA
+ 	   bne  skip			;length of song
+ reset_this:	   movb #0, number_in_sound_seq
  	   movb #1, did_play
  skip: rts
-
-
-;--------------------- JUNK CODE ------------------------------------------
-	
-	;	pshx
-	;	pshy
-	;	pshd	 
-;	   movb #5, flag
-	   
-;reload: ldx #seq_1 
-		movb #0, number_in_sound_seq
-		
-;play_sound: ;ldaa number_in_sound_seq
-;			ldaa D3F;a,x
-;	   		psha
-;	   		jsr SendsChr
-;	   		pula
-;	   		jsr PlayTone
-	   		;cmpa #12 	   ;loads the value of number_in_sound_seq and then compares it to 12
-	   		;bne play_sound 
-	   		;inc repeats
-	   		;ldaa repeats
-	   		;ldaa #4 
-	   		;bne reload
-	   		;movb #99, flag
-	   		
-	   ;	puld
-		;puly
-		;pulx 
-;		rts	 
-	   
-;------------------------- crap code --------------------------
- ;      ldab sound_flag
-;	   cmpb #1
-;	   beq load_it
-;	   ldx #seq_1
-;	   movw #0,number_in_sound_seq
-;	   movb #1, sound_flag
-	   
-   
-;load_it:ldd number_in_sound_seq
-;		cpd #0
-;		 bne keeping_going ;play_note
-;	   ldaa 1,x+
-;	   staa sent_sound
-;	   cmpa #$FE
-;	   bne keeping_going
-;	   movb #0, sound_flag
-	   
-
-; ldaa sent_sound
-	  ; psha
-	  ; jsr SendsChr
-	   ;pula
-;play_note:
-	   ;ldd number_in_sound_seq
-	   ;addd #1
-	   ;std number_in_sound_seq
-	   ;jsr PlayTone	   
-	   ;cpd #19
-	   ;bne TIME_DONE
- 	   
- 	   ;movw #0,number_in_sound_seq
- 	   
-	   
-
-

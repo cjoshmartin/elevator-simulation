@@ -4,7 +4,7 @@
 			XREF DC_flag,DC_delay, is_open_or_closed,was_open_or_closed
 			XREF flag
 			XREF max_value_of_pot
-			XREF ERROR_DOOR,ERROR_MENU,MAIN_MENU
+			XREF ERROR_DOOR, MAIN_MENU
 MY_EXTENDED_RAM: SECTION
 ; Insert here your data definition.
 press     ds.b	  1
@@ -86,7 +86,6 @@ show_main_menu:
 	rts
 
 show_error_message:
-	jsr ERROR_MENU
  	jsr ERROR_DOOR
  	movb #1, is_open_or_closed
  	ldaa is_open_or_closed
