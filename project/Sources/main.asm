@@ -90,12 +90,13 @@ _Startup:
     movb #99, flag
     clr sound_flag
     clr did_play
+   
     movb #1,to_play
     JSR speaker
 
  ;JSR MAIN_MENU
  clr did_play
-MAIN: ; HOLDEN THIS IS BREAKING SHIT
+MAIN:
 
    ;JSR keypadoutput
 ;keypressed:ldaa pressed
@@ -108,7 +109,8 @@ MAIN: ; HOLDEN THIS IS BREAKING SHIT
    jsr stepper_motor
     
     clr sound_flag
-    movb #2,to_play
+
+    movb #1,to_play
     JSR speaker
    movb #99, flag
    BRA MAIN
@@ -208,7 +210,7 @@ stepper_delayer: ; 3
 	   movb #0, stepper_flag
 
 
-	   movw #$BF, stepper_delay
+	   movw #$9F, stepper_delay
 	   
 	   bra TIME_DONE
 

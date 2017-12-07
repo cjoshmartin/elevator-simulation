@@ -7,7 +7,7 @@
     xref direction 
     xref port_s, stateofelevator,currentfloor, floor, state_of_load
     xref is_open_or_closed 
-
+    XREF sound_flag,did_play,to_play,speaker
 going_up_sequence:	        dc.b    $01, $02, $04, $08, $10, $20, $40, $80
 going_down_sequence:		dc.b	$80, $40, $20, $10, $08, $04, $02, $01
 blink_sequence: 			dc.b 	$FF, $00, $FF,$00,$FA ; FA is the end of the seqence
@@ -42,11 +42,11 @@ Delay:		 ldaa LED_flag
 ;------------------------- LOOP 1 -------------------------------    
 going_up_leds: 	 ldaa LED_flag
 				 	cmpa #1
-				 		beq skip  ; delay
+				 		lbeq skip  ; delay
 				 		
 				 ldaa is_open_or_closed
 				 	cmpa #1
-				 		beq skip ; if door is openned then don't do anything
+				 		lbeq skip ; if door is openned then don't do anything
 				 ldaa state_of_load
 				 	cmpa #1
 				 		beq up_sec ; check if I nedd to reset
@@ -58,7 +58,12 @@ going_up_leds: 	 ldaa LED_flag
  				ldaa stateofelevator ; else move through the array 
        			staa port_s  ; store the values of A to the LEDS 
                 inc currentfloor
-       			bra shared_code
+                clr sound_flag
+		    clr did_play
+		    movb #1,to_play
+    		    JSR speaker
+       			
+       			bra shared_code 
  ;----------------------- LOOP 2 --------------------------------
      	  
 going_down_leds: ldaa LED_flag
@@ -84,7 +89,11 @@ skip_reset: 	 ldaa is_open_or_closed
        			staa port_s  ; store the values of A to the LEDS 
                 ROR stateofelevator
                 dec currentfloor
-
+		    
+		    clr sound_flag
+		    clr did_play
+		    movb #2,to_play
+    		    JSR speaker
        			
 ;--------------------- END ------------------------------------
        	shared_code: 

@@ -47,6 +47,7 @@ again:
        bra Delay
 
 increment:  inc should_led
+		   
 		    ldaa should_led
 			cmpa #8
 			bne nope
