@@ -4,7 +4,7 @@
 			XREF DC_flag,DC_delay, is_open_or_closed,was_open_or_closed
 			XREF flag
 			XREF max_value_of_pot
-			XREF ERROR_DOOR, MAIN_MENU
+			XREF ERROR_DOOR,MAIN_MENU
 MY_EXTENDED_RAM: SECTION
 ; Insert here your data definition.
 press     ds.b	  1
@@ -31,9 +31,8 @@ getpotentiometer:
 ; UP TO HERE WORKS, if you step through it
 		   
 checkton: beq interruptdelay
-		  bset port_t, #$08 ;turns the motor on 
-		  rts
-		  
+		   bset port_t, #$08 ;turns the motor on 
+		   rts
  hitloop:  jsr cpudelay
  		   dec ton
 		   bne hitloop
@@ -80,6 +79,7 @@ is_FF: stab  press
 	   rts
 show_main_menu:
 	jsr MAIN_MENU
+	;TODO: addd sound
 	movb #0, is_open_or_closed 
 	ldaa is_open_or_closed
 	staa was_open_or_closed  

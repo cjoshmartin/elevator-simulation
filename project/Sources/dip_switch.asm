@@ -48,3 +48,4 @@ enter_login_mode: jsr SECRET_ID_SUBMENU ; TODO: need to fix
 				cmpb #80
 		   		beq enter_login_mode
 		   		bra dip_switches
+									

@@ -7,6 +7,7 @@ Floor_Entered: ds.b 1
 ELEVATOR_CODE: SECTION
 
 ELEVATOR_FLOOR:
+	 ldaa pressed
        cmpa currentfloor 
        BNE ELEVATOR_FLOOR_CONT
        RTS
@@ -35,10 +36,10 @@ ELEVATOR_FLOOR:
       movb #3, flag
       movb #1, stepper_flag
     Go_Up_L:
-      JSR stepper_motor
-      ldaa direction
-      cmpa #0
-      BNE Go_Up_L
+     ; JSR stepper_motor
+      ;ldaa direction
+      ;cmpa #0
+      ;BNE Go_Up_L
       RTS
       
     Going_Down:
@@ -46,10 +47,9 @@ ELEVATOR_FLOOR:
       movb #3, flag
       movb #1, stepper_flag
     Go_Down_L:
-      JSR stepper_motor
-      ldaa direction
-      cmpa #0
-      BNE Go_Down_L      
+      ;JSR stepper_motor
+      ;ldaa direction
+      ;cmpa #0
+      ;BNE Go_Down_L      
       RTS  
-        
         

@@ -58,11 +58,9 @@ going_up_leds: 	 ldaa LED_flag
  				ldaa stateofelevator ; else move through the array 
        			staa port_s  ; store the values of A to the LEDS 
                 inc currentfloor
-                clr sound_flag
-		    clr did_play
-		    movb #1,to_play
-    		    JSR speaker
-       			
+       	    ldab currentfloor ; compares the current floor to floor
+       	    cmpb floor; checks to see if (B >= 6)
+       	    BLO skip		
        			bra shared_code 
  ;----------------------- LOOP 2 --------------------------------
      	  
@@ -89,22 +87,19 @@ skip_reset: 	 ldaa is_open_or_closed
        			staa port_s  ; store the values of A to the LEDS 
                 ROR stateofelevator
                 dec currentfloor
-		    
-		    clr sound_flag
-		    clr did_play
-		    movb #2,to_play
-    		    JSR speaker
+		    ldab currentfloor ; compares the current floor to floor
+       	    cmpb floor; checks to see if (B >= 6)
+       	    BHI skip
        			
 ;--------------------- END ------------------------------------
        	shared_code: 
-       			  ldab currentfloor ; compares the current floor to floor
+       			  ;ldab currentfloor ; compares the current floor to floor
        			  ;stab currentfloor
        			  ;movb #1, LED_flag
-       			  cmpb floor; checks to see if (B >= 6)
-       			  	bne skip
        			  movb #0, direction
        			  movb #0,state_of_load
        	skip:	  rts
 ;--------------------- DELAY ----------------------------------
 
-	  rts
+	  rts       	
+       

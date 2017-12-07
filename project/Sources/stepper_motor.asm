@@ -1,4 +1,4 @@
-				XDEF stepper_motor
+					XDEF stepper_motor
 					
 					XREF port_p_ddr,port_t,port_p
 					XREF direction, is_open_or_closed, LED
@@ -49,7 +49,7 @@ again:
 increment:  inc should_led
 		   
 		    ldaa should_led
-			cmpa #8
+			cmpa #60
 			bne nope
 led_blink:   jsr LED
 		    movb #0,should_led

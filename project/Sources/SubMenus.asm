@@ -1,4 +1,4 @@
-            xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
+   xdef TIME_SUBMENU, DATE_SUBMENU, CORRECT_SUBMENU, SECRET_ID_SUBMENU, SECRET_PASS_SUBMENU, You_Entered, EXIT, ERROR_DOOR
             xdef FLOOR_ENTRY, FLOOR_DEST, secret_sel_menu
             xref disp, LCD_CUR, TIME_VAL, DATE_VAL, keypadoutput, pressed, flag
             xref display_string
@@ -737,4 +737,3 @@ secret_sel_menu:
        
        	puld
       RTS                        
-                            

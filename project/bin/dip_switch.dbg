@@ -1,6 +1,6 @@
 	  xdef dip_switches,value_dip_switch 
 	  xref port_t, SECRET_ID_SUBMENU
-	  
+	  XREF sound_flag,did_play,to_play,speaker
 	 	   
 value_dip_switch ds.b 1	  
 	  
@@ -30,7 +30,13 @@ enter_private_mode: ;jsr to private mode
 				 	ldaa port_t
 	   				staa value_dip_switch 
 					anda #%0000001
-				    cmpa #1
+					
+					clr sound_flag
+		                  clr did_play
+		    		      movb #4,to_play
+    		    		      JSR speaker
+				      
+				      cmpa #1
 		   			beq enter_private_mode
 		   			bra dip_switches
 		   			
