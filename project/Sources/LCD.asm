@@ -6,19 +6,20 @@
     XREF TIME_disp, DATE_disp, MAIN_MENU_SETUP, display_DATE_TIME_SET, disp_ADMIN, disp_SECRET_ID, disp_SECRET_PASS
     XREF TIME_INT
     XREF NEXT_FLOOR, stateofelevator, INFO_MENU_1, INFO_MENU_2, keypad, INFO_MENU_3, INFO_MENU_4, SYS_SET_MAIN_MEN_1, SYS_SET_MAIN_MEN_2
-    XREF INFO_MENU_5, INFO_MENU_6
+    XREF INFO_MENU_5, INFO_MENU_6, currentfloor
     
 LCD_RAM: section
 disp: ds.b 33	  ;values to display the LCD
 LCD_CUR: ds.b 1  ;Holds the current LCD display value
 LCD_VAL: ds.b 1  ;Holds The value for flash on and off
 
+number_to_ascii_convert: ds.b 1
 
 ;----------------------------------------------------------------------
 CODE_LCD: SECTION
 ;This segment of the code only occurs upon the start up of the elevator		
 WELCOME:
-            movb #9999, WAIT		  ;Loads in value for interrupt
+            movw #9999, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'W',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
@@ -231,8 +232,8 @@ ADMIN:
             JSR CORRECT_SUBMENU
             cpy #1
             BEQ SECRET
-        RTS
-		    RTS
+          RTS
+		    
 
 ;------------------------------------------------------------------
 ;This is the main of the main menu setup sequence which will display 
@@ -246,8 +247,17 @@ MAIN_MENU:
         movb #16, LCD_CUR
         JSR DATE_disp
         
-        movb stateofelevator, disp+15
-        movb NEXT_FLOOR, disp+31
+        ldab currentfloor
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+15
+        
+        ldab NEXT_FLOOR
+        addb #$31
+        stab number_to_ascii_convert
+        
+        movb number_to_ascii_convert, disp+31
         ldd #disp
         jsr display_string
         
@@ -270,7 +280,8 @@ SYS_SETTINGS:
         BNE SYS_SET_1_CONT
         ldaa pressed
         cmpa #$B
-        BNE SYS_SET_1
+        BNE SYS_SET_1_CONT
+        movb #0, LCD_CUR
         JSR SYS_SET_MAIN_MEN_2
         JMP SYS_SET_2
         
@@ -281,10 +292,8 @@ SYS_SETTINGS:
          BEQ SYS_SET_SEL_1a
          ldaa LCD_CUR
          JSR INPUT
-         
-         
-         KERNAl_2:
-                  
+                 
+         KERNAl_2:     
              jsr disp_loc ; will change where the  '>' is
              ldab LCD_CUR
              staa LCD_CUR
@@ -318,7 +327,8 @@ SYS_SETTINGS:
         BNE SYS_SET_2_CONT
         ldaa pressed
         cmpa #$A
-        BNE SYS_SET_2
+        BNE SYS_SET_2_CONT
+        movb #16, LCD_CUR
         JSR SYS_SET_MAIN_MEN_1
         jmp SYS_SET_1
         

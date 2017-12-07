@@ -6,7 +6,9 @@
 	  	XREF WAIT, CARRY, CRGINT, RTICTL, stateofelevator, NEXT_FLOOR
 	  	XREF ADMIN_PASS
 	  	XREF state_of_load, stepper_flag,direction,floor, stepper_delay,LED_delay, max_value_of_pot, currentfloor
+
 	   	XREF flag, LED_flag, should_led
+
 	   
 
 
@@ -30,12 +32,14 @@ PORTS_CODE:	 SECTION
 	JSR init_LCD
 	movb #0, WAIT
 	movb #0, CARRY
-	movb #'1', stateofelevator
-	movb #'1', NEXT_FLOOR
+	movb #1, stateofelevator
+	movb #0, NEXT_FLOOR
 	movb #0, Count_1
 	movb #0, Count_2
 	movb #%00011110, port_p_ddr ; intialize the stepper motor
-;	movb #$20, port_t_ddr ;intialize speaker
+
+	movb #$20, port_t_ddr ;intialize speaker
+
 	
 	;pre-initialize the value for time
 	movb #'-', TIME_VAL
@@ -81,17 +85,20 @@ PORTS_CODE:	 SECTION
     clr LED_flag
     clr LED_delay
     clr stepper_delay
+
+   
+    movb #0, currentfloor
+    movb #0, NEXT_FLOOR
+
     
     clr should_led
-   
-    movb #1, currentfloor
-    movb #1, NEXT_FLOOR
+
 	movb #0, stepper_flag ;init state of the stepper
 	movb #0, flag
    	movb #$74, max_value_of_pot
     movb #0, state_of_load
-    movb #0, floor ; the highest or lowest floor 
-    movb #2, direction ; tell the elevator wants to move upwards
+    movb #8, floor ; the highest or lowest floor 
+    movb #1, direction ; tell the elevator wants to move upwards
 	
 	bset CRGINT, #$80					  ;sets CRGINT
  	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 

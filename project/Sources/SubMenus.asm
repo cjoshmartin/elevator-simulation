@@ -373,7 +373,7 @@ CORRECT_ADM_PASS:
 
         
             pshd
-            movb #4000, WAIT
+            movw #4000, WAIT
             movb #0, CARRY
            
             movb #'Y',disp        
@@ -546,7 +546,9 @@ FLOOR_ENTRY:
        	movb #' ',disp+27
        	movb #'-',disp+28
        	movb #' ',disp+29
-      	movb #'-',disp+30
+
+      	movb #' ',disp+30
+
        	movb #' ',disp+31
        	movb #0,disp+32    
        	

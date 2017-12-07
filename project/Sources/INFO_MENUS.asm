@@ -4,7 +4,7 @@
 INFO_CODE: SECTION
 
 INFO_MENU_1:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+            movw #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -57,7 +57,7 @@ INFO_MENU_1:
 ;---------------------------------------------------------------------------
 
 INFO_MENU_2:
-          movb #8000, WAIT		  ;Loads in value for interrupt
+          movw #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -110,7 +110,7 @@ INFO_MENU_2:
 ;-------------------------------------------------------------------------------
 
 INFO_MENU_3:
-          movb #8000, WAIT		  ;Loads in value for interrupt
+          movw #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'S',disp        ;remaining code loads in Welcome and startup
        	 	movb #'e',disp+1
@@ -163,7 +163,7 @@ INFO_MENU_3:
 ;--------------------------------------------------------------------------------
 
 INFO_MENU_4:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+            movw #8000, WAIT		  ;Loads in value for interrupt
 			movb #0, CARRY
 			    
 		    movb #'S',disp        ;remaining code loads in Welcome and startup
@@ -216,7 +216,7 @@ INFO_MENU_4:
 ;--------------------------------------------------------------------------------
 
 INFO_MENU_5:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+            movw #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'T',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
@@ -268,7 +268,7 @@ INFO_MENU_5:
 ;------------------------------------------------------------------------------
 
 INFO_MENU_6:
-            movb #8000, WAIT		  ;Loads in value for interrupt
+            movw #8000, WAIT		  ;Loads in value for interrupt
 			    
 		    movb #'Y',disp        ;remaining code loads in Welcome and startup
        	 	movb #'o',disp+1
