@@ -373,7 +373,7 @@ CORRECT_ADM_PASS:
 
         
             pshd
-            movb #4000, WAIT
+            movw #4000, WAIT
             movb #0, CARRY
            
             movb #'Y',disp        

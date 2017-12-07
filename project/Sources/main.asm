@@ -15,6 +15,7 @@
 
            	XDEF LED_flag,LED_delay, should_led
 
+
            	XREF stepper_motor, ELEVATOR_FLOOR	
             XREF WELCOME, DATE_TIME, ADMIN, SECRET, MAIN_MENU, INITIALIZE_PORTS, pot_meter,
             XREF LED
@@ -34,7 +35,7 @@ MONTH_DAYS: dc.b 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 	
 
 My_Variable: 	section 
-WAIT: 	ds.b 		2
+WAIT: 	ds.w 		2
 CARRY: 	ds.b 		1
 disp:	ds.b 		33
 NEXT_FLOOR: ds.b 	1
@@ -65,7 +66,7 @@ Count: 					ds.b    2
 flag:					ds.b 	1
 ; Sound
 sound_flag:		    	ds.b    1
-sound_delay:			ds.b	1
+sound_delay:			ds.w	1
 sent_sound:				ds.b	1 ; stores the sound to be played
 ; code section
 MyCode:     SECTION
@@ -73,7 +74,7 @@ _Startup:
     lds #__SEG_END_SSTACK
     JSR INITIALIZE_PORTS
 
-   ; JSR WELCOME
+    ;JSR WELCOME
     ;JSR DATE_TIME
     ;JSR ADMIN
     ;JSR SECRET
@@ -81,40 +82,20 @@ _Startup:
     movb #99, flag
     clr sound_flag
 MAIN:
-   JSR MAIN_MENU
+   JSR MAIN_MENU ; HOLDEN THIS IS BREAKING SHIT
+
    ;JSR keypadoutput
-   ;ldaa pressed
+;keypressed:ldaa pressed
    ;cmpa #9
-   ;BGT MAIN
+   ;BGT keypressed
    ;JSR ELEVATOR_FLOOR
-    ;JSR keypadoutput
    
    jsr dip_switches
    JSR pot_meter ; doesn't work right now 
    jsr stepper_motor
-   movb #99, flag
  ;sound
- ;	movb #5, flag
- ;   ldab sound_flag
-;	   cmpb #1
-;	   beq load_it
-;	   ldx #sound_arr
-;	   clr sound_delay 
-;	   movb #1, sound_flag
-	   
-
-	   
-;load_it:ldaa sound_delay
-;		cmpa #0
-;		 bne keeping_going ;play_note
-;	   ldaa 1,x+
-;	   staa sent_sound
-;	   cmpa #$FE
-;	   bne keeping_going
-;	   movb #0, sound_flag
-	   
-;keeping_going:  
-   
+ 
+       ;movb #99, flag
    BRA MAIN
    
 
@@ -143,9 +124,8 @@ TIME_INT:
 	 beq LED_delay_RTI
 	 cmpa #3 
 	 	beq stepper_delayer
-
-	 ;cmpa #5
-	 ;	lbeq sounds_RTI
+	 cmpa #5
+	 	lbeq sounds_RTI
 	 	
 	 lbra TIME_DONE
 	 
@@ -201,29 +181,30 @@ stepper_delayer: ; 3
 	   movb #0, stepper_flag
 
 
-	   movw #30, stepper_delay
+	   movw #$BF, stepper_delay
 	   
 	   bra TIME_DONE
 
-;sounds_RTI:;5
-;	   ldaa sound_flag
-;	   cmpa #1
-;	   lbne TIME_DONE
-;	   ldaa sent_sound
-;	   psha
-;	   jsr SendsChr
-;	   pula
-;play_note:
-;	   ldd sound_delay
-;	   addd #1
-;	   std sound_delay
-;	   jsr PlayTone	   
-;	   cpd #7812
-;	   bne TIME_DONE
+sounds_RTI:;5
+	   ldaa sound_flag
+	   cmpa #1
+	   lbne TIME_DONE
+	   
+	   ldaa sent_sound
+	  ; psha
+	   ;jsr SendsChr
+	   ;pula
+play_note:
+	   ldd sound_delay
+	   addd #1
+	   std sound_delay
+	   jsr PlayTone	   
+	   cpd #19
+	   bne TIME_DONE
  	   
- ;	   movb #0,sound_delay
+ 	   movw #0,sound_delay
 	 
-;	 bra TIME_DONE
+	 bra TIME_DONE
 	 
 
 	   	   

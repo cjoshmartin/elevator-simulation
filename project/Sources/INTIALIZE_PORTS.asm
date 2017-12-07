@@ -32,13 +32,13 @@ PORTS_CODE:	 SECTION
 	JSR init_LCD
 	movb #0, WAIT
 	movb #0, CARRY
-	movb #'1', stateofelevator
-	movb #'1', NEXT_FLOOR
+	movb #1, stateofelevator
+	movb #0, NEXT_FLOOR
 	movb #0, Count_1
 	movb #0, Count_2
 	movb #%00011110, port_p_ddr ; intialize the stepper motor
 
-;	movb #$20, port_t_ddr ;intialize speaker
+	movb #$20, port_t_ddr ;intialize speaker
 
 	
 	;pre-initialize the value for time
@@ -87,8 +87,8 @@ PORTS_CODE:	 SECTION
     clr stepper_delay
 
    
-    movb #'1', currentfloor
-    movb #'1', NEXT_FLOOR
+    movb #0, currentfloor
+    movb #0, NEXT_FLOOR
 
     
     clr should_led
@@ -97,8 +97,8 @@ PORTS_CODE:	 SECTION
 	movb #0, flag
    	movb #$74, max_value_of_pot
     movb #0, state_of_load
-    movb #0, floor ; the highest or lowest floor 
-    movb #2, direction ; tell the elevator wants to move upwards
+    movb #8, floor ; the highest or lowest floor 
+    movb #1, direction ; tell the elevator wants to move upwards
 	
 	bset CRGINT, #$80					  ;sets CRGINT
  	movb #$10 ,RTICTL	;6b				  ;Sets RTICTIL to about 50 milliseconds 
